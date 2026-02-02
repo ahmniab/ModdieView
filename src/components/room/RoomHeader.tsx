@@ -16,7 +16,7 @@ const RoomHeader = () => {
                 <Link to='/'>
                     <img src={roomLogo} alt="ModdieView Logo" title='ModdieView' className='w-auto h-8'></img>
                 </Link>
-                <input type="text" placeholder='randomRoom' title='Room name' className='w-200 text-xl  text-yellow-500 font-semibold focus:outline-none p-1'></input>
+                <input type="text" placeholder='randomRoom' title='Room name' className='w-60 text-xl  text-yellow-500 font-semibold focus:outline-none p-1'></input>
             </div>
         </div>
 
