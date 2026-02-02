@@ -1,11 +1,18 @@
-import React from 'react'
+import React from "react";
+import MessageItem from "./MessageItem";
 
-const MessageList = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+interface MessageListProps {
+  messages: string[];
 }
 
-export default MessageList
+const MessageList = ({ messages }: MessageListProps) => {
+  return (
+    <div className="flex-1 p-4 overflow-y-auto space-y-4">
+      {messages.map((msg, index) => (
+        <MessageItem key={index} message={msg} isOwn={true}/>
+      ))}
+    </div>
+  );
+};
+
+export default MessageList;
