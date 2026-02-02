@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import VideoPlayer from "../components/room/VideoPlayer";
-import ChatPanel from "../components/room/ChatPanel";
-import RoomHeader from "../components/room/RoomHeader";
+import { VideoPlayer, ChatPanel, RoomHeader } from "../components/room";
 
 const CreateRoomPage = () => {
   const [chatWidth, setChatWidth] = useState(330);
