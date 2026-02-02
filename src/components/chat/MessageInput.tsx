@@ -31,7 +31,8 @@ const MessageInput = ({ onSend }: MessageInputProps) => {
 
       <button
         onClick={handleSend}
-        className="p-2.5 rounded bg-purple-800 hover:bg-purple-700 transition text-white"
+        title="Send"
+        className="p-2.5 rounded bg-purple-800 hover:bg-purple-700 transition text-white cursor-pointer"
       >
         <IoSend size={20} />
       </button>
