@@ -1,7 +1,6 @@
 import { createContext } from "react";
 import type { YoutubeVideo } from "../modules/types";
-import { useQuery } from "@tanstack/react-query";
-import { youtubeSearch } from "../network/searchOnYoutube";
+import useYoutubeSearch from "../hooks/useYoutubeSearch"
 
 type YoutubeContextType = {
     useYoutubeSearch: (query: string) => {
@@ -12,15 +11,6 @@ type YoutubeContextType = {
 };
 
 const YoutubeContext = createContext<YoutubeContextType>({
-    useYoutubeSearch: (query: string) => {
-        const { data, isLoading, isError } = useQuery<YoutubeVideo[]>({
-        queryKey: ["youtubeSearch", query],
-        queryFn: async () => {
-            return await youtubeSearch(query);
-        },
-        enabled: query.length > 0,
-        });
-        return { data, isLoading, isError };
-    },
+    useYoutubeSearch: useYoutubeSearch
 });
 export default YoutubeContext;
