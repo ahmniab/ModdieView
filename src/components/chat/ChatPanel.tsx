@@ -22,7 +22,7 @@ const ChatPanel = ({ width }: ChatPanelProps) => {
 
       <div className="p-3 border-b border-gray-700 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
-        <button className="p-2 hover:bg-gray-700 rounded">
+        <button type="button" className="p-2 hover:bg-gray-700 rounded">
           <SlOptions />
         </button>
       </div>
