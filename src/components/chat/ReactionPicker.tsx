@@ -7,13 +7,13 @@ interface ReactionPickerProps {
 
 const ReactionPicker = ({ onEmojiSelect }: ReactionPickerProps) => {
   return (
-    <div className="absolute bottom-14 right-0 z-50 w-[100%] max-w-[300px]">
+    <div className="absolute bottom-14 right-0 p-3 z-50 w-[100%] max-w-[300px]">
       <EmojiPicker
         onEmojiClick={(emojiData) => onEmojiSelect(emojiData.emoji)}
         theme="dark"
         previewConfig={{ showPreview: false }}
         emojiSize={15}
-        height={300}
+        height={340}
         width="100%"
       />
     </div>
