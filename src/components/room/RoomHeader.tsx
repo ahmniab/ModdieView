@@ -8,7 +8,7 @@ import { IoLink } from "react-icons/io5";
 
 const RoomHeader = () => {
   return (
-    <div className="relative w-full h-14 flex items-center px-6 py-4 bg-gradient-to-r from-gray-900 to-purple-900 sticky top-0">
+    <div className="relative w-full h-14 flex items-center px-6 py-4 bg-gradient-to-r from-gray-900 to-purple-900 sticky top-0 z-50">
 
         <div className='flex gap-3 items-center'>
             <BsPersonLinesFill size={28} className='cursor-pointer'/>
