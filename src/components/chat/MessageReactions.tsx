@@ -15,7 +15,7 @@ const MessageReactions = ({
 }: MessageReactionsProps) => {
   return (
     <div
-      className="flex gap-1 rounded-full"
+      className="flex gap-1 rounded-full border border-gray-700 rounded-lg p-2"
       onClick={(e) => e.stopPropagation()}
     >
       {EMOJIS.map(({ value, label }) => {
