@@ -4,7 +4,7 @@ import { GoSignIn } from "react-icons/go";
 
 const Navbar: React.FC = () => {
   return (
-    <div className="h-16 w-full flex items-center justify-between bg-gradient-to-r from-gray-900 to-purple-800 sticky top-0 shadow-lg px-10 py-12">
+    <div className="h-16 w-full flex items-center justify-between bg-gradient-to-r from-gray-900 to-purple-800 sticky top-0 shadow-lg px-10 py-12 z-50">
       <Link to="/">
         <img
           src={logo}

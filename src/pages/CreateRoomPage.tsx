@@ -31,7 +31,7 @@ const CreateRoomPage = () => {
     <div className="h-screen flex flex-col bg-black text-white">
       <RoomHeader />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         <VideoPlayer />
 
         {/* Drag handle */}

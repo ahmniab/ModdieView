@@ -1,31 +1,81 @@
 import React from "react";
+import MessageOptions from "./MessageOptions";
+import type { Message } from "../../types";
+import type { Emoji } from "../../types";
 
 interface MessageItemProps {
-  message: string;
-  isOwn: boolean;
+  message: Message;
+  isActive: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+  onToggleReaction: (id: string, emoji: Emoji) => void;
 }
 
-const MessageItem = ({ message, isOwn }: MessageItemProps) => {
+
+const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction }: MessageItemProps) => {  
+
   return (
-    <div className={`flex ${isOwn ? "justify-end" : "justify-start"} mb-2`}>
+    <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${message.reactions.length > 0 ? "mb-7" : "mb-2"}`}>
+
       <div
-        className={`relative px-4 py-2 rounded-xl max-w-[70%] text-white break-words ${
-          isOwn ? "bg-purple-700" : "bg-gray-600"
+        className={`relative px-4 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
+          message.isOwn ? "bg-purple-700" : "bg-gray-600"
         }`}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (isActive) {
+            onClose();
+          } else {
+            onOpen();
+          }
+        }}
       >
 
         <span
           className={`absolute top-[-1px] w-4 h-4 ${
-            isOwn ? "right-[0.2px] bg-purple-700" : "left-[0.2px] bg-gray-600"
+            message.isOwn ? "right-[0.2px] bg-purple-700" : "left-[0.2px] bg-gray-600"
           }`}
           style={{
-            clipPath: isOwn
+            clipPath: message.isOwn
               ? "polygon(0 10%, 100% 0%, 100% 100%)"
               : "polygon(0 100%, 100% 10%, 0 0)",
           }}
         />
 
-        {message}
+        {message.text}
+
+        {isActive && (
+          <MessageOptions
+            onReact={(emoji) => {
+              onToggleReaction(message.id, emoji);
+              onClose();
+            }}
+            selectedEmoji={message.reactions[0] ?? null}
+            isOwn={message.isOwn}
+          />
+        )}
+
+        {message.reactions.length > 0 && (
+          <div
+            className={`absolute -bottom-5 flex gap-1 cursor-pointer ${
+              message.isOwn ? "right-0" : "left-0"
+            }`}
+          >
+            {message.reactions.map((r, i) => (
+              <span
+                key={i}
+                className="bg-black/30 px-2 py-0.5 rounded-full text-sm whitespace-nowrap"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleReaction(message.id, r);
+                  onClose();
+                }}
+              >
+                {r}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
