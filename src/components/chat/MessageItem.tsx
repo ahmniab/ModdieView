@@ -1,4 +1,3 @@
-import React from "react";
 import MessageOptions from "./MessageOptions";
 import type { Message } from "../../types";
 import type { Emoji } from "../../types";
@@ -52,6 +51,8 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction }: M
             }}
             selectedEmoji={message.reactions[0] ?? null}
             isOwn={message.isOwn}
+            messageText={message.text}
+            onClose={onClose}
           />
         )}
 
