@@ -38,6 +38,7 @@ const MessageInput = ({ onSend }: MessageInputProps) => {
 
         {showEmoji && (
           <ReactionPicker
+            className="absolute bottom-14 right-0 p-3"
             onEmojiSelect={(emoji) => {
               if (!inputRef.current) return;
 

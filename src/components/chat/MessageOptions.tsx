@@ -14,11 +14,9 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn }: MessageOptionsProps) 
 
   return (
     <div
-      className={`absolute top-10 bg-gray-900 rounded-xl p-2 z-50 ${
-                isOwn
-                  ? "right-2"
-                  : "left-2"
-              }`}
+      className={`absolute top-full bg-gray-900 rounded-xl z-50 border border-gray-700 ${
+        isOwn ? "right-2" : "left-2"
+      } ${showPicker ? "p-0" : "p-2"}`}
       onClick={(e) => e.stopPropagation()}
     >
       {!showPicker ? (

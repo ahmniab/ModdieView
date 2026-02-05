@@ -1,20 +1,20 @@
-import { MdInsertEmoticon } from "react-icons/md";
 import EmojiPicker from "emoji-picker-react";
 
 interface ReactionPickerProps {
   onEmojiSelect: (emoji: string) => void;
+  className?: string;
 }
 
-const ReactionPicker = ({ onEmojiSelect }: ReactionPickerProps) => {
+const ReactionPicker = ({ onEmojiSelect, className }: ReactionPickerProps) => {
   return (
-    <div className="absolute bottom-14 right-0 p-3 z-50 w-[100%] max-w-[300px]">
+    <div className={`z-50 ${className ?? ""}`}>
       <EmojiPicker
         onEmojiClick={(emojiData) => onEmojiSelect(emojiData.emoji)}
         theme="dark"
         previewConfig={{ showPreview: false }}
         emojiSize={15}
         height={340}
-        width="100%"
+        width="250px"
       />
     </div>
   );
