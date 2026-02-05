@@ -9,7 +9,7 @@ interface MessageActionsProps {
 const MessageActions = ({
   onReply,
   onCopy,
-  onDelete,
+//   onDelete,
 }: MessageActionsProps) => {
   return (
     <div className="flex flex-col gap-2 p-2 text-white text-[15px]">
@@ -31,14 +31,14 @@ const MessageActions = ({
         <MdOutlineContentCopy size={20} /> Copy
       </button>
 
-      <button
+      {/* <button
         type="button"
         title="Delete"
         className="w-full flex items-center gap-3 text-left hover:bg-gray-700 cursor-pointer"
         onClick={onDelete}
       >
         <MdDelete size={22} /> Delete
-      </button>
+      </button> */}
     </div>
   );
 };
