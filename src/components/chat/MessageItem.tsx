@@ -9,7 +9,7 @@ const MessageItem = ({ message, isOwn }: MessageItemProps) => {
   return (
     <div className={`flex ${isOwn ? "justify-end" : "justify-start"} mb-2`}>
       <div
-        className={`relative px-4 py-2 rounded-2xl max-w-[70%] text-white break-words ${
+        className={`relative px-4 py-2 rounded-xl max-w-[70%] text-white break-words ${
           isOwn ? "bg-purple-700" : "bg-gray-600"
         }`}
       >
