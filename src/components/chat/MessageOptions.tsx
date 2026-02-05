@@ -3,14 +3,18 @@ import { useState } from "react";
 import ReactionPicker from "./ReactionPicker";
 import type { Emoji } from "../../types";
 import MessageActions from "./MessageActions";
+import { copyToClipboard } from "../../utils/copyToClipboard";
+import toast from "react-hot-toast";
 
 interface MessageOptionsProps {
+  messageText: string;
   onReact: (emoji: Emoji) => void;
   selectedEmoji?: Emoji | null;
   isOwn: boolean;
+  onClose: () => void;
 }
 
-const MessageOptions = ({ onReact, selectedEmoji, isOwn }: MessageOptionsProps) => {
+const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose }: MessageOptionsProps) => {
   const [showPicker, setShowPicker] = useState(false);
 
   return (
@@ -26,12 +30,22 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn }: MessageOptionsProps) 
           <>
 
             <MessageReactions
-              onSelect={(emoji) => onReact(emoji)}
+              onSelect={(emoji) => {
+                onReact(emoji);
+                onClose();
+              }}
               onOpenPicker={() => setShowPicker(true)}
               selectedEmoji={selectedEmoji}
             />
-            
-            <MessageActions/>
+
+            <MessageActions
+            onCopy={async () => { const success = await copyToClipboard(messageText);
+              if (success) {
+                toast.success("Copied");
+              }
+              onClose();
+            }}
+            />
 
           </>
         ) : (
@@ -39,6 +53,7 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn }: MessageOptionsProps) 
             onEmojiSelect={(emoji) => {
               onReact(emoji);
               setShowPicker(false);
+              onClose();
             }}
           />
         )}

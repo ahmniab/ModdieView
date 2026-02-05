@@ -4,7 +4,7 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import type { Message } from "../../types";
 import type { Emoji } from "../../types";
-
+import ChatToaster from "./ChatToaster";
 
 interface ChatPanelProps {
   width: number;
@@ -53,7 +53,7 @@ const ChatPanel = ({ width }: ChatPanelProps) => {
 
       <MessageList messages={messages} onToggleReaction={toggleReaction}/>
       <MessageInput onSend={handleSendMessage} />
-      
+      <ChatToaster />
     </div>
   );
 };

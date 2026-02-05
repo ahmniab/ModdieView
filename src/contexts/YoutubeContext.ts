@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { YoutubeVideo } from "../modules/types";
+import type { YoutubeVideo } from "../types";
 import useYoutubeSearch from "../hooks/useYoutubeSearch"
 
 type YoutubeContextType = {
