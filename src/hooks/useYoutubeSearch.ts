@@ -1,4 +1,4 @@
-import type { YoutubeVideo } from "../modules/types";
+import type { YoutubeVideo } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { youtubeSearch } from "../network/searchOnYoutube";
 
