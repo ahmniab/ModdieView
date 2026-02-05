@@ -15,7 +15,7 @@ const MessageReactions = ({
 }: MessageReactionsProps) => {
   return (
     <div
-      className="flex gap-1 rounded-full border border-gray-700 rounded-lg p-2"
+      className="flex gap-1 rounded-lg border border-gray-700 p-2"
       onClick={(e) => e.stopPropagation()}
     >
       {EMOJIS.map(({ value, label }) => {
@@ -26,7 +26,7 @@ const MessageReactions = ({
             key={value}
             onClick={() => onSelect(value)}
             title={label}
-            className={`text-[19px] transition rounded-full px-0.5 py-0.5 cursor-pointer
+            className={`text-[20px] transition rounded-full px-0.5 py-0.5 cursor-pointer
               ${
                 isSelected
                   ? "bg-purple-600"
