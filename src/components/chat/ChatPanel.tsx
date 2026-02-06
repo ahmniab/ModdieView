@@ -4,15 +4,19 @@ import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
 import type { Message, Emoji } from "../../types";
 import ChatToaster from "./ChatToaster";
+import ChatSettingsModal from "./ChatSettingsModal";
 
 interface ChatPanelProps {
   width: number;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  onCloseChat: () => void;
 }
 
-const ChatPanel = ({ width }: ChatPanelProps) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps) => {
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [senderName, setSenderName] = useState("You");
+  const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
     setMessages((prev) => [...prev, 
       {
@@ -52,7 +56,12 @@ const ChatPanel = ({ width }: ChatPanelProps) => {
 
       <div className="p-3 border-b border-gray-700 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
-        <button type="button" className="p-2 hover:bg-gray-700 rounded">
+        <button type="button" title="Chat Settings"
+        className="p-2 hover:bg-gray-700 rounded cursor-pointer"
+        onMouseDown={(e) => {
+          e.stopPropagation();
+          setShowSettings((prev) => !prev);
+        }}>
           <SlOptions />
         </button>
       </div>
@@ -60,6 +69,14 @@ const ChatPanel = ({ width }: ChatPanelProps) => {
       <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} />
       <MessageInput onSend={handleSendMessage} replyTo={replyTo} senderName={senderName} onCancelReply={() => setReplyTo(null)}/>
       <ChatToaster />
+
+      {showSettings && (
+              <ChatSettingsModal
+                onCloseChat={() => onCloseChat()}
+                onCloseSettings={() => setShowSettings(false)}
+                />
+      )}
+
     </div>
   );
 };
