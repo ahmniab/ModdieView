@@ -2,6 +2,7 @@ import MessageOptions from "./MessageOptions";
 import type { Message } from "../../types";
 import type { Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
+import { formatTime } from "../../utils/formatTime";
 
 interface MessageItemProps {
   message: Message;
@@ -19,7 +20,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
 
       <div
         className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
-          message.isOwn ? "bg-purple-700" : "bg-gray-600"
+          message.isOwn ? "bg-purple-800" : "bg-gray-600"
         }`}
         onClick={(e) => {
           e.stopPropagation();
@@ -33,7 +34,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
 
         <span
           className={`absolute top-[-1px] w-4 h-4 ${
-            message.isOwn ? "right-[0.2px] bg-purple-700" : "left-[0.2px] bg-gray-600"
+            message.isOwn ? "right-[0.2px] bg-purple-800" : "left-[0.2px] bg-gray-600"
           }`}
           style={{
             clipPath: message.isOwn
@@ -53,7 +54,12 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
           </div>
         )}
 
-{message.text}
+        <div className="flex items-end gap-2">
+          {message.text}
+          <span className="text-[10px] text-white/90 whitespace-nowrap">
+            {formatTime(message.sentAt)}
+          </span>
+        </div>
 
         {isActive && (
           <MessageOptions
