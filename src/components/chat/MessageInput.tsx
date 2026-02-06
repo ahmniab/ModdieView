@@ -5,7 +5,7 @@ import ReactionPicker from "./ReactionPicker";
 import { useRef } from "react";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { HiOutlineX } from "react-icons/hi";
-
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface MessageInputProps {
   onSend: (message: string, replyTo?: { id: string; text: string }) => void;
@@ -18,6 +18,12 @@ const MessageInput = ({ onSend, replyTo, senderName, onCancelReply }: MessageInp
   const [input, setInput] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  useClickOutside(containerRef, () => {
+    if (showEmoji) {
+      setShowEmoji(false);
+    }
+});
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -50,7 +56,7 @@ const MessageInput = ({ onSend, replyTo, senderName, onCancelReply }: MessageInp
 
           )}
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2" ref={containerRef}>
 
             <input
               placeholder="Send a message..."
