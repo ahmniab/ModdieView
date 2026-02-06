@@ -12,9 +12,10 @@ interface MessageOptionsProps {
   selectedEmoji?: Emoji | null;
   isOwn: boolean;
   onClose: () => void;
+  onReply: () => void;
 }
 
-const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose }: MessageOptionsProps) => {
+const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply }: MessageOptionsProps) => {
   const [showPicker, setShowPicker] = useState(false);
 
   return (
@@ -43,6 +44,10 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose }:
               if (success) {
                 toast.success("Copied");
               }
+              onClose();
+            }}
+            onReply={() => {
+              onReply();
               onClose();
             }}
             />
