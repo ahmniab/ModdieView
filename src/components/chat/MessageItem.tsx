@@ -22,7 +22,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
         className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
           message.isOwn ? "bg-purple-800" : "bg-gray-600"
         }`}
-        onClick={(e) => {
+        onMouseDown={(e) => {
           e.stopPropagation();
           if (isActive) {
             onClose();
