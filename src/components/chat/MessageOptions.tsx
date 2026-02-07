@@ -1,10 +1,12 @@
 import MessageReactions from "./MessageReactions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactionPicker from "./ReactionPicker";
 import type { Emoji } from "../../types";
 import MessageActions from "./MessageActions";
 import { copyToClipboard } from "../../utils/copyToClipboard";
 import toast from "react-hot-toast";
+import { useRef } from "react";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface MessageOptionsProps {
   messageText: string;
@@ -12,16 +14,32 @@ interface MessageOptionsProps {
   selectedEmoji?: Emoji | null;
   isOwn: boolean;
   onClose: () => void;
+  onReply: () => void;
 }
 
-const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose }: MessageOptionsProps) => {
+const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply }: MessageOptionsProps) => {
   const [showPicker, setShowPicker] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  useClickOutside(containerRef, onClose);
+  const [openUpwards, setOpenUpwards] = useState(false);
+
+  useEffect(() => {
+  const el = containerRef.current;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
+  }, []);
+
 
   return (
-    <div className={`absolute top-full bg-gray-900 rounded-xl z-50  ${
+    <div 
+      ref={containerRef}
+      className={`absolute bg-gray-900 rounded-xl z-50
+        ${
           isOwn ? "right-2" : "left-2"
-        } `}
-        onClick={(e) => e.stopPropagation()}
+        } ${openUpwards ? "bottom-full mb-1" : "top-full mt-1"}`}
     >
 
       <div
@@ -43,6 +61,10 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose }:
               if (success) {
                 toast.success("Copied");
               }
+              onClose();
+            }}
+            onReply={() => {
+              onReply();
               onClose();
             }}
             />

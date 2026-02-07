@@ -4,4 +4,10 @@ export interface Message {
   text: string;
   reactions: Emoji[];
   isOwn: boolean;
+  senderName?: string;
+  replyTo?: {
+    id: string;
+    text: string;
+  };
+  sentAt: number;
 }
