@@ -1,5 +1,5 @@
 import MessageReactions from "./MessageReactions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactionPicker from "./ReactionPicker";
 import type { Emoji } from "../../types";
 import MessageActions from "./MessageActions";
@@ -21,14 +21,25 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, o
   const [showPicker, setShowPicker] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   useClickOutside(containerRef, onClose);
+  const [openUpwards, setOpenUpwards] = useState(false);
+
+  useEffect(() => {
+  const el = containerRef.current;
+  if (!el) return;
+  const rect = el.getBoundingClientRect();
+  const spaceBelow = window.innerHeight - rect.bottom;
+  const spaceAbove = rect.top;
+  setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
+  }, []);
 
 
   return (
     <div 
       ref={containerRef}
-      className={`absolute top-full bg-gray-900 rounded-xl z-50  ${
+      className={`absolute bg-gray-900 rounded-xl z-50
+        ${
           isOwn ? "right-2" : "left-2"
-        } `}
+        } ${openUpwards ? "bottom-full mb-1" : "top-full mt-1"}`}
     >
 
       <div
