@@ -12,11 +12,11 @@ const MessageActions = ({
 //   onDelete,
 }: MessageActionsProps) => {
   return (
-    <div className="flex flex-col gap-2 p-2 text-white text-[15px]">
+    <div className="flex flex-col gap-1 p-2 text-white text-[15px]">
       <button
         type="button"
         title="Reply"
-        className="w-full flex items-center gap-3 text-left hover:bg-gray-700 cursor-pointer"
+        className="w-full flex items-center gap-3 p-2 text-left hover:bg-gray-700 hover:rounded-sm cursor-pointer"
         onClick={onReply}
       >
         <MdReply size={22} /> Reply
@@ -25,7 +25,7 @@ const MessageActions = ({
       <button
         type="button"
         title="Copy"
-        className="w-full flex items-center gap-3 text-left hover:bg-gray-700 cursor-pointer"
+        className="w-full flex items-center gap-3 p-2 text-left hover:bg-gray-700 cursor-pointer hover:rounded-sm"
         onClick={onCopy}
       >
         <MdOutlineContentCopy size={20} /> Copy
