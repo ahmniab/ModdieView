@@ -2,6 +2,7 @@ import MessageOptions from "./MessageOptions";
 import type { Message } from "../../types";
 import type { Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
+import { formatTime } from "../../utils/formatTime";
 
 interface MessageItemProps {
   message: Message;
@@ -18,10 +19,10 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${message.reactions.length > 0 ? "mb-7" : "mb-2"}`}>
 
       <div
-        className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
-          message.isOwn ? "bg-purple-700" : "bg-gray-600"
+        className={`relative px-2 py-2 rounded-xl max-w-[70%] text-white break-words ${
+          message.isOwn ? "bg-purple-800" : "bg-gray-600"
         }`}
-        onClick={(e) => {
+        onMouseDown={(e) => {
           e.stopPropagation();
           if (isActive) {
             onClose();
@@ -33,7 +34,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
 
         <span
           className={`absolute top-[-1px] w-4 h-4 ${
-            message.isOwn ? "right-[0.2px] bg-purple-700" : "left-[0.2px] bg-gray-600"
+            message.isOwn ? "right-[0.2px] bg-purple-800" : "left-[0.2px] bg-gray-600"
           }`}
           style={{
             clipPath: message.isOwn
@@ -52,8 +53,16 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
             </div>
           </div>
         )}
-
-{message.text}
+  
+        <div className="block overflow-hidden">
+          <span className="break-words whitespace-pre-wrap mr-2">
+            {message.text}
+            <span className="inline-block w-[45px]"></span>
+          </span>
+          <span className="absolute bottom-1 right-2 text-[10px] text-white/90 whitespace-nowrap leading-none">
+            {formatTime(message.sentAt)}
+          </span>
+        </div>
 
         {isActive && (
           <MessageOptions

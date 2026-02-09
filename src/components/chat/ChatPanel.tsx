@@ -24,7 +24,8 @@ const ChatPanel = ({ width }: ChatPanelProps) => {
         replyTo: replyTo
         ? { id: replyTo.id, text: replyTo.text }
         : undefined,
-      },
+        sentAt: Date.now(),
+      }
     ]);
     setReplyTo(null);
   };
