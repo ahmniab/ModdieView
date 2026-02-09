@@ -53,10 +53,13 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
             </div>
           </div>
         )}
-
-        <div className="flex items-end gap-2">
-          {message.text}
-          <span className="text-[10px] text-white/90 whitespace-nowrap">
+  
+        <div className="block overflow-hidden">
+          <span className="break-words whitespace-pre-wrap mr-2">
+            {message.text}
+            <span className="inline-block w-[45px]"></span>
+          </span>
+          <span className="absolute bottom-1 right-2 text-[10px] text-white/90 whitespace-nowrap leading-none">
             {formatTime(message.sentAt)}
           </span>
         </div>
