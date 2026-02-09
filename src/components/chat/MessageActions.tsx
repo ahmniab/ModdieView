@@ -17,6 +17,7 @@ const MessageActions = ({
         type="button"
         title="Reply"
         className="w-full flex items-center gap-3 p-2 text-left hover:bg-gray-700 hover:rounded-sm cursor-pointer"
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={onReply}
       >
         <MdReply size={22} /> Reply
@@ -26,6 +27,7 @@ const MessageActions = ({
         type="button"
         title="Copy"
         className="w-full flex items-center gap-3 p-2 text-left hover:bg-gray-700 cursor-pointer hover:rounded-sm"
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={onCopy}
       >
         <MdOutlineContentCopy size={20} /> Copy

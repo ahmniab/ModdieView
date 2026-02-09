@@ -5,6 +5,8 @@ import type { Emoji } from "../../types";
 import MessageActions from "./MessageActions";
 import { copyToClipboard } from "../../utils/copyToClipboard";
 import toast from "react-hot-toast";
+import { useRef } from "react";
+import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface MessageOptionsProps {
   messageText: string;
@@ -17,12 +19,16 @@ interface MessageOptionsProps {
 
 const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply }: MessageOptionsProps) => {
   const [showPicker, setShowPicker] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  useClickOutside(containerRef, onClose);
+
 
   return (
-    <div className={`absolute top-full bg-gray-900 rounded-xl z-50  ${
+    <div 
+      ref={containerRef}
+      className={`absolute top-full bg-gray-900 rounded-xl z-50  ${
           isOwn ? "right-2" : "left-2"
         } `}
-        onClick={(e) => e.stopPropagation()}
     >
 
       <div

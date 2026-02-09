@@ -1,7 +1,6 @@
 import React from "react";
 import MessageItem from "./MessageItem";
 import type { Message } from "../../types";
-import { useEffect } from "react";
 import { useState } from "react";
 import type { Emoji } from "../../types";
 
@@ -14,12 +13,6 @@ interface MessageListProps {
 const MessageList = ({ messages, onToggleReaction, onReply }: MessageListProps) => {
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
   const openMessage = (id: string) => setActiveMessageId(id);
-
-  useEffect(() => {
-    const close = () => setActiveMessageId(null);
-    window.addEventListener("click", close);
-    return () => window.removeEventListener("click", close);
-  }, []);
 
   return (
     <div className="flex-1 p-4 overflow-y-auto space-y-4">

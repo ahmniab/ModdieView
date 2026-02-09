@@ -19,7 +19,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${message.reactions.length > 0 ? "mb-7" : "mb-2"}`}>
 
       <div
-        className={`relative px-2 py-2 rounded-xl max-w-[70%] text-white break-words ${
+        className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
           message.isOwn ? "bg-purple-800" : "bg-gray-600"
         }`}
         onMouseDown={(e) => {
