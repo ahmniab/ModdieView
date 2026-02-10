@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
@@ -14,6 +14,8 @@ interface ChatPanelProps {
 }
 
 const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps) => {
+  const headerRef = useRef<HTMLDivElement>(null);
+  const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [senderName, setSenderName] = useState("You");
   const [showSettings, setShowSettings] = useState(false);
@@ -54,7 +56,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
       style={{ width, minWidth: 280 }}
     >
 
-      <div className="p-3 border-b border-gray-700 flex justify-between items-center">
+      <div ref={headerRef} className="p-3 border-b border-gray-700 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
         <button type="button" title="Chat Settings"
         className="p-2 hover:bg-gray-700 rounded cursor-pointer"
@@ -66,7 +68,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
         </button>
       </div>
 
-      <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} />
+      <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} chatHeaderHeight={chatHeaderHeight} />
       <MessageInput onSend={handleSendMessage} replyTo={replyTo} senderName={senderName} onCancelReply={() => setReplyTo(null)}/>
       <ChatToaster />
 
