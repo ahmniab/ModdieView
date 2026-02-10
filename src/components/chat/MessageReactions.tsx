@@ -16,7 +16,7 @@ const MessageReactions = ({
   return (
     <div
       className="flex gap-1 rounded-lg border border-gray-700 p-2"
-      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
     >
       {EMOJIS.map(({ value, label }) => {
         const isSelected = selectedEmoji === value;
@@ -40,6 +40,7 @@ const MessageReactions = ({
       })}
 
       <button
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={onOpenPicker}
         className="opacity-70 hover:opacity-100 hover:scale-125 transition cursor-pointer"
         title="More reactions"
