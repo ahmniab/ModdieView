@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { VideoPlayer, ChatPanel, RoomHeader } from "../components/room";
+import { CreateRoomModal, VideoPlayer, ChatPanel, RoomHeader } from "../components/room";
 import { IoChatboxEllipses } from "react-icons/io5";
 import type { Message } from "../types";
-
 
 const CreateRoomPage = () => {
   const [chatWidth, setChatWidth] = useState(320);
@@ -11,6 +10,7 @@ const CreateRoomPage = () => {
   const stopDragging = () => setIsDragging(false);
   const [showChat, setShowChat] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [showModal, setShowModal] = useState(true);
 
   const onDrag = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
@@ -33,39 +33,44 @@ const CreateRoomPage = () => {
 
   return (
     <div className="h-screen flex flex-col bg-black text-white">
-      <RoomHeader />
+      <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
+        <RoomHeader />
 
-      <div className="relative flex flex-1 min-h-0 overflow-hidden">
-        <VideoPlayer />
+        <div className="relative flex flex-1 min-h-0 overflow-hidden">
+          <VideoPlayer />
 
 
-        {showChat ? (
-          <>
-              {/* Drag handle */}
-              <div
-                onMouseDown={startDragging}
-                className="w-1 cursor-col-resize bg-gray-700 hover:bg-purple-600"
-              />
+          {showChat ? (
+            <>
+                {/* Drag handle */}
+                <div
+                  onMouseDown={startDragging}
+                  className="w-1 cursor-col-resize bg-gray-700 hover:bg-purple-600"
+                />
 
-              <ChatPanel
-              width={chatWidth}
-              messages={messages}
-              setMessages={setMessages}
-              onCloseChat={() => setShowChat(false)}
-              />
-          </>
-        ) :  (
-          <button
-            type="button"
-            title="Start chatting"
-            className="absolute bottom-4 right-4 p-3 bg-purple-700 rounded-full hover:bg-purple-700 z-50 cursor-pointer"
-            onClick={() => setShowChat(true)}
-          >
-            <IoChatboxEllipses size={34}/>
-          </button>)
-        }
+                <ChatPanel
+                width={chatWidth}
+                messages={messages}
+                setMessages={setMessages}
+                onCloseChat={() => setShowChat(false)}
+                />
+            </>
+          ) :  (
+            <button
+              type="button"
+              title="Start chatting"
+              className="absolute bottom-4 right-4 p-3 bg-purple-700 rounded-full hover:bg-purple-700 z-50 cursor-pointer"
+              onClick={() => setShowChat(true)}
+            >
+              <IoChatboxEllipses size={34}/>
+            </button>)
+          }
 
+        </div>
       </div>
+      {showModal && (
+      <CreateRoomModal onConfirm={() => setShowModal(false)} roomLink="https://moddieview.com/room/12345" />
+    )}
     </div>
   );
 };
