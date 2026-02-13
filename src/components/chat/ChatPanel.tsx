@@ -17,7 +17,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
   const headerRef = useRef<HTMLDivElement>(null);
   const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
   const [replyTo, setReplyTo] = useState<Message | null>(null);
-  const [senderName, setSenderName] = useState("You");
+  const [senderName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
     setMessages((prev) => [...prev, 
@@ -27,8 +27,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
         reactions: [],
         isOwn: true,
         senderName,
-        replyTo: replyTo
-        ? { id: replyTo.id, text: replyTo.text }
+        replyTo: replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }
         : undefined,
         sentAt: Date.now(),
       }
@@ -69,7 +68,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
       </div>
 
       <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} chatHeaderHeight={chatHeaderHeight} />
-      <MessageInput onSend={handleSendMessage} replyTo={replyTo} senderName={senderName} onCancelReply={() => setReplyTo(null)}/>
+      <MessageInput onSend={handleSendMessage} replyTo={replyTo} onCancelReply={() => setReplyTo(null)}/>
       <ChatToaster />
 
       {showSettings && (
