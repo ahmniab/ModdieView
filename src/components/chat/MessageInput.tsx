@@ -34,12 +34,12 @@ const MessageInput = ({ onSend, replyTo, senderName, onCancelReply }: MessageInp
   return (
     // <div className="border-t border-gray-700">
       <div className="relative p-3 border-t border-gray-700 flex items-end gap-2">
-        <div className="flex-1 flex flex-col bg-gray-700 rounded-xl px-3 py-2 gap-2">
+        <div className="flex-1 flex flex-col bg-gray-700 rounded-xl px-3 py-2 gap-2 min-w-0">
           {replyTo && (
             <div className="relative flex flex-col bg-black/20 text-sm px-2 py-1 rounded mb-1 border-l-4 border-white">
               <div className="flex items-center">
                 <BsFillReplyAllFill size={17} className="inline mr-2" />
-                <div className="font-semibold">{senderName}</div>
+                <div className="font-semibold truncate">{senderName}</div>
                 <button
                   type="button"
                   title="Cancel Reply"

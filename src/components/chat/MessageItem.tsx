@@ -3,6 +3,7 @@ import type { Message } from "../../types";
 import type { Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { formatTime } from "../../utils/formatTime";
+import { useRef } from "react";
 
 interface MessageItemProps {
   message: Message;
@@ -11,14 +12,17 @@ interface MessageItemProps {
   onClose: () => void;
   onToggleReaction: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
+  chatHeaderHeight: number;
 }
 
 
-const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply }: MessageItemProps) => {  
+const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply, chatHeaderHeight }: MessageItemProps) => {  
+  const messageRef = useRef<HTMLDivElement>(null);
+  
   return (
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${message.reactions.length > 0 ? "mb-7" : "mb-2"}`}>
 
-      <div
+      <div ref={messageRef}
         className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
           message.isOwn ? "bg-purple-800" : "bg-gray-600"
         }`}
@@ -66,9 +70,10 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
 
         {isActive && (
           <MessageOptions
+            anchorRef={messageRef}
+            chatHeaderHeight={chatHeaderHeight}
             onReact={(emoji) => {
               onToggleReaction(message.id, emoji);
-              onClose();
             }}
             selectedEmoji={message.reactions[0] ?? null}
             isOwn={message.isOwn}
@@ -88,10 +93,11 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
               <span
                 key={i}
                 className="bg-black/30 px-2 py-0.5 rounded-full text-sm whitespace-nowrap"
+                onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
-                  e.stopPropagation();
+                  // e.stopPropagation();
                   onToggleReaction(message.id, r);
-                  onClose();
+                  // onClose();
                 }}
               >
                 {r}

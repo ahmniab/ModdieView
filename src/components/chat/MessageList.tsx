@@ -8,9 +8,10 @@ interface MessageListProps {
   messages: Message[];
   onToggleReaction: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
+  chatHeaderHeight: number;
 }
 
-const MessageList = ({ messages, onToggleReaction, onReply }: MessageListProps) => {
+const MessageList = ({ messages, onToggleReaction, onReply, chatHeaderHeight = 0 }: MessageListProps) => {
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
   const openMessage = (id: string) => setActiveMessageId(id);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -38,6 +39,7 @@ const MessageList = ({ messages, onToggleReaction, onReply }: MessageListProps) 
           onOpen={() => openMessage(msg.id)}
           onClose={() => setActiveMessageId(null)}
           onToggleReaction={onToggleReaction}
+          chatHeaderHeight={chatHeaderHeight}
           onReply={(message) => {
             setActiveMessageId(null);
             onReply(message);

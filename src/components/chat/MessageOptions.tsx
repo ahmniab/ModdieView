@@ -1,5 +1,5 @@
 import MessageReactions from "./MessageReactions";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import ReactionPicker from "./ReactionPicker";
 import type { Emoji } from "../../types";
 import MessageActions from "./MessageActions";
@@ -15,27 +15,41 @@ interface MessageOptionsProps {
   isOwn: boolean;
   onClose: () => void;
   onReply: () => void;
+  chatHeaderHeight: number;
+  anchorRef: React.RefObject<HTMLDivElement>;
 }
 
-const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply }: MessageOptionsProps) => {
+const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply, chatHeaderHeight, anchorRef }: MessageOptionsProps) => {
   const [showPicker, setShowPicker] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   useClickOutside(containerRef, onClose);
   const [openUpwards, setOpenUpwards] = useState(false);
 
-  useEffect(() => {
-  const el = containerRef.current;
-  if (!el) return;
-  const rect = el.getBoundingClientRect();
-  const spaceBelow = window.innerHeight - rect.bottom;
-  const spaceAbove = rect.top;
-  setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
-  }, []);
+  useLayoutEffect(() => {
+    const anchorEl = anchorRef.current;
+    const floatingEl = containerRef.current;
+    if (!anchorEl || !floatingEl) return;
+
+    const anchorRect = anchorEl.getBoundingClientRect();
+    const floatingHeight = showPicker ? 360 : 220;
+
+    const spaceBelow = window.innerHeight - anchorRect.bottom;
+    const spaceAbove = anchorRect.top - chatHeaderHeight;
+
+    if (spaceBelow >= floatingHeight) {
+      setOpenUpwards(false);
+    } else if (spaceAbove >= floatingHeight) {
+      setOpenUpwards(true);
+    } else {
+      setOpenUpwards(spaceAbove > spaceBelow);
+    }
+  }, [showPicker, chatHeaderHeight]);
 
 
   return (
     <div 
       ref={containerRef}
+      onMouseDown={(e) => e.stopPropagation()}
       className={`absolute bg-gray-900 rounded-xl z-50
         ${
           isOwn ? "right-2" : "left-2"
