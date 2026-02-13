@@ -8,13 +8,12 @@ import { HiOutlineX } from "react-icons/hi";
 import { useClickOutside } from "../../hooks/useClickOutside";
 
 interface MessageInputProps {
-  onSend: (message: string, replyTo?: { id: string; text: string }) => void;
-  replyTo?: { id: string; text: string } | null;
-  senderName: string;
+  onSend: (message: string, replyTo?: { id: string; text: string, senderName: string, isOwn: boolean }) => void;
+  replyTo?: { id: string; text: string, senderName: string, isOwn: boolean } | null;
   onCancelReply: () => void;
 }
 
-const MessageInput = ({ onSend, replyTo, senderName, onCancelReply }: MessageInputProps) => {
+const MessageInput = ({ onSend, replyTo, onCancelReply }: MessageInputProps) => {
   const [input, setInput] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -39,7 +38,7 @@ const MessageInput = ({ onSend, replyTo, senderName, onCancelReply }: MessageInp
             <div className="relative flex flex-col bg-black/20 text-sm px-2 py-1 rounded mb-1 border-l-4 border-white">
               <div className="flex items-center">
                 <BsFillReplyAllFill size={17} className="inline mr-2" />
-                <div className="font-semibold truncate">{senderName}</div>
+                <div className="font-semibold truncate">{replyTo.isOwn ? "You" : replyTo.senderName}</div>
                 <button
                   type="button"
                   title="Cancel Reply"
