@@ -1,8 +1,6 @@
-import React from "react";
 import MessageItem from "./MessageItem";
-import type { Message } from "../../types";
+import type { Message, Emoji } from "@/types";
 import { useEffect, useRef ,useState } from "react";
-import type { Emoji } from "../../types";
 
 interface MessageListProps {
   messages: Message[];

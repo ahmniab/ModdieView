@@ -1,7 +1,7 @@
 import React from 'react'
 import { BsPersonLinesFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import roomLogo from "../../assets/roomLogo.png";
+import roomLogo from "@/assets/roomLogo.png";
 import { ImExit } from "react-icons/im";
 import SearchBar from '../SearchBar';
 import { IoLink } from "react-icons/io5";
