@@ -89,7 +89,7 @@ const CreateRoomPage = () => {
         </div>
       </div>
       {showModal && (
-      <CreateRoomModal onConfirm={() => setShowModal(false)} roomLink="https://moddieview.com/room/12345" />
+      <CreateRoomModal onConfirm={() => setShowModal(false)} roomLink={`https://moddieview.com/room/${roomId}`} />
     )}
     </div>
   );
