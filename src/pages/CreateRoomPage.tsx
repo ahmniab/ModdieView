@@ -1,3 +1,5 @@
+import { useRoom } from "../contexts/RoomContext";
+import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { CreateRoomModal, VideoPlayer, ChatPanel, RoomHeader } from "@/components/room";
 import { IoChatboxEllipses } from "react-icons/io5";
@@ -10,9 +12,27 @@ const CreateRoomPage = () => {
   const stopDragging = () => setIsDragging(false);
   const [showChat, setShowChat] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
+  const { socket, room, joinRoom } = useRoom();
+  const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
   const [userName, setUserName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
   const videoId = "InalcSwrMTA";
+
+  useEffect(() => {
+    if (roomId) {
+      joinRoom(roomId);
+    }
+  }, []);
+  useEffect(() => {
+    if (!socket) {
+      console.warn("Socket not initialized yet"); 
+      return;
+    }
+    socket.on("CMD:usersUpdate", (updatedUsers: any[]) => {
+      console.log("Received users update:", updatedUsers);
+    });
+    socket.emit("CMD:name", "ahmed nabil");
+  }, [room, socket]);
 
   const onDrag = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
@@ -77,7 +97,7 @@ const CreateRoomPage = () => {
           setShowModal(false);
           const name = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
           setUserName(name);
-        }} roomLink="https://moddieview.com/room/12345" />
+        }} roomLink={`https://moddieview.com/room/${roomId}`} />
       )}
     </div>
   );

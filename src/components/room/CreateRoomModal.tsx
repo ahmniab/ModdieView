@@ -1,7 +1,7 @@
 import { MdOutlineContentCopy } from "react-icons/md";
-import { copyToClipboard } from "@/utils/copyToClipboard";
-import { useRef } from "react";
-import roomLogo from "@/assets/roomLogo.png";
+import { copyToClipboard } from "../../utils/copyToClipboard";
+import { useState, useEffect, useRef } from "react";
+import roomLogo from "../../assets/roomLogo.png";
 import { toast } from "react-hot-toast";
 
 interface Props {
@@ -11,6 +11,15 @@ interface Props {
 
 const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
     // const [requireApproval, setRequireApproval] = useState(false);
+    const [name, setName] = useState("");
+    useEffect(() => {
+        const savedName = localStorage.getItem("moddieview:name");
+        if (savedName) {
+            setName(savedName);
+        }
+    }, []);
+
+
     const nameRef = useRef<HTMLInputElement>(null);
     const savedName = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
 
