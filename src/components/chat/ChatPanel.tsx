@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import type { Message, Emoji } from "../../types";
+import type { Message, Emoji } from "@/types";
 import ChatToaster from "./ChatToaster";
 import ChatSettingsModal from "./ChatSettingsModal";
 
@@ -11,13 +11,13 @@ interface ChatPanelProps {
   messages: Message[];
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   onCloseChat: () => void;
+  userName: string;
 }
 
-const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps) => {
+const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
   const [replyTo, setReplyTo] = useState<Message | null>(null);
-  const [senderName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
     setMessages((prev) => [...prev, 
@@ -26,7 +26,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat }: ChatPanelProps
         text,
         reactions: [],
         isOwn: true,
-        senderName,
+        senderName: userName,
         replyTo: replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }
         : undefined,
         sentAt: Date.now(),
