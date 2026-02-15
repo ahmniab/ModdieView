@@ -1,4 +1,4 @@
-import type { YoutubeVideo } from "../../types/YoutubeVideo";
+import type { YoutubeVideo } from "@/types/YoutubeVideo";
 import RC from "react";
 
 const SearchItem: RC.FC<{video: YoutubeVideo; onClick: (video: YoutubeVideo) => void}> = ({video, onClick}) => {
