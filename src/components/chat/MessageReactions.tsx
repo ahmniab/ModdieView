@@ -1,6 +1,5 @@
 import { MdOutlineAddReaction } from "react-icons/md";
-import type { Emoji } from "../../types";
-import { EMOJIS } from "../../types";
+import type { Emoji, EMOJIS } from "@/types";
 
 interface MessageReactionsProps {
   onSelect: (emoji: Emoji) => void;

@@ -5,7 +5,7 @@ import ReactionPicker from "./ReactionPicker";
 import { useRef } from "react";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { HiOutlineX } from "react-icons/hi";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface MessageInputProps {
   onSend: (message: string, replyTo?: { id: string; text: string, senderName: string, isOwn: boolean }) => void;
