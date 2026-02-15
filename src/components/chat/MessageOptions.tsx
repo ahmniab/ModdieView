@@ -1,12 +1,12 @@
 import MessageReactions from "./MessageReactions";
 import { useLayoutEffect, useState } from "react";
 import ReactionPicker from "./ReactionPicker";
-import type { Emoji } from "../../types";
+import type { Emoji } from "@/types";
 import MessageActions from "./MessageActions";
-import { copyToClipboard } from "../../utils/copyToClipboard";
+import { copyToClipboard } from "@/utils/copyToClipboard";
 import toast from "react-hot-toast";
 import { useRef } from "react";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface MessageOptionsProps {
   messageText: string;

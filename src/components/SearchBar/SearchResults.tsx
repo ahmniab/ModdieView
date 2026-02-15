@@ -1,5 +1,5 @@
 import RC from "react";
-import type { YoutubeVideo } from "../../types/YoutubeVideo";
+import type { YoutubeVideo } from "@/types/YoutubeVideo";
 import SearchItem from "./SearchItem";
 
 type SearchResultsProps = {
