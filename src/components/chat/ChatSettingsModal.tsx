@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { HiOutlineX } from "react-icons/hi";
-import { useClickOutside } from "../../hooks/useClickOutside";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface ChatSettingsModalProps {
     onCloseChat: () => void;

@@ -1,9 +1,9 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { CreateRoomModal, VideoPlayer, ChatPanel, RoomHeader } from "../components/room";
+import { CreateRoomModal, VideoPlayer, ChatPanel, RoomHeader } from "@/components/room";
 import { IoChatboxEllipses } from "react-icons/io5";
-import type { Message } from "../types";
+import type { Message } from "@/types";
 
 const CreateRoomPage = () => {
   const [chatWidth, setChatWidth] = useState(320);
@@ -15,6 +15,8 @@ const CreateRoomPage = () => {
   const { socket, room, joinRoom } = useRoom();
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
+  const [userName, setUserName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
+  const videoId = "InalcSwrMTA";
 
   useEffect(() => {
     if (roomId) {
@@ -26,7 +28,7 @@ const CreateRoomPage = () => {
       console.warn("Socket not initialized yet"); 
       return;
     }
-    socket.on("CMD:usersUpdate", (updatedUsers) => {
+    socket.on("CMD:usersUpdate", (updatedUsers: any[]) => {
       console.log("Received users update:", updatedUsers);
     });
     socket.emit("CMD:name", "ahmed nabil");
@@ -50,14 +52,15 @@ const CreateRoomPage = () => {
       window.removeEventListener("mouseup", stopDragging);
     };
   }, [onDrag]);
-
+  
   return (
     <div className="h-screen flex flex-col bg-black text-white">
       <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
         <RoomHeader />
 
         <div className="relative flex flex-1 min-h-0 overflow-hidden">
-          <VideoPlayer />
+          <VideoPlayer videoId={videoId} userName={userName} 
+          key={showModal ? "loading" : "active"} />
 
 
           {showChat ? (
@@ -73,6 +76,7 @@ const CreateRoomPage = () => {
                 messages={messages}
                 setMessages={setMessages}
                 onCloseChat={() => setShowChat(false)}
+                userName={userName}
                 />
             </>
           ) :  (
@@ -89,8 +93,12 @@ const CreateRoomPage = () => {
         </div>
       </div>
       {showModal && (
-      <CreateRoomModal onConfirm={() => setShowModal(false)} roomLink={`https://moddieview.com/room/${roomId}`} />
-    )}
+        <CreateRoomModal onConfirm={() => {
+          setShowModal(false);
+          const name = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
+          setUserName(name);
+        }} roomLink={`https://moddieview.com/room/${roomId}`} />
+      )}
     </div>
   );
 };

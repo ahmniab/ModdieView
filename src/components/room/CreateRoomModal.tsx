@@ -1,6 +1,6 @@
 import { MdOutlineContentCopy } from "react-icons/md";
 import { copyToClipboard } from "../../utils/copyToClipboard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import roomLogo from "../../assets/roomLogo.png";
 import { toast } from "react-hot-toast";
 
@@ -18,12 +18,19 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
             setName(savedName);
         }
     }, []);
+
+
+    const nameRef = useRef<HTMLInputElement>(null);
+    const savedName = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
+
     const handleJoin = () => {
-        const finalName = name.trim() || "Anonymous Moddie";
+        const finalName = nameRef.current?.value.trim() || "Anonymous Moddie";
         localStorage.setItem("moddieview:name", finalName);
         onConfirm();
+        console.log("Joined with name:", finalName);
+        console.log(localStorage.getItem("moddieview:name"));
     };
-
+    
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
             <div className="bg-gray-800 rounded-xl p-6 w-[500px]">
@@ -64,12 +71,12 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
                         Pick your name:
                     </label>
                     <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    autoFocus
-                    placeholder="Anonymous Moddie"
-                    className="w-full px-4 py-2 rounded-sm text-black focus:outline-none bg-gray-300"
+                        type="text"
+                        ref={nameRef}
+                        defaultValue={savedName}
+                        autoFocus
+                        placeholder="Anonymous Moddie"
+                        className="w-full px-4 py-2 rounded-sm text-black focus:outline-none bg-gray-300"
                     />
                 </div>
 

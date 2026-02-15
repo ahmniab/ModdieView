@@ -1,8 +1,7 @@
 import MessageOptions from "./MessageOptions";
-import type { Message } from "../../types";
-import type { Emoji } from "../../types";
+import type { Message, Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
-import { formatTime } from "../../utils/formatTime";
+import { formatTime } from "@/utils/formatTime";
 import { useRef } from "react";
 
 interface MessageItemProps {
