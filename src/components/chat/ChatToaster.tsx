@@ -4,6 +4,7 @@ import favicon from "../../../public/favicon.ico";
 const ChatToaster = () => {
   return (
     <Toaster
+      toasterId="chat-toaster"
       toastOptions={{
         duration: 1500,
         icon: <img src={favicon} alt="ModdieView icon" width="18" height="18" />,

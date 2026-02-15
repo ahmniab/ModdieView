@@ -50,7 +50,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
           <div className="flex flex-col text-sm bg-black/20 px-2 py-1 rounded mb-1 border-l-4 border-white">
             <div className="flex items-center">
               <BsFillReplyAllFill size={17} className="inline mr-2" />
-              <div className="font-semibold">{message.senderName}</div>
+              <div className="font-semibold">{message.isOwn ? "You" : message.senderName}</div>
             </div>
             <div className="truncate">
               {message.replyTo.text}

@@ -72,9 +72,7 @@ const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, o
 
             <MessageActions
             onCopy={async () => { const success = await copyToClipboard(messageText);
-              if (success) {
-                toast.success("Copied");
-              }
+              if (success) {toast.success("Copied", {toasterId: "chat-toaster"});};
               onClose();
             }}
             onReply={() => {

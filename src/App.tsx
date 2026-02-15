@@ -1,12 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import SignUpPage from "./pages/SignUpPage";
-import CreateRoomPage from "./pages/CreateRoomPage";
+import { HomePage, LoginPage, SignUpPage, CreateRoomPage } from "./pages";
+import GlobalToaster from "./components/GlobalToaster";
 
 const App: React.FC = () => {
   return (
     <>
+      <GlobalToaster />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
