@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, use } from "react";
 import { VideoPlayer, ChatPanel, RoomHeader } from "../components/room";
 import { IoChatboxEllipses } from "react-icons/io5";
 import type { Message } from "../types";
-
+import { useRoom } from "../contexts/RoomContext";
+import { useParams } from "react-router-dom";
 
 const CreateRoomPage = () => {
   const [chatWidth, setChatWidth] = useState(320);
@@ -11,6 +12,24 @@ const CreateRoomPage = () => {
   const stopDragging = () => setIsDragging(false);
   const [showChat, setShowChat] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
+  const { socket, room, joinRoom } = useRoom();
+  const { roomId } = useParams<{ roomId: string }>();
+
+  useEffect(() => {
+    if (roomId) {
+      joinRoom(roomId);
+    }
+  }, []);
+  useEffect(() => {
+    if (!socket) {
+      console.warn("Socket not initialized yet"); 
+      return;
+    }
+    socket.on("CMD:usersUpdate", (updatedUsers) => {
+      console.log("Received users update:", updatedUsers);
+    });
+    socket.emit("CMD:name", "ahmed nabil");
+  }, [room, socket]);
 
   const onDrag = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
