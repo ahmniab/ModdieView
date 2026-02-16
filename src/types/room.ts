@@ -1,6 +1,7 @@
+import type { VimeoVideo } from "./VimeoVideo";
 import { type YoutubeVideo } from "./YoutubeVideo";
 
-export type Video = { url: string; } | YoutubeVideo 
+export type Video = { url: string; } | YoutubeVideo | VimeoVideo;
 
 export type VideoPlaylist = {
   videos: Video[];
