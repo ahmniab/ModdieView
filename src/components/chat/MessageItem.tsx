@@ -17,9 +17,10 @@ interface MessageItemProps {
 
 const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply, chatHeaderHeight }: MessageItemProps) => {  
   const messageRef = useRef<HTMLDivElement>(null);
-  
+  const reactionsCount = Object.keys(message.reactions).length;
+
   return (
-    <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${message.reactions.length > 0 ? "mb-7" : "mb-2"}`}>
+    <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${reactionsCount > 0 ? "mb-7" : "mb-2"}`}>
 
       <div ref={messageRef}
         className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
@@ -74,7 +75,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
             onReact={(emoji) => {
               onToggleReaction && onToggleReaction(message.id, emoji);
             }}
-            selectedEmoji={message.reactions[0] ?? null}
+            selectedEmoji={Object.values(message.reactions)[0] ?? null}
             isOwn={message.isOwn}
             messageText={message.text}
             onClose={onClose}
@@ -82,13 +83,13 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
           />
         )}
 
-        {message.reactions.length > 0 && (
+        {reactionsCount > 0 && (
           <div
             className={`absolute -bottom-5 flex gap-1 cursor-pointer ${
               message.isOwn ? "right-0" : "left-0"
             }`}
           >
-            {message.reactions.map((r, i) => (
+            {Object.values(message.reactions).map((r, i) => (
               <span
                 key={i}
                 className="bg-black/30 px-2 py-0.5 rounded-full text-sm whitespace-nowrap"

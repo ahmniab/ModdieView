@@ -2,7 +2,7 @@ import type { Emoji } from "./emoji";
 export interface Message {
   id: string;
   text: string;
-  reactions: Emoji[];
+  reactions: Record<string, Emoji>;
   isOwn: boolean;
   senderName?: string;
   replyTo?: {
