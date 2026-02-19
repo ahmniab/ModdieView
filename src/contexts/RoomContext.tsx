@@ -45,7 +45,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             setChatMsgs(prev => [...prev, {
                 id: ioMsg.id!,
                 text: ioMsg.text,
-                reactions: [],
+                reactions: {},
                 isOwn: ioMsg.senderId === newSocket.id,
                 senderName: room?.users[ioMsg.senderId]?.name ?? "Unknown",
                 replyTo: ioMsg.replyTo ,
@@ -57,9 +57,13 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         newSocket.on(IoEvents.RESIEVE_CHAT_REACT, (reaction: ChatReaction) => {
             setChatMsgs(prev => prev.map(msg => {
                 if (msg.id === reaction.messageId) {
+                    msg.reactions
                     return {
                         ...msg,
-                        reactions: [...msg.reactions, reaction.reaction]
+                        reactions: {
+                            ...msg.reactions,
+                            [reaction.senderId]: reaction.reaction
+                        }
                     };
                 }
                 return msg;
