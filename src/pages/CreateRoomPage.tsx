@@ -17,7 +17,7 @@ const CreateRoomPage = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
   const [userName, setUserName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
-  const videoId = "InalcSwrMTA";
+  const video = "https://m.youtube.com/watch?v=h4qI69TdsE";
 
   useEffect(() => {
     if (roomId) {
@@ -60,8 +60,7 @@ const CreateRoomPage = () => {
         <RoomHeader />
 
         <div className="relative flex flex-1 min-h-0 overflow-hidden">
-          <VideoPlayer videoId={videoId} userName={userName} 
-          key={showModal ? "loading" : "active"} />
+          <VideoPlayer video={video} userName={userName} key={video} />
 
 
           {showChat ? (
