@@ -7,3 +7,9 @@ export const EMOJIS = [
 export type QuickEmoji = typeof EMOJIS[number]["value"];
 export type Emoji = QuickEmoji | string;
 export type EmojiItem = typeof EMOJIS[number];
+export interface ChatReaction {
+  messageId: string;
+  reaction: string;
+  senderId: string;
+  reactedAt: number;
+}

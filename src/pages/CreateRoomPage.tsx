@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { CreateRoomModal, VideoPlayer, ChatPanel, RoomHeader } from "@/components/room";
 import { IoChatboxEllipses } from "react-icons/io5";
-import type { Message } from "@/types";
+import type { ChatReaction } from "@/types";
+import useChat from "@/hooks/useChat";
 
 const CreateRoomPage = () => {
   const [chatWidth, setChatWidth] = useState(320);
@@ -11,8 +12,8 @@ const CreateRoomPage = () => {
   const startDragging = () => setIsDragging(true);
   const stopDragging = () => setIsDragging(false);
   const [showChat, setShowChat] = useState(true);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const { socket, room, joinRoom } = useRoom();
+  const { socket, room, joinRoom} = useRoom();
+  const { sendMessage, sendReaction, chatMsgs } = useChat();
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
   const [userName, setUserName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
@@ -71,11 +72,21 @@ const CreateRoomPage = () => {
                 />
 
                 <ChatPanel
-                width={chatWidth}
-                messages={messages}
-                setMessages={setMessages}
-                onCloseChat={() => setShowChat(false)}
-                userName={userName}
+                  width={chatWidth}
+                  messages={chatMsgs ?? []}
+                  AddMessage={(newMsg) => {
+                    sendMessage(newMsg);
+                  }}
+                  onAddReaction={(id:string, emoji:string) => {
+                    sendReaction({ 
+                      messageId: id, 
+                      reaction: emoji,
+                      senderId: socket?.id,
+                      reactedAt: Date.now()
+                    } as ChatReaction);
+                  }}
+                  onCloseChat={() => setShowChat(false)}
+                  userId={socket?.id ?? ""}
                 />
             </>
           ) :  (
