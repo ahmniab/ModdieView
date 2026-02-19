@@ -2,51 +2,49 @@ import { useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import type { Message, Emoji } from "@/types";
+import type { Message, IoChatMessage } from "@/types";
 import ChatToaster from "./ChatToaster";
 import ChatSettingsModal from "./ChatSettingsModal";
 
 interface ChatPanelProps {
   width: number;
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  AddMessage: (newMsg: IoChatMessage) => void;
+  onAddReaction: (messageId: string, emoji: string) => void;
   onCloseChat: () => void;
-  userName: string;
+  userId: string;
+  chatMsgs?: Message[];
 }
 
-const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: ChatPanelProps) => {
+const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, userId }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
-    setMessages((prev) => [...prev, 
-      {
-        id: crypto.randomUUID(),
+    AddMessage({
+        id: undefined,
         text,
-        reactions: [],
-        isOwn: true,
-        senderName: userName,
-        replyTo: replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }
-        : undefined,
+        senderId: userId,
+        replyTo: undefined, /* replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }: undefined,*/
         sentAt: Date.now(),
       }
-    ]);
+    );
     setReplyTo(null);
   };
 
-  const toggleReaction = (id: string, emoji: Emoji) => {
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? {
-              ...m,
-              reactions: m.reactions[0] === emoji ? [] : [emoji],
-            }
-          : m
-      )
-    );
-  };
+  // const toggleReaction = (id: string, emoji: Emoji) => {
+  //   setMessages((prev) =>
+  //     prev.map((m) =>
+  //       m.id === id
+  //         ? {
+  //             ...m,
+  //             reactions: m.reactions[0] === emoji ? [] : [emoji],
+  //           }
+  //         : m
+  //     )
+  //   );
+  // };
 
 
   return (
@@ -67,7 +65,13 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: Chat
         </button>
       </div>
 
-      <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} chatHeaderHeight={chatHeaderHeight} />
+      <MessageList messages={messages} 
+        onToggleReaction={(id: string, emoji: string) => { 
+          onAddReaction(id, emoji);
+        }} 
+        onReply={setReplyTo} 
+        chatHeaderHeight={chatHeaderHeight} 
+      />
       <MessageInput onSend={handleSendMessage} replyTo={replyTo} onCancelReply={() => setReplyTo(null)}/>
       <ChatToaster />
 

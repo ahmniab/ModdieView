@@ -4,7 +4,7 @@ import { useEffect, useRef ,useState } from "react";
 
 interface MessageListProps {
   messages: Message[];
-  onToggleReaction: (id: string, emoji: Emoji) => void;
+  onToggleReaction?: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
   chatHeaderHeight: number;
 }

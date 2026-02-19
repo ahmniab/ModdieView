@@ -9,7 +9,7 @@ interface MessageItemProps {
   isActive: boolean;
   onOpen: () => void;
   onClose: () => void;
-  onToggleReaction: (id: string, emoji: Emoji) => void;
+  onToggleReaction?: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
   chatHeaderHeight: number;
 }
@@ -72,7 +72,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
             anchorRef={messageRef}
             chatHeaderHeight={chatHeaderHeight}
             onReact={(emoji) => {
-              onToggleReaction(message.id, emoji);
+              onToggleReaction && onToggleReaction(message.id, emoji);
             }}
             selectedEmoji={message.reactions[0] ?? null}
             isOwn={message.isOwn}
@@ -94,8 +94,8 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
                 className="bg-black/30 px-2 py-0.5 rounded-full text-sm whitespace-nowrap"
                 onMouseDown={(e) => e.stopPropagation()}
                 onClick={(e) => {
-                  // e.stopPropagation();
-                  onToggleReaction(message.id, r);
+                  e.stopPropagation();
+                  onToggleReaction && onToggleReaction(message.id, r);
                   // onClose();
                 }}
               >

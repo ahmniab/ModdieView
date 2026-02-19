@@ -11,3 +11,14 @@ export interface Message {
   };
   sentAt: number;
 }
+
+export interface IoChatMessage {
+  id: string | undefined;
+  text: string;
+  senderId: string;
+  replyTo?: {
+    id: string;
+    text: string;
+  };
+  sentAt: number;
+}
