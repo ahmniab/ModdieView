@@ -9,7 +9,7 @@ interface Props {
   roomLink: string;
 }
 
-const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
+const RoomModal = ({ onConfirm, roomLink }: Props) => {
     // const [requireApproval, setRequireApproval] = useState(false);
     const [name, setName] = useState("");
     useEffect(() => {
@@ -121,4 +121,4 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
     );
 };
 
-export default CreateRoomModal;
+export default RoomModal;
