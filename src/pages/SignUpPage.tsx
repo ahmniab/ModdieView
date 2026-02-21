@@ -21,15 +21,13 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <div className="w-full max-w-md bg-gray-900 rounded-2xl shadow-xl p-8 border-l-4 border-purple-300">
+    <div className="h-full min-h-screen flex items-center justify-center bg-black md:px-4 overflow-hidden">
+      <div className="w-full  min-h-screen sm:min-h-[100px] sm:max-w-md bg-gray-900 sm:rounded-2xl shadow-xl px-8 py-12 sm:p-8 sm:border-l-4 border-purple-300">
 
-        {/* Title */}
         <h2 className="text-2xl font-bold text-white text-center mb-6">
           Create your account
         </h2>
 
-        {/* Name */}
         <div className="mb-4">
           <label className="block text-sm text-gray-300 mb-1">
             Full Name
@@ -40,6 +38,7 @@ const SignUpPage: React.FC = () => {
   <input
     type="text"
     placeholder="Your name"
+    autoFocus
     className="
       w-full pl-10 pr-4 py-3 rounded-lg
       bg-gray-800 text-white
@@ -52,7 +51,6 @@ const SignUpPage: React.FC = () => {
   </div>
   </div>
 
-        {/* Email */}
         <div className="mb-4">
           <label className="block text-sm text-gray-300 mb-1">
             Email
@@ -75,7 +73,6 @@ const SignUpPage: React.FC = () => {
   </div>
   </div>
 
-        {/* Password */}
         <div className="mb-4">
           <label className="block text-sm text-gray-300 mb-1">
             Password
@@ -113,7 +110,6 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Confirm Password */}
         <div className="mb-6">
           <label className="block text-sm text-gray-300 mb-1">
             Confirm Password
@@ -151,14 +147,12 @@ const SignUpPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Sign Up Button */}
         <button
           className="w-full py-3 rounded-lg bg-purple-700 text-white font-semibold hover:bg-purple-600 transition mb-4 cursor-pointer"
         >
           Sign Up
         </button>
 
-        {/* Footer */}
         <p className="text-gray-300 text-sm text-center">
           Already have an account?{" "}
           <Link to="/login">
