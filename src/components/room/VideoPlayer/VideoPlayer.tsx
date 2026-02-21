@@ -1,5 +1,5 @@
-import { default as YouTubePlayer } from "./YouTubePlayer";
-import { extractVideoUrl } from "@/utils";
+import { default as YouTubePlayer } from "../VideoPlayer/YouTubePlayer";
+import { extractVideoUrl, getYouTubeErrorMessage } from "@/utils";
 import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";

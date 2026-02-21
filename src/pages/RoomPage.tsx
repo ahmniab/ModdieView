@@ -1,21 +1,25 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
-import { RoomHeader } from "@/components/room";
-import type { Message } from "@/types";
+import { RoomModal, RoomHeader } from "@/components/room";
 import MobileLayout from "../components/room/MobileLayout/MobileLayout";
-import RoomModal from "@/components/room/RoomModal";
-import DesktopLayout from "@/components/room/DesktopLayout/DesktopLayout";
+import DesktopLayout from "../components/room/DesktopLayout/DesktopLayout";
+import useChat from "@/hooks/useChat";
 
 const RoomPage = () => {
   const [chatWidth, setChatWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
   const stopDragging = () => setIsDragging(false);
-  const [messages, setMessages] = useState<Message[]>([]);
   const { socket, room, joinRoom } = useRoom();
+  const { 
+    chatMsgs: messages, 
+    userId, 
+    userName: Name, 
+    sendMessage, 
+    sendReaction 
+  } = useChat();
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
-  const [userName, setUserName] = useState(localStorage.getItem("moddieview:name") || "Anonymous Moddie");
   const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
   const video = "https://youtu.be/UUBf8bSGq54?si=5wGMO4Hou3klUJMv";
 
@@ -74,12 +78,12 @@ useEffect(() => {
           {isBelowMd? (
             <MobileLayout
               video={video}
-              userName={userName}
-              messages={messages}
-              setMessages={setMessages}
+              userName={userId}
+              messages={messages || []}
+              addMessage={sendMessage}
             />
            ) : (
-            <DesktopLayout video={video} userName={userName} messages={messages} setMessages={setMessages} />)}
+            <DesktopLayout video={video} userName={userId} />)}
 
          </div>
       </div>

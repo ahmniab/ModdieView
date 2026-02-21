@@ -2,51 +2,55 @@ import { useEffect, useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import type { Message, Emoji } from "@/types";
+import type { Message, IoChatMessage, ChatReaction } from "@/types";
 import ChatToaster from "./ChatToaster";
 import ChatSettingsModal from "./ChatSettingsModal";
 
 interface ChatPanelProps {
   width: number;
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  AddMessage: (newMsg: IoChatMessage) => void;
+  onAddReaction: (reaction: ChatReaction) => void;
   onCloseChat: () => void;
-  userName: string;
-  isBelowMd?: boolean;
+  userId: string;
+  chatMsgs?: Message[];
+  isBelowMd: boolean;
 }
 
-const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName, isBelowMd }: ChatPanelProps) => {
+const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, userId, isBelowMd }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  
+  const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
-    setMessages((prev) => [...prev, 
-      {
-        id: crypto.randomUUID(),
+    if (typeof AddMessage !== "function") {
+      console.error("AddMessage is a", typeof AddMessage);
+      console.error("AddMessage is not a function:", AddMessage);
+      return;
+    }
+    AddMessage({
+        id: undefined,
         text,
-        reactions: [],
-        isOwn: true,
-        senderName: userName,
-        replyTo: replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }
-        : undefined,
+        senderId: userId,
+        replyTo: undefined, /* replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }: undefined,*/
         sentAt: Date.now(),
       }
-    ]);
+    );
     setReplyTo(null);
   };
 
-  const toggleReaction = (id: string, emoji: Emoji) => {
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === id
-          ? {
-              ...m,
-              reactions: m.reactions[0] === emoji ? [] : [emoji],
-            }
-          : m
-      )
-    );
-  };
+  // const toggleReaction = (id: string, emoji: Emoji) => {
+  //   setMessages((prev) =>
+  //     prev.map((m) =>
+  //       m.id === id
+  //         ? {
+  //             ...m,
+  //             reactions: m.reactions[0] === emoji ? [] : [emoji],
+  //           }
+  //         : m
+  //     )
+  //   );
+  // };
 
   useEffect(() => {
   if (headerRef.current) {
@@ -75,7 +79,13 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName, isBelo
         </button>
       </div>)}
 
-      <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} chatHeaderHeight={chatHeaderHeight} />
+      <MessageList messages={messages} 
+        onToggleReaction={(id: string, emoji: string) => { 
+          onAddReaction({ messageId: id, reaction: emoji, senderId: userId, reactedAt: Date.now() });
+        }} 
+        onReply={setReplyTo} 
+        chatHeaderHeight={chatHeaderHeight} 
+      />
       <MessageInput onSend={handleSendMessage} replyTo={replyTo} onCancelReply={() => setReplyTo(null)}/>
       <ChatToaster />
 
