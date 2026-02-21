@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Message } from "@/types";
+import type { ChatReaction, IoChatMessage, Message } from "@/types";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import BottomMenu from "./smallSreenMenu/BottomMenu";
 import BottomContent from "./smallSreenMenu/BottomContent";
@@ -8,16 +8,18 @@ import { FaGripLinesVertical } from "react-icons/fa";
 
 interface Props {
   video: string;
-  userName: string;
+  userId: string;
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  addMessage: (newMessage: IoChatMessage) => void;
+  addReaction: (reaction: ChatReaction) => void;
 }
 
 const MobileLayout = ({
   video,
-  userName,
+  userId,
   messages,
-  setMessages,
+  addMessage,
+  addReaction
 }: Props) => {
   const [activeTab, setActiveTab] =
     useState<"chat" | "search" | null>(null);
@@ -28,7 +30,7 @@ const MobileLayout = ({
       <div className="h-[100dvh] sm: w-full flex flex-col bg-gray-900 overflow-hidden">
 
         <div className="h-[35dvh] flex-shrink-0 mb-1">
-          <VideoPlayer video={video} userName={userName} />
+          <VideoPlayer video={video} userName={userId} />
         </div>
 
         <div className="flex-1 flex flex-col min-h-0">
@@ -37,8 +39,9 @@ const MobileLayout = ({
             <BottomContent
               activeTab={activeTab}
               messages={messages}
-              setMessages={setMessages}
-              userName={userName}
+              addMessage={addMessage}
+              addReaction={addReaction}
+              userId={userId}
               onClose={() => setActiveTab(null)}
             />
           </div>
