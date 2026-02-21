@@ -1,6 +1,6 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, use } from "react";
 import { RoomModal, RoomHeader } from "@/components/room";
 import MobileLayout from "../components/room/MobileLayout/MobileLayout";
 import DesktopLayout from "../components/room/DesktopLayout/DesktopLayout";
@@ -78,12 +78,21 @@ useEffect(() => {
           {isBelowMd? (
             <MobileLayout
               video={video}
-              userName={userId}
+              userId={userId}
               messages={messages || []}
               addMessage={sendMessage}
+              addReaction={sendReaction}
             />
            ) : (
-            <DesktopLayout video={video} userName={userId} />)}
+            <DesktopLayout 
+              video={video} 
+              userId={userId} 
+              chatMsgs={messages} 
+              sendMessage={sendMessage} 
+              sendReaction={sendReaction} 
+              userName={Name}
+            />)}
+
 
          </div>
       </div>
@@ -91,7 +100,6 @@ useEffect(() => {
         <RoomModal onConfirm={() => {
           setShowModal(false);
           const name = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
-          setUserName(name);
         }} roomLink={`https://moddieview.com/room/${roomId}`} />
       )}
     </div>
