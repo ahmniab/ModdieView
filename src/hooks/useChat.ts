@@ -1,9 +1,10 @@
+import { use } from "react";
 import { useRoom } from "../contexts/RoomContext";
 import type { IoChatMessage, ChatReaction } from "../types";
 import IoEvents from "../utils/ioEventsNames";
 
 const useChat = () => {
-    const { chatMsgs, socket } = useRoom();
+    const { chatMsgs, socket, room } = useRoom();
 
     const sendMessage = (msg: IoChatMessage) => {
         if (!socket) return;
@@ -18,7 +19,9 @@ const useChat = () => {
     return {
         chatMsgs,
         sendMessage,
-        sendReaction
+        sendReaction,
+        userId: socket?.id || "unknown",
+        userName: room?.users[socket?.id || ""]?.name || "Unknown",
     };
 }
 

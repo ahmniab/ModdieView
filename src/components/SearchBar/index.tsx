@@ -20,7 +20,7 @@ const SearchBar = () => {
     }, [search]);
 
     return (
-        <>
+        <div className="max-w-md mx-auto">
             <SearchTextBox search={search} setSearch={setSearch} />
             {shouldShowResults && <SearchResults 
                 videos={data} 
@@ -28,7 +28,7 @@ const SearchBar = () => {
                 isError={isError} 
                 onSelect={(v) => { console.log(v); setSearch(""); setShouldShowResults(false); }}
             />}
-        </>
+        </div>
     )
 }
 

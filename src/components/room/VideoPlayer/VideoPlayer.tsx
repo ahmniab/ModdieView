@@ -10,21 +10,21 @@ interface VideoPlayerProps {
   userName: string;
 }
 
-const VideoPlayer = ({ video}: VideoPlayerProps) => {
+const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const extractedVideo = extractVideoUrl(video);
   const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   return (
-    <div className="flex-1 flex items-center justify-center bg-gray-900">
-      <div className="w-[90%] h-[80%] rounded-lg bg-black border border-gray-700 overflow-hidden">
+      <div className="w-full h-full rounded-lg bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
+       border border-gray-700 overflow-hidden">
 
         { !extractedVideo || error ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
-            <div className="text-red-500 text-[50px] font-semibold flex items-center justify-center">
-              <MdErrorOutline className="inline mr-2" size={50} />Error
+            <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
+              <MdErrorOutline className="inline size-10 sm:size-14 mr-2"/>Error
             </div>
-            <div className="text-white/60 text-lg mt-4 font-medium">
+            <div className="text-white/60 text-sm sm:text-lg mt-1 sm:mt-2 md:mt-3 lg:mt-4 font-medium text-center">
               {errorMessage || "Invalid video. Please check the URL and try again." } 
             </div>
           </div>
@@ -59,8 +59,6 @@ const VideoPlayer = ({ video}: VideoPlayerProps) => {
                   />
           ))}
       </div>
-  </div>
-
   );
 
 };

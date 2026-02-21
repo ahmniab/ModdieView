@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { HomePage, LoginPage, SignUpPage, CreateRoomPage } from "./pages";
+import { HomePage, LoginPage, SignUpPage, RoomPage } from "./pages";
 import GlobalToaster from "./components/GlobalToaster";
 
 const App: React.FC = () => {
@@ -10,7 +10,7 @@ const App: React.FC = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/room/:roomId" element={<CreateRoomPage />} />
+        <Route path="/room/:roomId" element={<RoomPage />} />
       </Routes>
     </>
   );

@@ -9,8 +9,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4">
-      <div className="w-full max-w-md bg-gray-900 rounded-2xl shadow-xl p-8 border-l-4 border-purple-300">
+    <div className="h-full min-h-screen flex items-center justify-center bg-black lg:px-4 overflow-hidden">
+      <div className="w-full min-h-screen sm:min-h-[100px] sm:max-w-md bg-gray-900 sm:rounded-2xl shadow-xl px-8 py-12 sm:p-8 sm:border-l-4 border-purple-300">
 
         <h2 className="text-2xl font-bold text-white text-center mb-6">
           Sign in to your account
@@ -25,6 +25,7 @@ const LoginPage = () => {
             <input
               type="email"
               placeholder="Email"
+              autoFocus
               className="
                 w-full pl-10 pr-4 py-3 rounded-lg
                 bg-gray-800 text-white

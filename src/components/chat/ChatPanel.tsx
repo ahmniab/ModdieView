@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import type { Message, IoChatMessage } from "@/types";
+import type { Message, IoChatMessage, ChatReaction } from "@/types";
 import ChatToaster from "./ChatToaster";
 import ChatSettingsModal from "./ChatSettingsModal";
 
@@ -10,18 +10,24 @@ interface ChatPanelProps {
   width: number;
   messages: Message[];
   AddMessage: (newMsg: IoChatMessage) => void;
-  onAddReaction: (messageId: string, emoji: string) => void;
+  onAddReaction: (reaction: ChatReaction) => void;
   onCloseChat: () => void;
   userId: string;
   chatMsgs?: Message[];
+  isBelowMd: boolean;
 }
 
-const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, userId }: ChatPanelProps) => {
+const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, userId, isBelowMd }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
+  const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
+    if (typeof AddMessage !== "function") {
+      console.error("AddMessage is a", typeof AddMessage);
+      console.error("AddMessage is not a function:", AddMessage);
+      return;
+    }
     AddMessage({
         id: undefined,
         text,
@@ -46,13 +52,21 @@ const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, us
   //   );
   // };
 
+  useEffect(() => {
+  if (headerRef.current) {
+    setChatHeaderHeight(headerRef.current.offsetHeight);
+  }
+  }, []);
+
+
 
   return (
     <div
-      className="relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0"
-      style={{ width, minWidth: 280 }}
+      className={`relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0 ${isBelowMd ? "w-full min-w-0 border-3 border-gray-500" : ""}`}
+      style={!isBelowMd ? { width, minWidth: 280 } : undefined}
     >
 
+      {!isBelowMd && (
       <div ref={headerRef} className="p-3 border-b border-gray-700 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
         <button type="button" title="Chat Settings"
@@ -63,11 +77,11 @@ const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, us
         }}>
           <SlOptions />
         </button>
-      </div>
+      </div>)}
 
       <MessageList messages={messages} 
         onToggleReaction={(id: string, emoji: string) => { 
-          onAddReaction(id, emoji);
+          onAddReaction({ messageId: id, reaction: emoji, senderId: userId, reactedAt: Date.now() });
         }} 
         onReply={setReplyTo} 
         chatHeaderHeight={chatHeaderHeight} 

@@ -9,7 +9,7 @@ interface Props {
   roomLink: string;
 }
 
-const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
+const RoomModal = ({ onConfirm, roomLink }: Props) => {
     // const [requireApproval, setRequireApproval] = useState(false);
     const [name, setName] = useState("");
     useEffect(() => {
@@ -33,25 +33,33 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
     
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-            <div className="bg-gray-800 rounded-xl p-6 w-[500px]">
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleJoin();
+                }}
+                className="bg-gray-800 rounded-xl p-6 w-[88%] max-w-[500px]"
+            >
+
 
                 <div className="flex items-center mb-3">
-                    <img src={roomLogo} alt="ModdieView logo" className="w-6 h-6 object-contain mr-2"
+                    <img src={roomLogo} alt="ModdieView logo" className="w-6 h-6 object-contain mr-1"
                     />
                     <h2 className="text-xl text-yellow-500 font-semibold ">Welcome to ModdieView</h2>
                 </div>
 
-                <p className="text-gray-300 mb-6">
+                <p className="text-gray-300 mb-6 text-[16px] sm:text-[16px] md:text-[16px] lg:text-[17px]">
                 Invite others and enjoy time together.
                 </p>
 
                 <div className="flex flex-col gap-2 rounded-lg mb-4">
                     <h2 className="text-[16px]">Room Link:</h2>
                     <div className="flex w-full items-center gap-2">
-                        <span className="truncate text-[16px] text-black px-4 py-2 bg-gray-300 rounded-sm flex-1">
+                        <span className="h-10 overflow-x-auto overflow-y-hidden whitespace-nowrap text-[16px] text-black px-3 py-2 bg-gray-300 rounded-sm flex-1 sm:px-4 sm:py-2">
                             {roomLink}
                         </span>
                         <button
+                            type="button"
                             onClick={async () => {
                                 const success = await copyToClipboard(roomLink);
                                 if (success) {
@@ -76,7 +84,7 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
                         defaultValue={savedName}
                         autoFocus
                         placeholder="Anonymous Moddie"
-                        className="w-full px-4 py-2 rounded-sm text-black focus:outline-none bg-gray-300"
+                        className="w-full px-3 py-2 rounded-sm text-black focus:outline-none bg-gray-300 sm:px-4 sm:py-2"
                     />
                 </div>
 
@@ -100,7 +108,7 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
 
                 <div className="flex justify-center">
                 <button
-                    onClick={handleJoin}
+                    type="submit"
                     title="Join Room"
                     className="px-6 py-2 rounded-lg bg-purple-700 hover:bg-purple-600 cursor-pointer text-md font-semibold"
                 >
@@ -108,9 +116,9 @@ const CreateRoomModal = ({ onConfirm, roomLink }: Props) => {
                 </button>
             </div>
 
-        </div>
+        </form>
     </div>
     );
 };
 
-export default CreateRoomModal;
+export default RoomModal;
