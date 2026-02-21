@@ -1,25 +1,32 @@
 import { useState, useCallback, useEffect } from "react";
-import type { Message } from "@/types";
+import type { IoChatMessage, Message } from "@/types";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import ChatPanel from "../../chat/ChatPanel";
 import ResizeHandle from "./ResizeHandle";
 import { BsChatText } from "react-icons/bs";
+
 interface Props {
   video: string;
   userName: string;
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  chatMsgs?: Message[];
+  userId?: string;
+  sendMessage?: (msg: IoChatMessage) => void;
+  sendReaction?: (reaction: any) => void;
 }
 
 const DesktopLayout = ({
   video,
   userName,
-  messages,
-  setMessages
+  chatMsgs,
+  sendMessage,
+  sendReaction,
+  userId,
 }: Props) => {
   const [chatWidth, setChatWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
   const [showChat, setShowChat] = useState(true);
+  console.log("sendMessage is", typeof sendMessage, sendMessage);
+
 
   const onDrag = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
@@ -57,10 +64,11 @@ const DesktopLayout = ({
           <div style={{ width: chatWidth }}>
             <ChatPanel
               width={chatWidth}
-              messages={messages}
+              messages={chatMsgs || []}
               isBelowMd={false}
-              setMessages={setMessages}
-              userName={userName}
+              AddMessage={sendMessage || (() => {})}
+              onAddReaction={sendReaction || (() => {})}
+              userId={userId || "unknown"}
               onCloseChat={() => setShowChat(false)}
             />
           </div>
