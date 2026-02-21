@@ -22,8 +22,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [ roomId, setRoomId ] = useState<string>("");
     const [ socket, setSocket ] = useState<Socket | undefined>(undefined);
     const [ chatMsgs, setChatMsgs ] = useState<Message[]>([]);
-
-    let name: string = "";
+    const [name, setName] = useState<string>("");
     
     useEffect(() => {
         if (!roomId) return;
