@@ -1,20 +1,22 @@
 import ChatPanel from "@/components/chat/ChatPanel";
 import { default as SearchBar } from "@/components/SearchBar/index";
-import type { Message } from "@/types";
+import type { ChatReaction, IoChatMessage, Message } from "@/types";
 
 interface Props {
   activeTab: "chat" | "search" | null;
   messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  userName: string;
+  addMessage: (newMessage: IoChatMessage) => void;
+  addReaction: (reaction: ChatReaction) => void;
+  userId: string;
   onClose: () => void;
 }
 
 const BottomContent = ({
   activeTab,
   messages,
-  setMessages,
-  userName,
+  addMessage,
+  addReaction,
+  userId,
   onClose
 }: Props) => {
 
@@ -28,8 +30,9 @@ const BottomContent = ({
           width={window.innerWidth}
           messages={messages}
           isBelowMd
-          setMessages={setMessages}
-          userName={userName}
+          AddMessage={addMessage}
+          onAddReaction={addReaction}
+          userId={userId}
           onCloseChat={onClose}
         />
       )}
