@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SlOptions } from "react-icons/sl";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
@@ -12,12 +12,12 @@ interface ChatPanelProps {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   onCloseChat: () => void;
   userName: string;
+  isBelowMd?: boolean;
 }
 
-const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: ChatPanelProps) => {
+const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName, isBelowMd }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
-  const chatHeaderHeight = headerRef.current?.offsetHeight ?? 0;
-  const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [showSettings, setShowSettings] = useState(false);
   const handleSendMessage = (text: string) => {
     setMessages((prev) => [...prev, 
@@ -48,13 +48,21 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: Chat
     );
   };
 
+  useEffect(() => {
+  if (headerRef.current) {
+    setChatHeaderHeight(headerRef.current.offsetHeight);
+  }
+  }, []);
+
+
 
   return (
     <div
-      className="relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0"
-      style={{ width, minWidth: 280 }}
+      className={`relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0 ${isBelowMd ? "w-full min-w-0 border-3 border-gray-500" : ""}`}
+      style={!isBelowMd ? { width, minWidth: 280 } : undefined}
     >
 
+      {!isBelowMd && (
       <div ref={headerRef} className="p-3 border-b border-gray-700 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
         <button type="button" title="Chat Settings"
@@ -65,7 +73,7 @@ const ChatPanel = ({ width, messages, setMessages, onCloseChat, userName }: Chat
         }}>
           <SlOptions />
         </button>
-      </div>
+      </div>)}
 
       <MessageList messages={messages} onToggleReaction={toggleReaction} onReply={setReplyTo} chatHeaderHeight={chatHeaderHeight} />
       <MessageInput onSend={handleSendMessage} replyTo={replyTo} onCancelReply={() => setReplyTo(null)}/>
