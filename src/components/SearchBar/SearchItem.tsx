@@ -4,6 +4,7 @@ import RC from "react";
 const SearchItem: RC.FC<{video: YoutubeVideo; onClick: (video: YoutubeVideo) => void}> = ({video, onClick}) => {
     return (
         <div className="flex gap-4 mb-4 cursor-pointer"
+            title={video.title}
             onClick={(e) => {
                 onClick(video);
             }}
