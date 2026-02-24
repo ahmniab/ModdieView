@@ -26,6 +26,7 @@ const DesktopLayout = ({
   const [isDragging, setIsDragging] = useState(false);
   const [showChat, setShowChat] = useState(true);
   console.log("sendMessage is", typeof sendMessage, sendMessage);
+  console.log(`${userName}`)
 
 
   const onDrag = useCallback((e: MouseEvent) => {
@@ -49,9 +50,9 @@ const DesktopLayout = ({
   }, [onDrag]);
 
   return (
-    <div className="flex flex-1 overflow-hidden bg-gray-900">
+    <div className="flex flex-1 bg-gray-900 overflow-hidden">
 
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center min-w-0">
         <VideoPlayer
           video={video}
           userName={userName}
@@ -61,9 +62,9 @@ const DesktopLayout = ({
       {showChat? (
         <>
           <ResizeHandle onStartDrag={() => setIsDragging(true)} />
-          <div style={{ width: chatWidth }}>
+          <div style={{ width: chatWidth }} className="shrink-0 min-w-[280px] box-border">
             <ChatPanel
-              width={chatWidth}
+              userName={userName}
               messages={chatMsgs || []}
               isBelowMd={false}
               AddMessage={sendMessage || (() => {})}
