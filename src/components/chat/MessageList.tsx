@@ -4,12 +4,13 @@ import { useEffect, useRef ,useState } from "react";
 
 interface MessageListProps {
   messages: Message[];
+  userName: string;
   onToggleReaction?: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
   chatHeaderHeight: number;
 }
 
-const MessageList = ({ messages, onToggleReaction, onReply, chatHeaderHeight = 0 }: MessageListProps) => {
+const MessageList = ({ messages, onToggleReaction, onReply, chatHeaderHeight = 0, userName }: MessageListProps) => {
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
   const openMessage = (id: string) => setActiveMessageId(id);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -32,7 +33,7 @@ const MessageList = ({ messages, onToggleReaction, onReply, chatHeaderHeight = 0
   return (
     <div className="flex-1 pt-4 pr-4 pl-4 overflow-y-auto space-y-4" ref={containerRef}>
       {messages.map((msg) => (
-        <MessageItem key={msg.id} message={msg} 
+        <MessageItem key={msg.id} message={msg} userName={userName}
           isActive={activeMessageId === msg.id}
           onOpen={() => openMessage(msg.id)}
           onClose={() => setActiveMessageId(null)}
