@@ -1,4 +1,3 @@
-import { use } from "react";
 import { useRoom } from "../contexts/RoomContext";
 import type { IoChatMessage, ChatReaction } from "../types";
 import IoEvents from "../utils/ioEventsNames";
