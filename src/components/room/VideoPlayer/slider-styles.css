@@ -1,0 +1,11 @@
+:root {
+    --slider-bg: #9d1cff;
+}
+
+.inner-seek-block.connect {
+  background-color: var(--slider-bg) !important;
+}
+
+.thumb.active > .handler{
+  background-color: var(--slider-bg) !important;
+}
