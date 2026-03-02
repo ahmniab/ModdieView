@@ -1,8 +1,10 @@
 import { default as YouTubePlayer } from "../VideoPlayer/YouTubePlayer";
 import { extractVideoUrl, getYouTubeErrorMessage } from "@/utils";
 import { MdErrorOutline } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";
+import UrlVideoPlayer from "./UrlVideoPlayer";
+import useRoomVideo from "@/hooks/useRoomVideo";
 
   
 interface VideoPlayerProps {
@@ -11,9 +13,20 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
-  const extractedVideo = extractVideoUrl(video);
+  const extractedVideo = extractVideoUrl("https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/How_to_make_video.webm/How_to_make_video.webm.1080p.vp9.webm");
   const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { broadcastVideoChange } = useRoomVideo();
+
+  useEffect(() => {
+    broadcastVideoChange({
+      isPlaying: false,
+      url: extractedVideo?.url || "null",
+      lastTimePlayed : new Date().getTime(),
+      videoTime: 0,
+      playbackRate: 1,
+    });
+  }, []);
 
   return (
       <div className="w-full h-full rounded-lg bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
@@ -47,15 +60,10 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
                   }} />
                 ))
                 : (
-                  <video
+                  <UrlVideoPlayer 
                     src={extractedVideo.url}
-                    controls
-                    onError={(e) => {
-                      const mediaError = (e.currentTarget as HTMLVideoElement).error;
-                      setErrorMessage(mediaError?.message || "Unknown error occurred");
-                      setError(true);
-                    }}
-                    className="w-full h-full cursor-pointer"
+                    setErrorMessage={setErrorMessage}
+                    setError={setError}
                   />
           ))}
       </div>
