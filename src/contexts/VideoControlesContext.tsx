@@ -4,21 +4,27 @@ import React from "react";
 
 type videoCallbacksType = {
     onVideoChange: (newVideo: Video | null) => void;
-    onSeek: (newVideo: Video | null) => void;
+    onSeek: (time: number) => void;
     onPlay: () => void;
     onPause: () => void;
     onVideoPlaybackRateChange: (newVideo: Video | null) => void;
 }
 type VideoControlesContextType = {
+    playing: boolean;
+    setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+    currentTime: number;
+    setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
+    bufferedTime: number;
+    setBufferedTime: React.Dispatch<React.SetStateAction<number>>;
     callbacks: {
         onVideoChange: (newVideo: Video | null) => void;
-        onSeek: (newVideo: Video | null) => void;
+        onSeek: (time: number) => void;
         onPlay: () => void;
         onPause: () => void;
         onVideoPlaybackRateChange: (newVideo: Video | null) => void;
     };
     onVideoChange: (callback: (newVideo: Video | null) => void) => void;
-    onSeek: (callback: (newVideo: Video | null) => void) => void;
+    onSeek: (callback: (time: number) => void) => void;
     onPlay: (callback: () => void) => void;
     onPause: (callback: () => void) => void;
     onVideoPlaybackRateChange: (callback: (newVideo: Video | null) => void) => void;
@@ -27,6 +33,9 @@ type VideoControlesContextType = {
 const VideoControlesContext = createContext<VideoControlesContextType | null>(null);
 
 const VideoControlesContextProvider = ({ children }: { children: React.ReactNode }) => {
+    const [playing, setPlaying] = React.useState<boolean>(false);
+    const [currentTime, setCurrentTime] = React.useState<number>(0);
+    const [bufferedTime, setBufferedTime] = React.useState<number>(0);
     const videoCallbacks =  useRef<videoCallbacksType>({
         onVideoChange: () => {},
         onSeek: () => {},
@@ -39,7 +48,7 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
         videoCallbacks.current.onVideoChange = callback;
     }
 
-    const handleSeek = (callback: (newVideo: Video | null) => void) => {
+    const handleSeek = (callback: (time: number) => void) => {
         videoCallbacks.current.onSeek = callback;
     }
 
@@ -56,7 +65,13 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
     }
 
     const videoContextValue = {
+        playing,
+        bufferedTime,
+        currentTime,
         callbacks: videoCallbacks.current,
+        setPlaying,
+        setCurrentTime,
+        setBufferedTime,
         onVideoChange: handleVideoChange,
         onSeek: handleSeek,
         onPlay: handlePlay,
