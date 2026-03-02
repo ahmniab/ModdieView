@@ -1,4 +1,4 @@
-const IoEvents = {
+const IoEvents = Object.freeze({
     CONNECT: "connect",
     DISCONNECT: "disconnect",
     GET_ROOM_DATA: "CMD:getRoomData",
@@ -13,5 +13,6 @@ const IoEvents = {
     CONTENT_VIDEO_SEEK: "CONTENT:video.seek",
     CONTENT_VIDEO_PLAYBACK_RATE_CHANGE: "CONTENT:video.playbackRateChange",
     CONTENT_VIDEO_CHANGE_PLAYBACK_RATE: "CONTENT:video.changePlaybackRate",
-};
+    INITIALIZE_VIDEO: "CONTENT:video.initialize",
+});
 export default IoEvents;
