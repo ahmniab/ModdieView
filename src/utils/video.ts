@@ -59,3 +59,9 @@ export const extractVideoUrl = (input: string): Video | null => {
 //   }
 //   return null;
 }; 
+
+export const calculateVideoTime = (currentTime: number, lastTimePlayed: number) => {
+    const now = new Date().getTime();
+    const elapsed = (now - lastTimePlayed) / 1000;
+    return currentTime + elapsed;
+}

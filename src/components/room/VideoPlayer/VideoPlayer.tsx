@@ -3,6 +3,8 @@ import { extractVideoUrl } from "@/utils";
 import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";
+import UrlVideoPlayer from "./UrlVideoPlayer";
+import VideoToolBar from "./VideoToolBar";
 
   
 interface VideoPlayerProps {
@@ -12,14 +14,16 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const extractedVideo = extractVideoUrl(video);
+ const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
   const hasError = errorVideoId === video;  
 
-  return (
-      <div className="w-full h-full rounded-lg bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
-       border border-gray-700 overflow-hidden">
 
+  return (
+      <div className="w-full h-full border border-gray-700 relative p-1">
+
+        <div className="lg:h-[90%]">
         { !extractedVideo || hasError ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
             <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
@@ -48,17 +52,14 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
                   }} />
                 ))
                 : (
-                  <video
+                  <UrlVideoPlayer 
                     src={extractedVideo.url}
-                    controls
-                    onError={(e) => {
-                      const mediaError = (e.currentTarget as HTMLVideoElement).error;
-                      setErrorMessage(mediaError?.message || "Unknown error occurred");
-                      setErrorVideoId(video);
-                    }}
-                    className="w-full h-full cursor-pointer"
+                    setErrorMessage={setErrorMessage}
+                    setError={setError}
                   />
           ))}
+          </div>
+          <VideoToolBar />
       </div>
   );
 

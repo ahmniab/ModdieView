@@ -1,7 +1,16 @@
 import type { VimeoVideo } from "./VimeoVideo";
 import { type YoutubeVideo } from "./YoutubeVideo";
+import { type NormalVideo } from "./NormalVideo";
 
-export type Video = { url: string; } | YoutubeVideo | VimeoVideo;
+export type PlayableVideo = {
+  url: string;
+  isPlaying: boolean;
+  lastTimePlayed : number;
+  playbackRate: number;
+  videoTime: number;
+};
+
+export type Video = (( NormalVideo | YoutubeVideo | VimeoVideo ) & PlayableVideo) | null; 
 
 export type VideoPlaylist = {
   videos: Video[];
@@ -10,7 +19,7 @@ export type VideoPlaylist = {
   videoStartTime: number;
 };
 
-export type RoomContent = VideoPlaylist | null;
+export type RoomContent = Video | null;
 
 export interface UserData {
   name: string;
