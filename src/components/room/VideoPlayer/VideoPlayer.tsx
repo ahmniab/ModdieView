@@ -4,6 +4,7 @@ import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";
 import UrlVideoPlayer from "./UrlVideoPlayer";
+import VideoToolBar from "./VideoToolBar";
 
   
 interface VideoPlayerProps {
@@ -13,6 +14,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const extractedVideo = extractVideoUrl(video);
+  // const extractedVideo = extractVideoUrl('https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/How_to_make_video.webm/How_to_make_video.webm.1080p.vp9.webm');
   const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
@@ -20,9 +22,9 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
 
 
   return (
-      <div className="w-full h-full rounded-lg bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
-       border border-gray-700 overflow-hidden">
+      <div className="w-full h-full border border-gray-700 relative p-1">
 
+        <div className="lg:h-[90%]">
         { !extractedVideo || hasError ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
             <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
@@ -57,6 +59,8 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
                     setError={setError}
                   />
           ))}
+          </div>
+          <VideoToolBar />
       </div>
   );
 
