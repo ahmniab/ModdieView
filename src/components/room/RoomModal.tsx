@@ -27,8 +27,6 @@ const RoomModal = ({ onConfirm, roomLink }: Props) => {
         const finalName = nameRef.current?.value.trim() || "Anonymous Moddie";
         localStorage.setItem("moddieview:name", finalName);
         onConfirm();
-        console.log("Joined with name:", finalName);
-        console.log(localStorage.getItem("moddieview:name"));
     };
     
     return (

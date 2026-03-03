@@ -25,7 +25,6 @@ const DesktopLayout = ({
   const [chatWidth, setChatWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
   const [showChat, setShowChat] = useState(true);
-  console.log(`${userName}`)
 
 
   const onDrag = useCallback((e: MouseEvent) => {

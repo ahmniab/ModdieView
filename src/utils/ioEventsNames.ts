@@ -4,8 +4,9 @@ const IoEvents = Object.freeze({
     ROOM_DATA: "roomData",
 
     GET_ROOM_DATA: "CMD:getRoomData",
+    SET_ROOM_NAME: "CMD:room.name",
     USERS_UPDATE: "CMD:usersUpdate",
-    SET_USER_NAME: "CMD:name",
+    SET_USER_NAME: "CMD:user.name",
 
     SEND_CHAT_MESSAGE: "CHAT:chatMessage",
     RESIEVE_CHAT_MESSAGE: "CHAT:newChatMessage",

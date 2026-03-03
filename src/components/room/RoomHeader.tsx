@@ -6,6 +6,8 @@ import SearchBar from '../SearchBar';
 import { IoLink } from "react-icons/io5";
 import { copyToClipboard  } from "@/utils";
 import { toast } from "react-hot-toast";
+import { useRoom } from "@/contexts/RoomContext";
+import { useEffect, useState } from "react";
 
 interface RoomHeaderPrpos {
     isBelowMd : boolean;
@@ -15,6 +17,18 @@ interface RoomHeaderPrpos {
 
 
 const RoomHeader = ({ isBelowMd, roomLink, onVideoChange }: RoomHeaderPrpos ) => {
+  const { name, setRoomName } = useRoom();
+  const [currentName, setCurrentName] = useState<string>('');
+
+  useEffect(() => {
+    if (name) {
+      setCurrentName(name);
+    }
+  }, [name]);
+  const handleNameChange = (newName: string) => {
+    setCurrentName(newName);
+  };
+
   return (
     <div className="relative w-full h-14 flex items-center px-3 py-4 sm:px-6 sm:py-4
      bg-gradient-to-r from-gray-900 to-purple-900 sticky top-0 z-50">
@@ -25,7 +39,18 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange }: RoomHeaderPrpos ) =>
                 <Link to='/'>
                     <img src={roomLogo} alt="ModdieView Logo" title='ModdieView' className='w-auto h-6 sm:h-8'></img>
                 </Link>
-                <input type="text" placeholder='randomRoom' title='Room name' className='w-60 text-lg text-yellow-500 font-semibold focus:outline-none p-1 sm:text-xl md:text-base lg:text-xl'></input>
+                <input 
+                    type="text" 
+                    placeholder='randomRoom' 
+                    title='Room name' 
+                    className='w-60 text-lg text-yellow-500 font-semibold 
+                               focus:outline-none p-1 sm:text-xl md:text-base lg:text-xl' 
+                    value={currentName} 
+                    onChange={(e) => handleNameChange(e.target.value)} 
+                    onBlur={() => {
+                        setRoomName(currentName);                    
+                    }}
+                />
             </div>
         </div>
 
