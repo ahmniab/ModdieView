@@ -49,9 +49,10 @@ const VideoToolBar: React.FC<VideoToolBarProps> = ({
                 /
                 <span className="text-violet-500">{formatDurationWithSeconds(videoDuration)}</span>
             </div>
-            <VideoControllerWrapper className="p-1">
+            {/* disabled for now */}
+            {/* <VideoControllerWrapper className="p-1"> 
                 <RiFullscreenFill />
-            </VideoControllerWrapper>
+            </VideoControllerWrapper> */}
         </div>
     );
 };
