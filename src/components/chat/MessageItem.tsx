@@ -3,10 +3,10 @@ import type { Message, Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { formatTime } from "@/utils/formatTime";
 import { useRef } from "react";
+import { useRoom } from "@/contexts/RoomContext";
 
 interface MessageItemProps {
   message: Message;
-  userName: string;
   isActive: boolean;
   onOpen: () => void;
   onClose: () => void;
@@ -16,9 +16,19 @@ interface MessageItemProps {
 }
 
 
-const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply, chatHeaderHeight, userName }: MessageItemProps) => {  
+const MessageItem = ({ 
+  message, 
+  isActive, 
+  onOpen, 
+  onClose, 
+  onToggleReaction, 
+  onReply, 
+  chatHeaderHeight 
+}: MessageItemProps) => {  
   const messageRef = useRef<HTMLDivElement>(null);
   const reactionsCount = Object.keys(message.reactions).length;
+  const { users } = useRoom();
+  const senderName = message.senderName || users[message?.senderId || '']?.name || "Moddie Anonymous";
 
   return (
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${reactionsCount > 0 ? "mb-7" : "mb-2"}`}>
@@ -60,7 +70,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
         )}
   
         <div className="block overflow-hidden">
-          <span className="block font-semibold whitespace-nowrap mb-1 max-w-full">{userName}</span>
+          <span className="block font-semibold whitespace-nowrap mb-1 max-w-full">{senderName}</span>
           <span className="break-words whitespace-pre-wrap mr-1 text-slate-200">
             {message.text}
             <span className="inline-block w-[45px]"></span>

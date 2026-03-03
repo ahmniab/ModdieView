@@ -16,7 +16,7 @@ interface MessageOptionsProps {
   onClose: () => void;
   onReply: () => void;
   chatHeaderHeight: number;
-  anchorRef: React.RefObject<HTMLDivElement>;
+  anchorRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const MessageOptions = ({ onReact, selectedEmoji, isOwn, messageText, onClose, onReply, chatHeaderHeight, anchorRef }: MessageOptionsProps) => {

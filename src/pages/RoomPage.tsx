@@ -8,7 +8,13 @@ import useChat from "@/hooks/useChat";
 
 const RoomPage = () => {
   const [video, setVideo] = useState<string>("https://youtu.be/pF-qQJDoVC8?si=LQJN2c2t1-yBajFS");
-  const { socket, room, joinRoom } = useRoom();
+  const { 
+    socket, 
+    room, 
+    joinRoom, 
+    setUserName 
+  } = useRoom();
+
   const { 
     chatMsgs: messages, 
     userId, 
@@ -19,7 +25,7 @@ const RoomPage = () => {
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
   const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
-  const roomLink = `https://moddieview.com/room/${roomId}`
+  const roomLink = (window.location.origin || `https://moddieview.com/room`) + `/${roomId}`;
 
 useEffect(() => {
   const handleResize = () => {
@@ -36,16 +42,6 @@ useEffect(() => {
       joinRoom(roomId);
     }
   }, []);
-  useEffect(() => {
-    if (!socket) {
-      console.warn("Socket not initialized yet"); 
-      return;
-    }
-    socket.on("CMD:usersUpdate", (updatedUsers: any[]) => {
-      console.log("Received users update:", updatedUsers);
-    });
-    socket.emit("CMD:name", "ahmed nabil");
-  }, [room, socket]);
 
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
@@ -81,6 +77,7 @@ useEffect(() => {
         <RoomModal onConfirm={() => {
           setShowModal(false);
           const name = localStorage.getItem("moddieview:name") || "Anonymous Moddie";
+          setUserName(name);
         }} roomLink= {roomLink} />
       )}
     </div>

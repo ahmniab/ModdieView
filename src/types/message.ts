@@ -5,6 +5,7 @@ export interface Message {
   reactions: Record<string, Emoji>;
   isOwn: boolean;
   senderName?: string;
+  senderId: string;
   replyTo?: {
     id: string;
     text: string;
@@ -16,9 +17,12 @@ export interface IoChatMessage {
   id: string | undefined;
   text: string;
   senderId: string;
+  senderName?: string;
   replyTo?: {
     id: string;
     text: string;
+    senderName?: string;
+    isOwn?: boolean;
   };
   sentAt: number;
 }

@@ -9,7 +9,7 @@ import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface MessageInputProps {
   onSend: (message: string, replyTo?: { id: string; text: string, senderName: string, isOwn: boolean }) => void;
-  replyTo?: { id: string; text: string, senderName: string, isOwn: boolean } | null;
+  replyTo: { id: string; text: string, senderName: string, isOwn: boolean } | null;
   onCancelReply: () => void;
 }
 
