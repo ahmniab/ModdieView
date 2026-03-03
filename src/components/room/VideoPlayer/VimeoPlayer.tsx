@@ -7,9 +7,9 @@ interface VimeoPlayerProps {
 }
 
 const VimeoPlayer = ({ videoId, onError }: VimeoPlayerProps) => {
-    const iframeRef = useRef<HTMLIFrameElement>(new HTMLIFrameElement());
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     useVimeoPlayer(iframeRef, videoId, onError);
-    const videoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&loop=1&autopause=0&muted=0&color=ffffff&portrait=0&controls=1`;
+    const videoUrl = `https://player.vimeo.com/video/${videoId}?autoplay=0&loop=0&autopause=0&muted=0&color=ffffff&portrait=0&controls=0`;
   return (
     <iframe
       ref={iframeRef}

@@ -14,8 +14,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const extractedVideo = extractVideoUrl(video);
-  // const extractedVideo = extractVideoUrl('https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/How_to_make_video.webm/How_to_make_video.webm.1080p.vp9.webm');
-  const [ error, setError ] = useState(false);
+ const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
   const hasError = errorVideoId === video;  
