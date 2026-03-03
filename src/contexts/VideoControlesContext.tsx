@@ -16,6 +16,8 @@ type VideoControlesContextType = {
     setCurrentTime: React.Dispatch<React.SetStateAction<number>>;
     bufferedTime: number;
     setBufferedTime: React.Dispatch<React.SetStateAction<number>>;
+    videoDuration: number;
+    setVideoDuration: React.Dispatch<React.SetStateAction<number>>;
     callbacks: {
         onVideoChange: (newVideo: Video | null) => void;
         onSeek: (time: number) => void;
@@ -36,6 +38,8 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
     const [playing, setPlaying] = React.useState<boolean>(false);
     const [currentTime, setCurrentTime] = React.useState<number>(0);
     const [bufferedTime, setBufferedTime] = React.useState<number>(0);
+    const [videoDuration, setVideoDuration] = React.useState<number>(0);
+
     const videoCallbacks =  useRef<videoCallbacksType>({
         onVideoChange: () => {},
         onSeek: () => {},
@@ -68,10 +72,12 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
         playing,
         bufferedTime,
         currentTime,
+        videoDuration,
         callbacks: videoCallbacks.current,
         setPlaying,
         setCurrentTime,
         setBufferedTime,
+        setVideoDuration,
         onVideoChange: handleVideoChange,
         onSeek: handleSeek,
         onPlay: handlePlay,

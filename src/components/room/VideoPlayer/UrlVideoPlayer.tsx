@@ -10,38 +10,18 @@ interface UrlVideoPlayerProps {
 
 const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps) => {
     const playerRef = useRef<HTMLVideoElement | null>(null);
-    const [duration, setDuration] = useState<number>(0);
 
     const {
-        playing,
         currentVideo : currentContent,
-        bufferedTime,
         currentTime,
+        videoDuration,
         setBufferedTime,
         setCurrentTime,
-        broadcastVideoPause,
-        broadcastVideoPlay,
-        brodacastVideoSeek,
+        setVideoDuration,
         onPause,
         onPlay,
         onSeek,
     } = useRoomVideo();
-
-    // Handle local user actions -> broadcast to room
-    const handlePlay = () => {
-        broadcastVideoPlay();
-        console.log("Video play event broadcasted");
-    };
-    
-    const handlePause = () => {
-        broadcastVideoPause();
-        console.log("Video pause event broadcasted");
-    };
-
-    const handleSeek = (time: number) => {
-        brodacastVideoSeek(time);
-        console.log("Video seek event broadcasted:", time);
-    };
 
     // Handle remote actions -> control local video
     useEffect(() => {
@@ -53,15 +33,13 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
             setCurrentTime(video.currentTime);
             console.log("Video time update:", currentTime);
             if (!playerRef.current || currentContent === null) return;
-            if(currentTime >= duration) {
-                // broadcastVideoPause();
-                // brodacastVideoSeek(0);
+            if(currentTime >= videoDuration) {
                 playerRef.current.currentTime = 0;
             } 
         };
 
         video.onloadeddata = () => {
-            setDuration(video.duration);
+            setVideoDuration(video.duration);
             console.log("Video loaded, duration set to:", video.duration);
             video.currentTime = currentContent?.videoTime || 0;
             console.log("Video current time set to:", currentContent?.videoTime);
@@ -95,8 +73,6 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
     }, [
         playerRef, 
         playerRef.current, 
-        broadcastVideoPause, 
-        broadcastVideoPlay, 
         setCurrentTime, 
         setBufferedTime
     ]);
@@ -114,15 +90,6 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
                     setError(true);
                 }}
                 controls={false}
-            />
-            <VideoToolBar 
-                isPlaying={playing} 
-                maxTime={duration}
-                onPlay={handlePlay} 
-                onPause={handlePause} 
-                onSeek={(d) => handleSeek(d)}
-                currentTime={currentTime}
-                bufferTime={bufferedTime}
             />
         </div>
     );

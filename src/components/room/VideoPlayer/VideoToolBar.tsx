@@ -1,57 +1,57 @@
 import { FaPlay, FaPause} from "react-icons/fa";
+import { RiFullscreenFill } from "react-icons/ri";
 import VideoControllerWrapper from "./VideoControllerWrapper";
-import { IoPlayBackSharp, IoPlayForwardSharp } from "react-icons/io5";
 import { VideoSeekSlider } from 'react-video-seek-slider';
-import { useState } from "react";
 import 'react-video-seek-slider/styles.css';
 import './slider-styles.css';
+import useRoomVideo from "@/hooks/useRoomVideo";
+import { formatDurationWithSeconds } from "@/utils";
+import { useState } from "react";
 
 interface VideoToolBarProps {
-    isPlaying: boolean;
-    maxTime: number;
-    currentTime: number;
-    bufferTime: number;
-    seekAmount?: number;
-    onPlay: () => void;
-    onPause: () => void;
-    onSeek: (time: number) => void;
 }
 
 const VideoToolBar: React.FC<VideoToolBarProps> = ({ 
-    isPlaying, 
-    maxTime, 
-    currentTime, 
-    bufferTime,
-    seekAmount = 5,
-    onPlay, 
-    onPause, 
-    onSeek,
 }) => {
+    const { 
+        playing, 
+        currentTime, 
+        bufferedTime,
+        videoDuration,
+        brodacastVideoSeek, 
+        broadcastVideoPlay, 
+        broadcastVideoPause 
+    } = useRoomVideo();
+    const [nigativeTime, setNegativeTime] = useState<boolean>(false);
+
     return (
-        <div className="absolute bottom-4 flex w-full items-center justify-center flex-col p-4">
-            <div className="flex gap-20 ml-4 mr-4">
-                <VideoControllerWrapper onClick={() => onSeek(currentTime - seekAmount)}>
-                    <IoPlayBackSharp className="text-white" />
-                </VideoControllerWrapper>
-                <VideoControllerWrapper 
-                    onClick={isPlaying ? onPause : onPlay} 
-                >
-                    {isPlaying ? <FaPause /> : <FaPlay />}
-                </VideoControllerWrapper>
-                <VideoControllerWrapper onClick={() => onSeek(currentTime + seekAmount)}>
-                    <IoPlayForwardSharp className="text-white" />
-                </VideoControllerWrapper>
-            </div>
-            <div className="w-full">
+        <div className="flex w-full items-center justify-center gap-2 p-1">
+            <VideoControllerWrapper 
+                onClick={playing ? broadcastVideoPause : broadcastVideoPlay} 
+            >
+                {playing ? <FaPause /> : <FaPlay />}
+            </VideoControllerWrapper>
+            <div className="w-full mt-auto mb-auto pb-4">
                 <VideoSeekSlider
-                    max={maxTime * 1000}
+                    max={videoDuration * 1000}
                     currentTime={currentTime * 1000}
-                    onChange={(time) => onSeek(time / 1000)}
-                    bufferTime={bufferTime * 1000}
+                    onChange={(time) => brodacastVideoSeek(time / 1000)}
+                    bufferTime={bufferedTime * 1000}
                     minutesPrefix="00:"
                     secondsPrefix="00:"
                 />
             </div>
+            <div className="flex gap-1 cursor-default select-none" onClick={() => {setNegativeTime(!nigativeTime)}}>
+                {nigativeTime ? '-' : '\u00A0'} 
+                <span className="text-purple-300">
+                    { formatDurationWithSeconds(nigativeTime ? videoDuration - currentTime : currentTime)}
+                </span>
+                /
+                <span className="text-violet-500">{formatDurationWithSeconds(videoDuration)}</span>
+            </div>
+            <VideoControllerWrapper className="p-1">
+                <RiFullscreenFill />
+            </VideoControllerWrapper>
         </div>
     );
 };
