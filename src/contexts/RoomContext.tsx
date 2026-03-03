@@ -5,13 +5,16 @@ import { SERVER_URL } from "../config";
 import type { Message, IoChatMessage } from "../types";
 import React from "react";
 import IoEvents from "@/utils/ioEventsNames";
+import type { Users } from "../types";
 
 interface RoomContextValue {
     socket: Socket | undefined;
     name: string;
     roomId: string;
     room: Room | undefined;
+    users: Users;
     joinRoom: (roomId: string) => boolean;
+    setUserName: (name: string) => void;
     chatMsgs?: Message[];
 }
 
@@ -22,7 +25,9 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [ roomId, setRoomId ] = useState<string>("");
     const [ socket, setSocket ] = useState<Socket | undefined>(undefined);
     const [ chatMsgs, setChatMsgs ] = useState<Message[]>([]);
+    const [users, setUsers] = useState<Users>({});
     const [name, setName] = useState<string>("");
+    
     
     useEffect(() => {
         if (!roomId) return;
@@ -36,21 +41,32 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         });
         newSocket.on(IoEvents.ROOM_DATA, (updatedRoom) => {
             setRoom(updatedRoom);
+            setUsers(updatedRoom.users);
+        });
+
+        newSocket.on(IoEvents.USERS_UPDATE, (updatedUsers) => {
+            console.log("Received users update:", updatedUsers);
+            setUsers(updatedUsers);
         });
 
         ////////////// Chat ////////////////
         newSocket.on(IoEvents.RESIEVE_CHAT_MESSAGE, (ioMsg: IoChatMessage) => {
+            console.log("Received chat message:", ioMsg);
+            console.log("Current room state:", chatMsgs);
+            console.log("Current room users:", users);
 
             setChatMsgs(prev => [...prev, {
                 id: ioMsg.id!,
                 text: ioMsg.text,
                 reactions: {},
                 isOwn: ioMsg.senderId === newSocket.id,
-                senderName: room?.users[ioMsg.senderId]?.name ?? "Unknown",
+                senderId: ioMsg.senderId,
+                senderName: ioMsg.senderName,
                 replyTo: ioMsg.replyTo ,
                 sentAt: ioMsg.sentAt,
             }]);
             console.log("Received new chat message:", ioMsg);
+            console.log("Updated chat messages:", chatMsgs);
         });
 
         newSocket.on(IoEvents.RESIEVE_CHAT_REACT, (reaction: ChatReaction) => {
@@ -72,6 +88,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         return () => {
             newSocket.disconnect();
         };
+
     }, [roomId]);
 
 
@@ -81,11 +98,21 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         roomId,
         room,
         chatMsgs,
+        users,
         joinRoom: (roomId: string) => {
             setRoomId(roomId);
             return true;
-        }
+        },
+        setUserName: (name: string) => {
+            if (!socket) {
+                console.warn("Socket not initialized yet");
+                return;
+            }
+            socket.emit(IoEvents.SET_USER_NAME, name);
+        },
     };
+
+
 
     return (
         <RoomContext.Provider value={contextValue}>
