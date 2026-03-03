@@ -4,15 +4,24 @@ import { useDebounce } from '../../hooks/useDebounce';
 import YoutubeContext from '../../contexts/YoutubeContext';
 import SearchResults from './SearchResults';
 
-const SearchBar = () => {
+const SearchBar = ({ video } : { video : (url: string) => void}) => {
     const [search, setSearch] = useState<string>("");
     const [shouldShowResults, setShouldShowResults] = useState<boolean>(true);
     const debouncedSearch = useDebounce(search, 300);
     const { useYoutubeSearch } = useContext(YoutubeContext);
     const { data, isLoading, isError } = useYoutubeSearch(debouncedSearch);
+    const trimmed = search.trim();
+    const handleSubmit = () => {
+        if (!trimmed) return;
+        if (trimmed.startsWith("http")) {
+            video(trimmed);
+        }
+        setSearch("");
+        setShouldShowResults(false);
+    };
 
     useEffect(() => {
-        if (search.trim() === "") {
+        if (!trimmed) {
             setShouldShowResults(false);
         } else {
             setShouldShowResults(true);
@@ -21,12 +30,16 @@ const SearchBar = () => {
 
     return (
         <div className="max-w-md mx-auto">
-            <SearchTextBox search={search} setSearch={setSearch} />
-            {shouldShowResults && <SearchResults 
+            <SearchTextBox search={search} setSearch={setSearch} onSubmit={handleSubmit}/>
+            {shouldShowResults && <SearchResults
                 videos={data} 
                 isLoading={isLoading} 
                 isError={isError} 
-                onSelect={(v) => { console.log(v); setSearch(""); setShouldShowResults(false); }}
+                onSelect={(v) => { 
+                    video(`https://www.youtube.com/watch?v=${v.id}`);
+                    setSearch(""); 
+                    setShouldShowResults(false); 
+                }}
             />}
         </div>
     )

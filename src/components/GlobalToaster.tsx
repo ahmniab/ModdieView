@@ -1,9 +1,8 @@
 import { Toaster } from "react-hot-toast";
-import favicon from "../../public/favicon.ico";
 
 const baseOptions = {
   duration: 1500,
-  icon: <img src={favicon} alt="ModdieView icon" width="18" height="18" />,
+  icon: <img src="/favicon.ico" alt="ModdieView icon" width="18" height="18" />,
   style: {
     transform: "none",
     animation: "none",

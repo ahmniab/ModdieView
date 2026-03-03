@@ -7,17 +7,17 @@ import ChatToaster from "./ChatToaster";
 import ChatSettingsModal from "./ChatSettingsModal";
 
 interface ChatPanelProps {
-  width: number;
   messages: Message[];
   AddMessage: (newMsg: IoChatMessage) => void;
   onAddReaction: (reaction: ChatReaction) => void;
   onCloseChat: () => void;
   userId: string;
+  userName: string;
   chatMsgs?: Message[];
   isBelowMd: boolean;
 }
 
-const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, userId, isBelowMd }: ChatPanelProps) => {
+const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, userName, isBelowMd }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  
   const [replyTo, setReplyTo] = useState<Message | null>(null);
@@ -63,7 +63,7 @@ const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, us
   return (
     <div
       className={`relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0 ${isBelowMd ? "w-full min-w-0 border-3 border-gray-500" : ""}`}
-      style={!isBelowMd ? { width, minWidth: 280 } : undefined}
+      style={!isBelowMd ? { minWidth: 280 } : undefined}
     >
 
       {!isBelowMd && (
@@ -79,7 +79,7 @@ const ChatPanel = ({ width, messages, AddMessage, onAddReaction, onCloseChat, us
         </button>
       </div>)}
 
-      <MessageList messages={messages} 
+      <MessageList messages={messages} userName={userName}
         onToggleReaction={(id: string, emoji: string) => { 
           onAddReaction({ messageId: id, reaction: emoji, senderId: userId, reactedAt: Date.now() });
         }} 

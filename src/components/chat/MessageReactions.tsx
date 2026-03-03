@@ -25,7 +25,7 @@ const MessageReactions = ({
             key={value}
             onClick={() => onSelect(value)}
             title={label}
-            className={`text-[19px] transition rounded-full px-0.5 py-0.5 cursor-pointer
+            className={`text-[21px] transition rounded-full px-0.5 py-0.5 cursor-pointer
               ${
                 isSelected
                   ? "bg-purple-600"
@@ -44,7 +44,7 @@ const MessageReactions = ({
         className="opacity-70 hover:opacity-100 hover:scale-125 transition cursor-pointer"
         title="More reactions"
       >
-        <MdOutlineAddReaction size={23} />
+        <MdOutlineAddReaction size={25} />
       </button>
     </div>
   );
