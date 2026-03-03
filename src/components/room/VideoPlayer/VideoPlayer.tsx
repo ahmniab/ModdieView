@@ -13,20 +13,19 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
-  const extractedVideo = extractVideoUrl("https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/How_to_make_video.webm/How_to_make_video.webm.1080p.vp9.webm");
+  const { currentVideo } = useRoomVideo();
+  const [extractedVideo, setExtractedVideo] = useState(extractVideoUrl("https://upload.wikimedia.org/wikipedia/commons/transcoded/a/a7/How_to_make_video.webm/How_to_make_video.webm.1080p.vp9.webm"));
   const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { broadcastVideoChange } = useRoomVideo();
 
   useEffect(() => {
-    broadcastVideoChange({
-      isPlaying: false,
-      url: extractedVideo?.url || "null",
-      lastTimePlayed : new Date().getTime(),
-      videoTime: 0,
-      playbackRate: 1,
-    });
-  }, []);
+    if (currentVideo?.url) {
+      const extracted = extractVideoUrl(currentVideo.url);
+      setExtractedVideo(extracted);
+      setError(false);
+      setErrorMessage(null);
+    }
+  }, [currentVideo?.url])
 
   return (
       <div className="w-full h-full rounded-lg bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
