@@ -6,6 +6,7 @@ import { useRef } from "react";
 
 interface MessageItemProps {
   message: Message;
+  userName: string;
   isActive: boolean;
   onOpen: () => void;
   onClose: () => void;
@@ -15,7 +16,7 @@ interface MessageItemProps {
 }
 
 
-const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply, chatHeaderHeight }: MessageItemProps) => {  
+const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onReply, chatHeaderHeight, userName }: MessageItemProps) => {  
   const messageRef = useRef<HTMLDivElement>(null);
   const reactionsCount = Object.keys(message.reactions).length;
 
@@ -23,8 +24,8 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${reactionsCount > 0 ? "mb-7" : "mb-2"}`}>
 
       <div ref={messageRef}
-        className={`relative px-2 py-2 rounded-xl max-w-[70%] overflow-visible text-white break-words ${
-          message.isOwn ? "bg-purple-800" : "bg-gray-600"
+        className={`relative px-2 py-2 rounded-xl w-fit max-w-full text-white break-words ${
+          message.isOwn ? "bg-zinc-700" : "bg-gray-600"
         }`}
         onMouseDown={(e) => {
           e.stopPropagation();
@@ -38,7 +39,7 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
 
         <span
           className={`absolute top-[-1px] w-4 h-4 ${
-            message.isOwn ? "right-[0.2px] bg-purple-800" : "left-[0.2px] bg-gray-600"
+            message.isOwn ? "right-[0.2px] bg-zinc-700" : "left-[0.2px] bg-gray-600"
           }`}
           style={{
             clipPath: message.isOwn
@@ -59,7 +60,8 @@ const MessageItem = ({ message, isActive, onOpen, onClose, onToggleReaction, onR
         )}
   
         <div className="block overflow-hidden">
-          <span className="break-words whitespace-pre-wrap mr-2">
+          <span className="block font-semibold whitespace-nowrap mb-1 max-w-full">{userName}</span>
+          <span className="break-words whitespace-pre-wrap mr-1 text-slate-200">
             {message.text}
             <span className="inline-block w-[45px]"></span>
           </span>

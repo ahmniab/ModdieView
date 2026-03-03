@@ -8,6 +8,8 @@ import { FaGripLinesVertical } from "react-icons/fa";
 
 interface Props {
   video: string;
+  userName: string;
+  onVideoChange: (url: string) => (void);
   userId: string;
   messages: Message[];
   addMessage: (newMessage: IoChatMessage) => void;
@@ -16,6 +18,8 @@ interface Props {
 
 const MobileLayout = ({
   video,
+  userName,
+  onVideoChange,
   userId,
   messages,
   addMessage,
@@ -37,6 +41,8 @@ const MobileLayout = ({
 
           <div className="flex-1 min-h-0 overflow-y-auto">
             <BottomContent
+              onVideoChange={onVideoChange}
+              userName={userName}
               activeTab={activeTab}
               messages={messages}
               addMessage={addMessage}

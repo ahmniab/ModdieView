@@ -8,7 +8,9 @@ interface Props {
   addMessage: (newMessage: IoChatMessage) => void;
   addReaction: (reaction: ChatReaction) => void;
   userId: string;
+  userName: string;
   onClose: () => void;
+  onVideoChange: (value: string) => (void);
 }
 
 const BottomContent = ({
@@ -17,7 +19,9 @@ const BottomContent = ({
   addMessage,
   addReaction,
   userId,
-  onClose
+  userName,
+  onClose,
+  onVideoChange,
 }: Props) => {
 
   if (!activeTab) return null;
@@ -27,8 +31,8 @@ const BottomContent = ({
 
       {activeTab === "chat" && (
         <ChatPanel
-          width={window.innerWidth}
           messages={messages}
+          userName={userName}
           isBelowMd
           AddMessage={addMessage}
           onAddReaction={addReaction}
@@ -39,7 +43,7 @@ const BottomContent = ({
 
       {activeTab === "search" && (
         <div className="h-full bg-gray-800 p-3 border-3 border-gray-700 flex justify-center">
-          <SearchBar/>
+          <SearchBar video={onVideoChange}/>
         </div>
       )}
 
