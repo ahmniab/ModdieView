@@ -1,12 +1,17 @@
 const IoEvents = Object.freeze({
     CONNECT: "connect",
     DISCONNECT: "disconnect",
-    GET_ROOM_DATA: "CMD:getRoomData",
     ROOM_DATA: "roomData",
+
+    GET_ROOM_DATA: "CMD:getRoomData",
+    USERS_UPDATE: "CMD:usersUpdate",
+    SET_USER_NAME: "CMD:name",
+
     SEND_CHAT_MESSAGE: "CHAT:chatMessage",
     RESIEVE_CHAT_MESSAGE: "CHAT:newChatMessage",
     SEND_CHAT_REACT: "CHAT:reactOnMessage",
     RESIEVE_CHAT_REACT: "CHAT:newChatReaction",
+
     CONTENT_CHANGE: "CONTENT:change",
     CONTENT_VIDEO_PLAY: "CONTENT:video.play",
     CONTENT_VIDEO_PAUSE: "CONTENT:video.pause",
