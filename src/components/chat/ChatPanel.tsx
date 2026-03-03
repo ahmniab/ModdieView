@@ -31,7 +31,12 @@ const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, i
         id: undefined,
         text,
         senderId: userId,
-        replyTo: undefined, /* replyTo ? { id: replyTo.id, text: replyTo.text, senderName: replyTo.senderName, isOwn: replyTo.isOwn }: undefined,*/
+        replyTo: replyTo ? { 
+          id: replyTo.id, 
+          text: replyTo.text, 
+          senderName: replyTo.senderName, 
+          isOwn: replyTo.isOwn 
+        }: undefined,
         sentAt: Date.now(),
       }
     );
@@ -85,14 +90,23 @@ const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, i
         onReply={setReplyTo} 
         chatHeaderHeight={chatHeaderHeight} 
       />
-      <MessageInput onSend={handleSendMessage} replyTo={replyTo} onCancelReply={() => setReplyTo(null)}/>
+      <MessageInput 
+        onSend={handleSendMessage} 
+        replyTo={replyTo? { 
+          id: replyTo.id, 
+          text: replyTo.text, 
+          senderName: replyTo.senderName || "Moddie Anonimous", 
+          isOwn: replyTo.isOwn 
+        }: null} 
+        onCancelReply={() => setReplyTo(null)}
+      />
       <ChatToaster />
 
       {showSettings && (
-              <ChatSettingsModal
-                onCloseChat={() => onCloseChat()}
-                onCloseSettings={() => setShowSettings(false)}
-                />
+        <ChatSettingsModal
+          onCloseChat={() => onCloseChat()}
+          onCloseSettings={() => setShowSettings(false)}
+        />
       )}
 
     </div>

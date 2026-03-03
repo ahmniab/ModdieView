@@ -21,6 +21,8 @@ export interface IoChatMessage {
   replyTo?: {
     id: string;
     text: string;
+    senderName?: string;
+    isOwn?: boolean;
   };
   sentAt: number;
 }
