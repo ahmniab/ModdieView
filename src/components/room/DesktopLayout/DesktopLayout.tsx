@@ -4,6 +4,7 @@ import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import ChatPanel from "../../chat/ChatPanel";
 import ResizeHandle from "./ResizeHandle";
 import { BsChatText } from "react-icons/bs";
+import { default as UsersPanel} from "./UsersPanel"
 
 interface Props {
   video: string;
@@ -49,6 +50,9 @@ const DesktopLayout = ({
 
   return (
     <div className="flex flex-1 bg-gray-900 overflow-hidden">
+      <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto ">
+        <UsersPanel userId={userId}/>
+      </div>
 
       <div className="flex-1 flex items-center justify-center min-w-0">
         <VideoPlayer
