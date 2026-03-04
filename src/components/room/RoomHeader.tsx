@@ -42,6 +42,7 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange }: RoomHeaderPrpos ) =>
                 <input 
                     type="text" 
                     placeholder='randomRoom' 
+                    maxLength={20}
                     title='Room name' 
                     className='w-60 text-lg text-yellow-500 font-semibold 
                                focus:outline-none p-1 sm:text-xl md:text-base lg:text-xl' 

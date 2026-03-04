@@ -78,6 +78,7 @@ const RoomModal = ({ onConfirm, roomLink }: Props) => {
                     </label>
                     <input
                         type="text"
+                        maxLength={20}
                         ref={nameRef}
                         defaultValue={savedName}
                         autoFocus
