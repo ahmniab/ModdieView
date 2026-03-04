@@ -21,9 +21,10 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
 
 
   return (
-      <div className="w-full h-full border border-gray-700 relative p-1">
+      <div className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
+      border border-gray-700 overflow-hidden  relative flex flex-col">
 
-        <div className="lg:h-[90%]">
+        <div className="flex-1 min-h-0">
         { !extractedVideo || hasError ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
             <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
