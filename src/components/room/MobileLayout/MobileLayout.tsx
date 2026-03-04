@@ -26,15 +26,15 @@ const MobileLayout = ({
   addReaction
 }: Props) => {
   const [activeTab, setActiveTab] =
-    useState<"chat" | "search" | null>(null);
+    useState<"chat" | "search" | "home">("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
       <div className="h-[100dvh] sm: w-full flex flex-col bg-gray-900 overflow-hidden">
 
-        <div className="h-[35dvh] flex-shrink-0 mb-1">
-          <VideoPlayer video={video} userName={userId} />
+        <div className="h-[35dvh] flex-shrink-0">
+          <VideoPlayer video={video} userName={userName} />
         </div>
 
         <div className="flex-1 flex flex-col min-h-0">
