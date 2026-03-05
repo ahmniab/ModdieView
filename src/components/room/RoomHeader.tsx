@@ -18,7 +18,7 @@ interface RoomHeaderPrpos {
 
 const RoomHeader = ({ isBelowMd, roomLink, onVideoChange }: RoomHeaderPrpos ) => {
   const { name, setRoomName } = useRoom();
-  const [currentName, setCurrentName] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>(name);
 
   useEffect(() => {
     if (name) {
@@ -41,7 +41,7 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange }: RoomHeaderPrpos ) =>
                 </Link>
                 <input 
                     type="text" 
-                    placeholder='randomRoom' 
+                    placeholder='Random Room' 
                     maxLength={20}
                     title='Room name' 
                     className='w-60 text-lg text-yellow-500 font-semibold 
