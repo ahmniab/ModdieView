@@ -3,7 +3,6 @@ import type { Message, Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { formatTime } from "@/utils/formatTime";
 import { useRef } from "react";
-import { useRoom } from "@/contexts/RoomContext";
 
 interface MessageItemProps {
   message: Message;
@@ -27,8 +26,7 @@ const MessageItem = ({
 }: MessageItemProps) => {  
   const messageRef = useRef<HTMLDivElement>(null);
   const reactionsCount = Object.keys(message.reactions).length;
-  const { users } = useRoom();
-  const senderName = message.senderName || users[message?.senderId || '']?.name || "Moddie Anonymous";
+  const senderName = message.senderName;
 
   return (
     <div className={`flex ${ message.isOwn ? "justify-end" : "justify-start"} ${reactionsCount > 0 ? "mb-7" : "mb-2"}`}>
@@ -61,7 +59,7 @@ const MessageItem = ({
           <div className="flex flex-col text-sm bg-black/20 px-2 py-1 rounded mb-1 border-l-4 border-white">
             <div className="flex items-center">
               <BsFillReplyAllFill size={17} className="inline mr-2" />
-              <div className="font-semibold">{message.isOwn ? "You" : message.senderName}</div>
+              <div className="font-semibold">{message.isOwn ? "You" : senderName}</div>
             </div>
             <div className="truncate">
               {message.replyTo.text}

@@ -1,9 +1,12 @@
 import ChatPanel from "@/components/chat/ChatPanel";
-import { default as SearchBar } from "@/components/SearchBar/index";
+import SearchBar from "@/components/SearchBar/index";
 import type { ChatReaction, IoChatMessage, Message } from "@/types";
+import { useRoom } from "@/contexts/RoomContext";
+import { FaUsers } from "react-icons/fa";
+import UsersCard from "@/components/room/UsersCard" ;
 
 interface Props {
-  activeTab: "chat" | "search" | null;
+  activeTab: "chat" | "search" | "home";
   messages: Message[];
   addMessage: (newMessage: IoChatMessage) => void;
   addReaction: (reaction: ChatReaction) => void;
@@ -23,6 +26,8 @@ const BottomContent = ({
   onClose,
   onVideoChange,
 }: Props) => {
+  const { users } = useRoom();
+  const usersCount = Object.keys(users ?? {}).length;
 
   if (!activeTab) return null;
 
@@ -47,6 +52,16 @@ const BottomContent = ({
         </div>
       )}
 
+      {activeTab === "home" && (
+        <div className=" flex flex-col">
+          <div className=" text-gray-400/90 text-[24px] font-semibold flex items-center justify-end mr-5 gap-1"
+            title="Number of Users">
+            <FaUsers className="size-6" />
+            {usersCount}
+          </div>
+          <UsersCard userId={userId}/>
+      </div>
+      )}
     </div>
   );
 };
