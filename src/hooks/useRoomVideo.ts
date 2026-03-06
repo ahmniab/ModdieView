@@ -22,7 +22,8 @@ const useRoomVideo = () => {
         onSeek, 
         onVideoPlaybackRateChange, 
         onVideoChange,
-        setPlaying
+        setPlaying,
+        onVideoSync,
     } = useVideoControles();
 
 
@@ -75,6 +76,12 @@ const useRoomVideo = () => {
         updateVideoRef(updatedVideo);  
         callbacks.onPause();
     }
+
+    const handleVideoSync = (updatedVideo: RoomContent) => {
+        console.log("updated video received in sync event", updatedVideo);
+        updateVideoRef(updatedVideo);  
+        callbacks.onVideoSync(updatedVideo);
+    }
     
     const handleEventVideoPlay = (updatedVideo: RoomContent) => {
         console.log("updated video received in play event", updatedVideo);
@@ -121,6 +128,12 @@ const useRoomVideo = () => {
         );
     }
 
+    const syncVideoState = () => {
+        if (socket) {
+            socket.emit(IoEvents.CONTENT_VIDEO_SYNC);
+        }
+    }
+
     useEffect(() => {
         if (!socket) return;
 
@@ -128,16 +141,27 @@ const useRoomVideo = () => {
         socket.on(IoEvents.CONTENT_VIDEO_PLAY, handleEventVideoPlay);
         socket.on(IoEvents.CONTENT_VIDEO_PAUSE, handleEventVideoPause);
         socket.on(IoEvents.CONTENT_VIDEO_SEEK, handleEventVideoSeek);
-        socket.on(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);        
+        socket.on(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);  
+        socket.on(IoEvents.CONTENT_VIDEO_SYNC, handleVideoSync);      
 
         updateVideoRef(room?.roomContent || null);
+        syncVideoState();
+
+        return () => {
+            socket.off(IoEvents.CONTENT_CHANGE, handleEventVideoUpdate);
+            socket.off(IoEvents.CONTENT_VIDEO_PLAY, handleEventVideoPlay);
+            socket.off(IoEvents.CONTENT_VIDEO_PAUSE, handleEventVideoPause);
+            socket.off(IoEvents.CONTENT_VIDEO_SEEK, handleEventVideoSeek);
+            socket.off(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);  
+            socket.off(IoEvents.CONTENT_VIDEO_SYNC, handleVideoSync);      
+        }
     }, [socket]);
 
 
     return {
         playing,
         currentTime,
-        currentVideo: currentVideo.current,
+        currentVideoRef: currentVideo,
         bufferedTime,
         videoDuration,
         setBufferedTime,
@@ -153,7 +177,8 @@ const useRoomVideo = () => {
         onPlay,
         onSeek,
         onVideoPlaybackRateChange,
-        onVideoChange
+        onVideoChange,
+        onVideoSync
     }; 
 
 }
