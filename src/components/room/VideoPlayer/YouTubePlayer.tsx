@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback } from "react";
 import YouTube, { type YouTubeEvent } from "react-youtube";
 import { getYouTubeErrorMessage } from "@/utils";
 import useRoomVideo from "@/hooks/useRoomVideo";
+import useRemoteAction from "@/hooks/useRemoteAction";
 
 interface YouTubePlayerProps {
   id: string;
@@ -10,10 +11,10 @@ interface YouTubePlayerProps {
 
 const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
   const playerRef = useRef<YouTube>(null);
-  const isRemoteAction = useRef(false);
+  const { markRemoteAction, isRemoteActionRecent } = useRemoteAction();
 
   const {
-    currentVideo: currentContent,
+    currentVideoRef: currentContent,
     videoDuration,
     setBufferedTime,
     setCurrentTime,
@@ -24,42 +25,64 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     onPause: onRemotePause,
     onPlay: onRemotePlay,
     onSeek: onRemoteSeek,
+    onVideoSync: onRemoteVideoSync,
     onVideoPlaybackRateChange: onRemotePlaybackRateChange,
   } = useRoomVideo();
 
   const getPlayer = useCallback(() => {
     return playerRef.current?.getInternalPlayer();
   }, []);
+  const syncVideoState = useCallback(() => {
+    if (currentContent.current && playerRef.current) {
+      markRemoteAction();
+      if (currentContent.current.isPlaying)
+        playerRef.current.getInternalPlayer().playVideo();
+      else
+        playerRef.current.getInternalPlayer().pauseVideo();
+    }
+  }, [currentContent, playerRef, markRemoteAction]);
 
   // Register remote action callbacks
   useEffect(() => {
     onRemotePlay(() => {
       const player = getPlayer();
       if (!player) return;
-      isRemoteAction.current = true;
+      markRemoteAction();
+      player.seekTo(currentContent.current?.videoTime, true);
       player.playVideo();
     });
 
     onRemotePause(() => {
       const player = getPlayer();
       if (!player) return;
-      isRemoteAction.current = true;
+      markRemoteAction();
       player.pauseVideo();
     });
 
     onRemoteSeek((time: number) => {
       const player = getPlayer();
       if (!player) return;
-      isRemoteAction.current = true;
+      markRemoteAction();
       player.seekTo(time, true);
     });
 
     onRemotePlaybackRateChange((video) => {
       const player = getPlayer();
       if (!player || !video) return;
+      markRemoteAction();
       player.setPlaybackRate(video.playbackRate);
     });
-  }, [getPlayer, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange]);
+
+    onRemoteVideoSync((_video) => {
+      const player = getPlayer();
+      if (!player || !currentContent.current) return;
+
+      markRemoteAction();
+      console.log("Syncing video state:", currentContent.current);
+      player.seekTo(currentContent.current.videoTime, true);
+      syncVideoState();
+    });
+  }, [getPlayer, markRemoteAction, syncVideoState, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange, onRemoteVideoSync]);
 
   // Poll current time and buffered fraction
   useEffect(() => {
@@ -84,44 +107,49 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     }, 250);
 
     return () => clearInterval(interval);
-  }, [getPlayer, setCurrentTime, setBufferedTime, setVideoDuration, videoDuration]);
+  }, [
+    getPlayer, 
+    setCurrentTime, 
+    setBufferedTime, 
+    setVideoDuration, 
+    videoDuration, 
+    playerRef, 
+    playerRef.current
+  ]);
 
   // YouTube ready — sync initial state
   const handleReady = useCallback(
     async (event: YouTubeEvent) => {
       const player = event.target;
+      markRemoteAction();
 
       const duration = await player.getDuration();
       setVideoDuration(duration);
 
-      if (currentContent?.videoTime) {
-        player.seekTo(currentContent.videoTime, true);
+      if (currentContent.current?.videoTime) {
+        player.seekTo(currentContent.current.videoTime, true);
       }
 
-      if (currentContent?.isPlaying) {
+      if (currentContent.current?.isPlaying) {
         player.playVideo();
+      } else {
+        player.pauseVideo();
       }
     },
-    [currentContent, setVideoDuration],
+    [currentContent, setVideoDuration, markRemoteAction],
   );
 
   // Iframe play — broadcast only if triggered by user
   const handlePlay = useCallback(() => {
-    if (isRemoteAction.current) {
-      isRemoteAction.current = false;
-      return;
-    }
+    if (isRemoteActionRecent()) return;
     broadcastVideoPlay();
-  }, [broadcastVideoPlay]);
+  }, [broadcastVideoPlay, isRemoteActionRecent]);
 
   // Iframe pause — broadcast only if triggered by user
   const handlePause = useCallback(() => {
-    if (isRemoteAction.current) {
-      isRemoteAction.current = false;
-      return;
-    }
+    if (isRemoteActionRecent()) return;
     broadcastVideoPause();
-  }, [broadcastVideoPause]);
+  }, [broadcastVideoPause, isRemoteActionRecent]);
 
   // Playback rate changed inside iframe
   const handlePlaybackRateChange = useCallback(
