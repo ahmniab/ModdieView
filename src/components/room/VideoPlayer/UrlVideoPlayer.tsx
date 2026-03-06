@@ -1,6 +1,5 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import useRoomVideo from "@/hooks/useRoomVideo";
-import VideoToolBar from "./VideoToolBar";
 
 interface UrlVideoPlayerProps {
     src: string;
@@ -12,7 +11,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
     const playerRef = useRef<HTMLVideoElement | null>(null);
 
     const {
-        currentVideo : currentContent,
+        currentVideoRef : currentContent,
         currentTime,
         videoDuration,
         setBufferedTime,
@@ -21,6 +20,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         onPause,
         onPlay,
         onSeek,
+        onVideoSync,
     } = useRoomVideo();
 
     // Handle remote actions -> control local video
@@ -29,11 +29,35 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
 
         const video = playerRef.current;
 
+        const syncVideoState = () => {
+            if (!currentContent.current) return;
+            
+            const timeDifference = Math.abs(video.currentTime - currentContent.current.videoTime);
+            const needsTimeSync = timeDifference > 0.5;
+            const needsPlayStateSync = video.paused === currentContent.current.isPlaying;
+            
+            if (needsTimeSync) {
+                video.currentTime = currentContent.current.videoTime;
+            }
+            
+            if (needsPlayStateSync) {
+                if (currentContent.current.isPlaying) {
+                    video.play().catch((e) => {
+                        console.error("Error playing video:", e);
+                        setErrorMessage("Failed to play video. Please try again.");
+                        setError(true);
+                    });
+                } else {
+                    video.pause();
+                }
+            }
+        };
+
         video.ontimeupdate = () => {
             setCurrentTime(video.currentTime);
-            console.log("Video time update:", currentTime);
-            if (!playerRef.current || currentContent === null) return;
-            if(currentTime >= videoDuration) {
+            console.log("Video time update:", video.currentTime);
+            if (!playerRef.current || currentContent.current === null) return;
+            if(video.currentTime === videoDuration) {
                 playerRef.current.currentTime = 0;
             } 
         };
@@ -41,8 +65,8 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         video.onloadeddata = () => {
             setVideoDuration(video.duration);
             console.log("Video loaded, duration set to:", video.duration);
-            video.currentTime = currentContent?.videoTime || 0;
-            console.log("Video current time set to:", currentContent?.videoTime);
+            video.currentTime = currentContent.current?.videoTime || 0;
+            console.log("Video current time set to:", currentContent.current?.videoTime);
         };
 
         video.onprogress = () => {
@@ -68,6 +92,12 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         onSeek((time) => {
             console.log("Video seek event received:", time);
             video.currentTime = time;
+        });
+        
+        onVideoSync((updatedVideo) => {
+            console.log("Video sync event received:", updatedVideo);
+            if (!updatedVideo) return;
+            syncVideoState();
         });
 
     }, [
