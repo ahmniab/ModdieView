@@ -26,6 +26,10 @@ const RoomPage = () => {
   const [showModal, setShowModal] = useState(true);
   const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
   const roomLink = (window.location.origin || `https://moddieview.com/room`) + `/${roomId}`;
+  const [showUsersPanel, setShowUsersPanel] = useState(true);
+  const toggleUsersPanel = () => {
+    setShowUsersPanel(prev => !prev);
+  };
 
 useEffect(() => {
   const handleResize = () => {
@@ -46,7 +50,7 @@ useEffect(() => {
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
       <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
-        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} onVideoChange={setVideo} />
+        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} onVideoChange={setVideo} toggleUsersPanel={toggleUsersPanel}/>
 
         <div className={`relative flex flex-1 min-h-0 overflow-hidden bg-gray-900 ${isBelowMd ? "flex-col" : "flex-row"}`}>
 
@@ -68,6 +72,8 @@ useEffect(() => {
               sendMessage={sendMessage} 
               sendReaction={sendReaction} 
               userName={Name}
+              showUsersPanel={showUsersPanel}
+              toggleUsersPanel={toggleUsersPanel}
             />)}
 
 
