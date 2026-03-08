@@ -7,9 +7,10 @@ type SearchResultsProps = {
     isLoading: boolean;
     isError: boolean;
     onSelect: (video: YoutubeVideo) => void;
+    activeIndex: number;
 }
 
-const SearchResults: RC.FC<SearchResultsProps> = ({videos, isLoading, isError, onSelect}) => {
+const SearchResults: RC.FC<SearchResultsProps> = ({videos, isLoading, isError, onSelect, activeIndex}) => {
     return (
         <div className="sm:w-[390px] w-[330px] md:absolute md:top-full md:left-1/2 md:w-[400px] md:-translate-x-1/2  max-h-96 lg:w-[500px] overflow-y-auto bg-gray-700 border border-black rounded-lg p-4 mt-2 shadow-lg z-[100]">
             
@@ -18,11 +19,12 @@ const SearchResults: RC.FC<SearchResultsProps> = ({videos, isLoading, isError, o
                 ) : isError ? (
                     <p className="text-red-500">Error fetching results.</p>
                 ) : videos && videos.length > 0 ? (
-                        videos.map((video) => (
+                        videos.map((video, index) => (
                             <SearchItem 
-                                key={video.id} 
+                                key={video.id}
+                                active={index === activeIndex}
                                 video={video} 
-                                onClick={(v) => onSelect(v)} 
+                                onClick={(v) => onSelect(v)}
                             />
                         ))
                 ) : (
