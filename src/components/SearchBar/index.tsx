@@ -35,13 +35,13 @@ const SearchBar = ({ video } : { video : (url: string) => void}) => {
 
             if (e.key === "ArrowDown") {
             e.preventDefault();
-            setActiveIndex((prev) => (prev == data.length-1? -1 : prev+1));
+            setActiveIndex((prev) => ( prev == data.length-1? -1 : prev+1));
             }
 
             if (e.key === "ArrowUp") {
             e.preventDefault();
             setActiveIndex((prev) =>
-                prev <= 0 ? data.length - 1 : prev - 1
+                (prev <= 0 ? - 1 : prev - 1)
         );
     }
     
