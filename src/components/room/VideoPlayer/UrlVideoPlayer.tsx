@@ -77,6 +77,9 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
 
         onPlay(() => {
             console.log("Video play event received");
+            if (video.currentTime && currentContent.current) {
+                video.currentTime = currentContent.current.videoTime;
+            }
             video.play().catch((e) => {
                 console.error("Error playing video:", e);
                 setErrorMessage("Failed to play video. Please try again.");
