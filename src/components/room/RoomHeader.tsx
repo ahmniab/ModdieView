@@ -16,10 +16,11 @@ interface RoomHeaderPrpos {
     roomLink: string;
     onVideoChange: (url: string) => (void);
     toggleUsersPanel: () => void;
+    showUsersPanel: boolean;
 }
 
 
-const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel }: RoomHeaderPrpos ) => {
+const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel, showUsersPanel }: RoomHeaderPrpos ) => {
   const { name, setRoomName } = useRoom();
   const [currentName, setCurrentName] = useState<string>(name);
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel }: Ro
                 }}>
                 {<IoLink size={30} />}
             </button>
-                                
+            
             <Link to="/"
                 title="Exit (shift+q)"
                 className='cursor-pointer'>
@@ -102,7 +103,7 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel }: Ro
             </Link>
         </div>
         {showSettings && (
-          <SettingsModal onClose={() => setShowSettings(false)} toggleUsersPanel={toggleUsersPanel}/>
+          <SettingsModal onClose={() => setShowSettings(false)} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
         )}
     </div>
   )

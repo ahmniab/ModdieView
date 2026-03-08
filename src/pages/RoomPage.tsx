@@ -50,7 +50,7 @@ useEffect(() => {
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
       <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
-        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} onVideoChange={setVideo} toggleUsersPanel={toggleUsersPanel}/>
+        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} onVideoChange={setVideo} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
 
         <div className={`relative flex flex-1 min-h-0 overflow-hidden bg-gray-900 ${isBelowMd ? "flex-col" : "flex-row"}`}>
 

@@ -8,16 +8,17 @@ import { IoIosArrowDown } from "react-icons/io";
 interface SettingsModalProps {
   onClose: () => void;
   toggleUsersPanel: () => void;
+  showUsersPanel:boolean;
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   toggleUsersPanel,
+  showUsersPanel,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   useClickOutside(containerRef, onClose);
   const [showShortcutsList, setShortcutsList] = useState(false);
-  const [showUsersPanel, setShowUsersPanel] = useState(true);
   return (
     <div className="absolute left-2 top-14 bg-gray-800 flex items-center justify-center z-[50] rounded-b-xl" 
     ref={containerRef}>
@@ -49,7 +50,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
           <kbd className={`bg-gray-700 w-[35px] h-[25px] rounded cursor-pointer flex items-center justify-center ${showUsersPanel? "text-white" : "text-gray-400"}`}
             onClick={() => {
             toggleUsersPanel();
-            setShowUsersPanel(prev => !prev);
           }}>
             {showUsersPanel ? "on" : "off"}
           </kbd>
