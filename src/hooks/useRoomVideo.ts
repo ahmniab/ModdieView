@@ -4,6 +4,7 @@ import IoEvents from "@/utils/ioEventsNames";
 import { type RoomContent } from "@/types/room";
 import { useVideoControles } from "@/contexts/VideoControlesContext";
 import { calculateVideoTime } from "@/utils/video";
+import useKeyboardShortcut from "./useKeyboardShortcut";
 
 const useRoomVideo = () => {
     const { room, socket } = useRoom();
@@ -132,6 +133,30 @@ const useRoomVideo = () => {
 
         updateVideoRef(room?.roomContent || null);
     }, [socket]);
+
+    useKeyboardShortcut({
+        shortcutKeys: [" "],
+        callback: () => {
+            if (playing)
+                broadcastVideoPause();
+            else
+                broadcastVideoPlay();
+        }
+    });
+
+    useKeyboardShortcut({
+        shortcutKeys: ["arrowright"],
+        callback: () => {
+            brodacastVideoSeek(currentTime + 5);
+        }
+    });
+
+    useKeyboardShortcut({
+        shortcutKeys: ["arrowleft"],
+        callback: () => {
+            brodacastVideoSeek(Math.max(0, currentTime - 5));
+    }
+    });
 
 
     return {

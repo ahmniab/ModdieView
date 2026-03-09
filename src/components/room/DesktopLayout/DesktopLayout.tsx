@@ -5,6 +5,7 @@ import ChatPanel from "../../chat/ChatPanel";
 import ResizeHandle from "./ResizeHandle";
 import { BsChatText } from "react-icons/bs";
 import { default as UsersPanel} from "./UsersPanel"
+import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 
 interface Props {
   video: string;
@@ -13,6 +14,8 @@ interface Props {
   userId?: string;
   sendMessage?: (msg: IoChatMessage) => void;
   sendReaction?: (reaction: any) => void;
+  showUsersPanel: boolean;
+  toggleUsersPanel: () => void;
 }
 
 const DesktopLayout = ({
@@ -22,11 +25,25 @@ const DesktopLayout = ({
   sendMessage,
   sendReaction,
   userId,
+  showUsersPanel,
+  toggleUsersPanel,
 }: Props) => {
   const [chatWidth, setChatWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
   const [showChat, setShowChat] = useState(true);
+  const toggleChat = useCallback(() => {
+    setShowChat(prev => !prev);
+  }, []);
 
+  useKeyboardShortcut({
+    shortcutKeys: ["c"],
+    callback: toggleChat,
+  });
+
+  useKeyboardShortcut({
+    shortcutKeys: ["u"],
+    callback: toggleUsersPanel,
+  });
 
   const onDrag = useCallback((e: MouseEvent) => {
     if (!isDragging) return;
@@ -50,9 +67,11 @@ const DesktopLayout = ({
 
   return (
     <div className="flex flex-1 bg-gray-900 overflow-hidden">
-      <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto ">
-        <UsersPanel userId={userId}/>
-      </div>
+      {showUsersPanel && (
+        <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto ">
+          <UsersPanel userId={userId}/>
+        </div> 
+      )}
 
       <div className="flex-1 flex items-center justify-center min-w-0">
         <VideoPlayer
@@ -78,8 +97,8 @@ const DesktopLayout = ({
         ) : (
             <button
                 type="button"
-                title="Start chatting"
-                className="absolute bottom-4 right-4 p-3 bg-purple-700 rounded-full hover:bg-purple-600 z-5 cursor-pointer"
+                title="Start chatting (c)"
+                className="absolute bottom-4 right-4 p-3 bg-purple-800 rounded-full hover:bg-purple-700 z-5 cursor-pointer"
                 onClick={() => setShowChat(true)}
             >
                 <BsChatText size={35} />
