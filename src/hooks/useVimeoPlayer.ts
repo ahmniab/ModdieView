@@ -12,7 +12,9 @@ export const useVimeoPlayer = (
   const isRemoteAction = useRef(false);
 
   const {
-    currentVideo: currentContent,
+    currentVideoRef: currentContent,
+    isMuted,
+    volume,
     setBufferedTime,
     setCurrentTime,
     setVideoDuration,
@@ -33,6 +35,7 @@ export const useVimeoPlayer = (
       const player = getPlayer();
       if (!player) return;
       isRemoteAction.current = true;
+      player.setCurrentTime(currentContent.current?.videoTime || 0).catch(() => {});
       player.play().catch(() => {});
     });
 
@@ -56,6 +59,15 @@ export const useVimeoPlayer = (
       player.setPlaybackRate(video.playbackRate).catch(() => {});
     });
   }, [getPlayer, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange]);
+
+  // Sync volume and muted state to Vimeo player
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    player.setMuted(isMuted).catch(() => {});
+    player.setVolume(volume).catch(() => {});
+  }, [isMuted, volume]);
 
   // Initialize Vimeo player and attach event listeners
   useEffect(() => {
@@ -82,10 +94,14 @@ export const useVimeoPlayer = (
         const duration = await player.getDuration();
         setVideoDuration(duration);
 
-        if (currentContent?.videoTime) {
-          await player.setCurrentTime(currentContent.videoTime);
+        // Set initial volume and muted state
+        await player.setMuted(isMuted);
+        await player.setVolume(volume);
+
+        if (currentContent.current?.videoTime) {
+          await player.setCurrentTime(currentContent.current.videoTime);
         }
-        if (currentContent?.isPlaying) {
+        if (currentContent.current?.isPlaying) {
           await player.play();
         }
       } catch {
@@ -141,5 +157,5 @@ export const useVimeoPlayer = (
         playerRef.current = null;
       }
     };
-  }, [iframeRef, videoId]);
+  }, [iframeRef, videoId, isMuted, volume, currentContent, setVideoDuration, setCurrentTime, setBufferedTime, broadcastVideoPlay, broadcastVideoPause, broadcastVideoPlaybackRateChange, onError]);
 };
