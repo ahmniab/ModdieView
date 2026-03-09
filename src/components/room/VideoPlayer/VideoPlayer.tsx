@@ -5,6 +5,8 @@ import { useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";
 import UrlVideoPlayer from "./UrlVideoPlayer";
 import VideoToolBar from "./VideoToolBar";
+import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
+import { useRef } from "react";
 
   
 interface VideoPlayerProps {
@@ -18,10 +20,24 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
   const hasError = errorVideoId === video;  
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const toggleFullscreen = () => {
+    const el = videoContainerRef.current;
+    if (!document.fullscreenElement) {
+      el?.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  useKeyboardShortcut({
+    shortcutKeys: ["f"],
+    callback: toggleFullscreen
+  });
 
 
   return (
-      <div className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
+      <div ref={videoContainerRef} className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
       border border-gray-700 overflow-hidden  relative flex flex-col">
 
         <div className="flex-1 min-h-0">
