@@ -5,7 +5,7 @@ import 'react-video-seek-slider/styles.css';
 import './slider-styles.css';
 import useRoomVideo from "@/hooks/useRoomVideo";
 import { formatDurationWithSeconds } from "@/utils";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface VideoToolBarProps {
 }
@@ -26,8 +26,12 @@ const VideoToolBar: React.FC<VideoToolBarProps> = ({
         broadcastVideoPause 
     } = useRoomVideo();
     const [nigativeTime, setNegativeTime] = useState<boolean>(false);
+    const isInteractingRef = useRef<boolean>(false);
 
     const handleVolumeChange = (newVolume: number) => {
+        // Only update if user is actively interacting with the slider
+        if (!isInteractingRef.current) return;
+        
         setVolume(newVolume);
         if (newVolume === 0) {
             setIsMuted(true);
@@ -76,6 +80,10 @@ const VideoToolBar: React.FC<VideoToolBarProps> = ({
                     max="1"
                     step="0.01"
                     value={isMuted ? 0 : volume}
+                    onMouseDown={() => { isInteractingRef.current = true; }}
+                    onMouseUp={() => { isInteractingRef.current = false; }}
+                    onTouchStart={() => { isInteractingRef.current = true; }}
+                    onTouchEnd={() => { isInteractingRef.current = false; }}
                     onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
                     className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-500 [&::-moz-range-thumb]:border-0"
                     style={{
