@@ -1,6 +1,22 @@
 const ShortcutsList = () => {
   return (
     <div className="flex flex-col text-gray-400 ml-4">
+
+      <div className="flex justify-between py-1">
+        <span>Play / Pause Video</span>
+        <kbd className="bg-gray-700 px-2 rounded">Space</kbd>
+      </div>
+
+      <div className="flex justify-between py-1">
+        <span>Seek Video</span>
+        <kbd className="bg-gray-700 px-2 rounded">← / →</kbd>
+      </div>
+
+      <div className="flex justify-between py-1">
+        <span>Fullscreen Video</span>
+        <kbd className="bg-gray-700 px-2 rounded">F</kbd>
+      </div>
+
       <div className="flex justify-between py-1">
         <span>Toggle Chat</span>
         <kbd className="bg-gray-700 px-2 rounded">C</kbd>
@@ -18,8 +34,9 @@ const ShortcutsList = () => {
 
       <div className="flex justify-between py-1">
         <span>Exit Room</span>
-        <kbd className="bg-gray-700 px-2 rounded">shift+q</kbd>
+        <kbd className="bg-gray-700 px-2 rounded">Shift + Q</kbd>
       </div>
+
     </div>
   );
 };
