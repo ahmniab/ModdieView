@@ -154,7 +154,7 @@ const useRoomVideo = () => {
     useKeyboardShortcut({
         shortcutKeys: ["arrowleft"],
         callback: () => {
-            brodacastVideoSeek(Math.max(0, getCurrentVideoTime() - 5));
+            brodacastVideoSeek(Math.max(0, currentTime - 5));
     }
     });
 
