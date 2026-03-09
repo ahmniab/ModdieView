@@ -14,9 +14,13 @@ const useRoomVideo = () => {
         currentTime,
         callbacks, 
         videoDuration,
+        isMuted,
+        volume,
         setCurrentTime,
         setBufferedTime,
         setVideoDuration,
+        setIsMuted,
+        setVolume,
         onPause, 
         onPlay, 
         onSeek, 
@@ -34,15 +38,12 @@ const useRoomVideo = () => {
         if (!currentVideo.current || !updatedVideo) 
             return;
 
-        currentVideo.current.videoTime = calculateVideoTime(
-            updatedVideo.videoTime, 
-            updatedVideo.lastTimePlayed
-        );
+        currentVideo.current.videoTime = updatedVideo.videoTime;
         // setCurrentTime(currentVideo.current.videoTime);
         setPlaying(updatedVideo.isPlaying);
-        currentVideo.current.isPlaying = playing;
+        currentVideo.current.isPlaying = updatedVideo.isPlaying;
 
-        currentVideo.current.lastTimePlayed = updatedVideo.lastTimePlayed;
+        if(updatedVideo.isPlaying) currentVideo.current.lastTimePlayed = updatedVideo.lastTimePlayed;
         currentVideo.current.playbackRate = updatedVideo.playbackRate;
         currentVideo.current.url = updatedVideo.url;
     }
@@ -106,7 +107,6 @@ const useRoomVideo = () => {
     const broadcastVideoPause = () => {
         console.log("Broadcasting video pause event");
         if (!socket) return;
-        console.log(`Emitting pause event to server (${IoEvents.CONTENT_VIDEO_PAUSE})`);
         socket.emit(IoEvents.CONTENT_VIDEO_PAUSE);
     }
 
@@ -164,14 +164,19 @@ const useRoomVideo = () => {
         currentVideoRef: currentVideo,
         bufferedTime,
         videoDuration,
+        isMuted,
+        volume,
         setBufferedTime,
         setCurrentTime,
         setVideoDuration,
+        setIsMuted,
+        setVolume,
         broadcastVideoChange,
         broadcastVideoPlaybackRateChange,
         broadcastVideoPause,
         broadcastVideoPlay,
         brodacastVideoSeek,
+        broadcastVideoSync: syncVideoState,
         getCurrentVideoTime,
         onPause,
         onPlay,
