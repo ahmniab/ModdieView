@@ -8,6 +8,7 @@ type videoCallbacksType = {
     onPlay: () => void;
     onPause: () => void;
     onVideoPlaybackRateChange: (newVideo: Video | null) => void;
+    onVideoSync: (newVideo: Video | null) => void;
 }
 type VideoControlesContextType = {
     playing: boolean;
@@ -18,18 +19,24 @@ type VideoControlesContextType = {
     setBufferedTime: React.Dispatch<React.SetStateAction<number>>;
     videoDuration: number;
     setVideoDuration: React.Dispatch<React.SetStateAction<number>>;
+    isMuted: boolean;
+    setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
+    volume: number;
+    setVolume: React.Dispatch<React.SetStateAction<number>>;
     callbacks: {
         onVideoChange: (newVideo: Video | null) => void;
         onSeek: (time: number) => void;
         onPlay: () => void;
         onPause: () => void;
         onVideoPlaybackRateChange: (newVideo: Video | null) => void;
+        onVideoSync: (newVideo: Video | null) => void;
     };
     onVideoChange: (callback: (newVideo: Video | null) => void) => void;
     onSeek: (callback: (time: number) => void) => void;
     onPlay: (callback: () => void) => void;
     onPause: (callback: () => void) => void;
     onVideoPlaybackRateChange: (callback: (newVideo: Video | null) => void) => void;
+    onVideoSync: (callback: (newVideo: Video | null) => void) => void;
 }
 
 const VideoControlesContext = createContext<VideoControlesContextType | null>(null);
@@ -39,6 +46,8 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
     const [currentTime, setCurrentTime] = React.useState<number>(0);
     const [bufferedTime, setBufferedTime] = React.useState<number>(0);
     const [videoDuration, setVideoDuration] = React.useState<number>(0);
+    const [isMuted, setIsMuted] = React.useState<boolean>(false);
+    const [volume, setVolume] = React.useState<number>(1);
 
     const videoCallbacks =  useRef<videoCallbacksType>({
         onVideoChange: () => {},
@@ -46,6 +55,7 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
         onPlay: () => {},
         onPause: () => {},
         onVideoPlaybackRateChange: () => {},
+        onVideoSync: () => {},
     });
 
     const handleVideoChange = (callback: (newVideo: Video | null) => void) => {
@@ -68,21 +78,30 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
         videoCallbacks.current.onVideoPlaybackRateChange = callback;
     }
 
+    const handleVideoSync = (callback: (newVideo: Video | null) => void) => {
+        videoCallbacks.current.onVideoSync = callback;
+    }
+
     const videoContextValue = {
         playing,
         bufferedTime,
         currentTime,
         videoDuration,
+        isMuted,
+        volume,
         callbacks: videoCallbacks.current,
         setPlaying,
         setCurrentTime,
         setBufferedTime,
         setVideoDuration,
+        setIsMuted,
+        setVolume,
         onVideoChange: handleVideoChange,
         onSeek: handleSeek,
         onPlay: handlePlay,
         onPause: handlePause,
         onVideoPlaybackRateChange: handleVideoPlaybackRateChange,
+        onVideoSync: handleVideoSync,
     };
 
     return (

@@ -15,15 +15,20 @@ const useRoomVideo = () => {
         currentTime,
         callbacks, 
         videoDuration,
+        isMuted,
+        volume,
         setCurrentTime,
         setBufferedTime,
         setVideoDuration,
+        setIsMuted,
+        setVolume,
         onPause, 
         onPlay, 
         onSeek, 
         onVideoPlaybackRateChange, 
         onVideoChange,
-        setPlaying
+        setPlaying,
+        onVideoSync,
     } = useVideoControles();
 
 
@@ -34,15 +39,12 @@ const useRoomVideo = () => {
         if (!currentVideo.current || !updatedVideo) 
             return;
 
-        currentVideo.current.videoTime = calculateVideoTime(
-            updatedVideo.videoTime, 
-            updatedVideo.lastTimePlayed
-        );
+        currentVideo.current.videoTime = updatedVideo.videoTime;
         // setCurrentTime(currentVideo.current.videoTime);
         setPlaying(updatedVideo.isPlaying);
-        currentVideo.current.isPlaying = playing;
+        currentVideo.current.isPlaying = updatedVideo.isPlaying;
 
-        currentVideo.current.lastTimePlayed = updatedVideo.lastTimePlayed;
+        if(updatedVideo.isPlaying) currentVideo.current.lastTimePlayed = updatedVideo.lastTimePlayed;
         currentVideo.current.playbackRate = updatedVideo.playbackRate;
         currentVideo.current.url = updatedVideo.url;
     }
@@ -76,6 +78,12 @@ const useRoomVideo = () => {
         updateVideoRef(updatedVideo);  
         callbacks.onPause();
     }
+
+    const handleVideoSync = (updatedVideo: RoomContent) => {
+        console.log("updated video received in sync event", updatedVideo);
+        updateVideoRef(updatedVideo);  
+        callbacks.onVideoSync(updatedVideo);
+    }
     
     const handleEventVideoPlay = (updatedVideo: RoomContent) => {
         console.log("updated video received in play event", updatedVideo);
@@ -100,7 +108,6 @@ const useRoomVideo = () => {
     const broadcastVideoPause = () => {
         console.log("Broadcasting video pause event");
         if (!socket) return;
-        console.log(`Emitting pause event to server (${IoEvents.CONTENT_VIDEO_PAUSE})`);
         socket.emit(IoEvents.CONTENT_VIDEO_PAUSE);
     }
 
@@ -122,6 +129,12 @@ const useRoomVideo = () => {
         );
     }
 
+    const syncVideoState = () => {
+        if (socket) {
+            socket.emit(IoEvents.CONTENT_VIDEO_SYNC);
+        }
+    }
+
     useEffect(() => {
         if (!socket) return;
 
@@ -129,9 +142,20 @@ const useRoomVideo = () => {
         socket.on(IoEvents.CONTENT_VIDEO_PLAY, handleEventVideoPlay);
         socket.on(IoEvents.CONTENT_VIDEO_PAUSE, handleEventVideoPause);
         socket.on(IoEvents.CONTENT_VIDEO_SEEK, handleEventVideoSeek);
-        socket.on(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);        
+        socket.on(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);  
+        socket.on(IoEvents.CONTENT_VIDEO_SYNC, handleVideoSync);      
 
         updateVideoRef(room?.roomContent || null);
+        syncVideoState();
+
+        return () => {
+            socket.off(IoEvents.CONTENT_CHANGE, handleEventVideoUpdate);
+            socket.off(IoEvents.CONTENT_VIDEO_PLAY, handleEventVideoPlay);
+            socket.off(IoEvents.CONTENT_VIDEO_PAUSE, handleEventVideoPause);
+            socket.off(IoEvents.CONTENT_VIDEO_SEEK, handleEventVideoSeek);
+            socket.off(IoEvents.CONTENT_VIDEO_PLAYBACK_RATE_CHANGE, handleEventVideoPlaybackRateChange);  
+            socket.off(IoEvents.CONTENT_VIDEO_SYNC, handleVideoSync);      
+        }
     }, [socket]);
 
     useKeyboardShortcut({
@@ -162,23 +186,29 @@ const useRoomVideo = () => {
     return {
         playing,
         currentTime,
-        currentVideo: currentVideo.current,
+        currentVideoRef: currentVideo,
         bufferedTime,
         videoDuration,
+        isMuted,
+        volume,
         setBufferedTime,
         setCurrentTime,
         setVideoDuration,
+        setIsMuted,
+        setVolume,
         broadcastVideoChange,
         broadcastVideoPlaybackRateChange,
         broadcastVideoPause,
         broadcastVideoPlay,
         brodacastVideoSeek,
+        broadcastVideoSync: syncVideoState,
         getCurrentVideoTime,
         onPause,
         onPlay,
         onSeek,
         onVideoPlaybackRateChange,
-        onVideoChange
+        onVideoChange,
+        onVideoSync
     }; 
 
 }
