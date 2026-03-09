@@ -16,6 +16,8 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
   const {
     currentVideoRef: currentContent,
     videoDuration,
+    isMuted,
+    volume,
     setBufferedTime,
     setCurrentTime,
     setVideoDuration,
@@ -45,7 +47,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
   // Register remote action callbacks
   useEffect(() => {
     onRemotePlay(() => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player) return;
       markRemoteAction();
       player.seekTo(currentContent.current?.videoTime, true);
@@ -53,28 +55,28 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     });
 
     onRemotePause(() => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player) return;
       markRemoteAction();
       player.pauseVideo();
     });
 
     onRemoteSeek((time: number) => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player) return;
       markRemoteAction();
       player.seekTo(time, true);
     });
 
     onRemotePlaybackRateChange((video) => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player || !video) return;
       markRemoteAction();
       player.setPlaybackRate(video.playbackRate);
     });
 
     onRemoteVideoSync((_video) => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player || !currentContent.current) return;
 
       markRemoteAction();
@@ -82,12 +84,29 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
       player.seekTo(currentContent.current.videoTime, true);
       syncVideoState();
     });
-  }, [getPlayer, markRemoteAction, syncVideoState, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange, onRemoteVideoSync]);
+  }, [markRemoteAction, syncVideoState, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange, onRemoteVideoSync]);
+
+  // Sync volume and muted state to YouTube player
+  useEffect(() => {
+    const player = playerRef.current?.getInternalPlayer();
+    if (!player) return;
+
+    try {
+      if (isMuted) {
+        player.mute();
+      } else {
+        player.unMute();
+      }
+      player.setVolume(volume * 100); // YouTube expects 0-100
+    } catch {
+      // Player might not be ready yet
+    }
+  }, [isMuted, volume]);
 
   // Poll current time and buffered fraction
   useEffect(() => {
     const interval = setInterval(async () => {
-      const player = getPlayer();
+      const player = playerRef.current?.getInternalPlayer();
       if (!player) return;
 
       try {
@@ -107,15 +126,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     }, 250);
 
     return () => clearInterval(interval);
-  }, [
-    getPlayer, 
-    setCurrentTime, 
-    setBufferedTime, 
-    setVideoDuration, 
-    videoDuration, 
-    playerRef, 
-    playerRef.current
-  ]);
+  }, [setCurrentTime, setBufferedTime, setVideoDuration, videoDuration]);
 
   // YouTube ready — sync initial state
   const handleReady = useCallback(
@@ -125,6 +136,14 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
 
       const duration = await player.getDuration();
       setVideoDuration(duration);
+
+      // Set initial volume and muted state
+      if (isMuted) {
+        player.mute();
+      } else {
+        player.unMute();
+      }
+      player.setVolume(volume * 100); // YouTube expects 0-100
 
       if (currentContent.current?.videoTime) {
         player.seekTo(currentContent.current.videoTime, true);
@@ -136,7 +155,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
         player.pauseVideo();
       }
     },
-    [currentContent, setVideoDuration, markRemoteAction],
+    [currentContent, setVideoDuration, markRemoteAction, isMuted, volume],
   );
 
   // Iframe play — broadcast only if triggered by user
