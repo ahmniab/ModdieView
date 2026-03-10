@@ -1,7 +1,7 @@
 import menuItems from "./MenuItems";
 interface Props {
-  activeTab: "chat" | "search" | null;
-  setActiveTab: (tab: "chat" | "search") => void;
+  activeTab: "chat" | "search" | "home";
+  setActiveTab: (tab: "chat" | "search" | "home") => void;
 }
 
 const BottomMenu = ({ activeTab, setActiveTab }: Props) => {
