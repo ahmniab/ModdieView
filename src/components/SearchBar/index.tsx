@@ -1,91 +1,125 @@
-import SearchTextBox from './SearchTextBox';
-import { useState, useContext, useEffect, useRef } from 'react';
-import { useDebounce } from '../../hooks/useDebounce';
-import YoutubeContext from '../../contexts/YoutubeContext';
-import SearchResults from './SearchResults';
+import SearchTextBox from "./SearchTextBox";
+import { useState, useContext, useEffect, useRef } from "react";
+import { useDebounce } from "../../hooks/useDebounce";
+import YoutubeContext from "../../contexts/YoutubeContext";
+import SearchResults from "./SearchResults";
 import { useClickOutside } from "@/hooks/useClickOutside";
-import type { YoutubeVideo } from '@/types';
+import type { YoutubeVideo } from "@/types";
+import { createVideoContent } from "@/utils/video";
+import { useRoom } from "@/contexts/RoomContext";
+import IoEvents from "@/utils/ioEventsNames";
 
-const SearchBar = ({ video } : { video : (url: string) => void}) => {
-    const [search, setSearch] = useState<string>("");
-    const [shouldShowResults, setShouldShowResults] = useState<boolean>(true);
-    const debouncedSearch = useDebounce(search, 300);
-    const { useYoutubeSearch } = useContext(YoutubeContext);
-    const { data, isLoading, isError } = useYoutubeSearch(debouncedSearch);
-    const trimmed = search.trim();
-    const handleSubmit = () => {
-        if (!trimmed) return;
-        if (trimmed.startsWith("http")) {
-            video(trimmed);
-        }
-        setSearch("");
-        setShouldShowResults(false);
-    };
-    const handleSelect = (v : YoutubeVideo) => {
-        video(`https://www.youtube.com/watch?v=${v.id}`);
-        setSearch(""); 
-        setShouldShowResults(false); 
-    };
-    const containerRef = useRef<HTMLDivElement>(null);
-    useClickOutside(containerRef, () => setShouldShowResults(false));
-    const [activeIndex, setActiveIndex] = useState<number>(-1);
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!shouldShowResults || !data?.length) return;
+const SearchBar = () => {
+  const { socket } = useRoom();
 
-            if (e.key === "ArrowDown") {
-            e.preventDefault();
-            setActiveIndex((prev) => ( prev == data.length-1? -1 : prev+1));
-            }
+  const [search, setSearch] = useState("");
+  const [shouldShowResults, setShouldShowResults] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
-            if (e.key === "ArrowUp") {
-            e.preventDefault();
-            setActiveIndex((prev) =>
-                (prev <= 0 ? - 1 : prev - 1)
-        );
+  const debouncedSearch = useDebounce(search, 300);
+  const { useYoutubeSearch } = useContext(YoutubeContext);
+  const { data, isLoading, isError } = useYoutubeSearch(debouncedSearch);
+  const trimmed = search.trim();
+  const video = createVideoContent(trimmed);
+
+  const handleSubmit = () => {
+    if (!trimmed) return;
+
+    if (video) {
+      socket?.emit(IoEvents.CONTENT_CHANGE, video);
+    } else if (data?.length) {
+      handleSelect(data[0]);
     }
-    
-            if (e.key === "Enter" && activeIndex >= 0) {
-                e.preventDefault();
-                handleSelect(data[activeIndex]);
-            }
+    setSearch("");
+    setShouldShowResults(false);
+  };
+
+  const handleSelect = (v: YoutubeVideo) => {
+    const video = createVideoContent(
+      `https://www.youtube.com/watch?v=${v.id}`
+    );
+    socket?.emit(IoEvents.CONTENT_CHANGE, video);
+
+    setSearch("");
+    setShouldShowResults(false);
+  };
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  useClickOutside(containerRef, () => setShouldShowResults(false));
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        const target = e.target as HTMLElement;
+        if ( target && 
+            (target.tagName === "INPUT" ||
+            target.tagName === "TEXTAREA" ||
+            target.isContentEditable) &&
+            !containerRef.current?.contains(target)
+      ){ return;}
+      if (e.key === "Enter") {
+        e.preventDefault();
+
+        if (activeIndex >= 0 && data) {
+          handleSelect(data[activeIndex]);
+        } else {
+          handleSubmit();
+        }
+
+        return;
+      }
+
+      if (!shouldShowResults || !data?.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          prev === data.length - 1 ? -1 : prev + 1
+        );
+      }
+
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveIndex((prev) => (prev <= 0 ? -1 : prev - 1));
+      }
     };
 
-  window.addEventListener("keydown", handleKeyDown);
-  return () => window.removeEventListener("keydown", handleKeyDown);
-}, [data, activeIndex, shouldShowResults]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [data, activeIndex, shouldShowResults]);
 
-    useEffect(() => {
-        setActiveIndex(-1);
-    }, [search]);
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [search]);
 
-    useEffect(() => {
-        if (!trimmed) {
-            setShouldShowResults(false);
-        } else {
-            setShouldShowResults(true);
-        }
-    }, [search]);
+  useEffect(() => {
+    setShouldShowResults(Boolean(trimmed));
+  }, [trimmed]);
 
-    return (
-        <div className="max-w-md mx-auto" ref={containerRef}>
-            <SearchTextBox search={search} setSearch={setSearch}
-            onEnter={() => {
-                if (activeIndex >= 0 && data) {
-                    handleSelect(data[activeIndex]);
-                } else {
-                    handleSubmit();
-                }}}
-            />
-            {shouldShowResults && <SearchResults
-                videos={data} 
-                isLoading={isLoading} 
-                isError={isError}
-                activeIndex={activeIndex}
-                onSelect={handleSelect}
-            />}
-        </div>
-    )
-}
+  return (
+    <div className="max-w-md mx-auto" ref={containerRef}>
+      <SearchTextBox
+        search={search}
+        setSearch={setSearch}
+        onEnter={() => {
+          if (activeIndex >= 0 && data) {
+            handleSelect(data[activeIndex]);
+          } else {
+            handleSubmit();
+          }
+        }}
+      />
 
-export default SearchBar
+      {shouldShowResults && (
+        <SearchResults
+          videos={data}
+          isLoading={isLoading}
+          isError={isError}
+          activeIndex={activeIndex}
+          onSelect={handleSelect}
+        />
+      )}
+    </div>
+  );
+};
+
+export default SearchBar;
