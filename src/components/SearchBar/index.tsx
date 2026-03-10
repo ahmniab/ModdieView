@@ -15,12 +15,23 @@ const SearchBar = () => {
   const [search, setSearch] = useState("");
   const [shouldShowResults, setShouldShowResults] = useState(true);
   const [activeIndex, setActiveIndex] = useState(-1);
-
+  const onActiveIndexChange = (activeIndex: number) =>{
+    setActiveIndex(activeIndex);
+  }
   const debouncedSearch = useDebounce(search, 300);
   const { useYoutubeSearch } = useContext(YoutubeContext);
   const { data, isLoading, isError } = useYoutubeSearch(debouncedSearch);
   const trimmed = search.trim();
   const video = createVideoContent(trimmed);
+  const usingKeyboard = useRef(false);
+  useEffect(() => {
+  const handleMouseMove = () => {
+    usingKeyboard.current = false;
+  };
+
+  window.addEventListener("mousemove", handleMouseMove);
+  return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   const handleSubmit = () => {
     if (!trimmed) return;
@@ -71,6 +82,7 @@ const SearchBar = () => {
       if (!shouldShowResults || !data?.length) return;
 
       if (e.key === "ArrowDown") {
+        usingKeyboard.current = true;
         e.preventDefault();
         setActiveIndex((prev) =>
           prev === data.length - 1 ? -1 : prev + 1
@@ -78,6 +90,7 @@ const SearchBar = () => {
       }
 
       if (e.key === "ArrowUp") {
+        usingKeyboard.current = true;
         e.preventDefault();
         setActiveIndex((prev) => (prev <= 0 ? -1 : prev - 1));
       }
@@ -115,7 +128,9 @@ const SearchBar = () => {
           isLoading={isLoading}
           isError={isError}
           activeIndex={activeIndex}
+          onActiveIndexChange={onActiveIndexChange}
           onSelect={handleSelect}
+          usingKeyboard={usingKeyboard}
         />
       )}
     </div>
