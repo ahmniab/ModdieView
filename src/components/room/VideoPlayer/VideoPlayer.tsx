@@ -7,19 +7,20 @@ import UrlVideoPlayer from "./UrlVideoPlayer";
 import VideoToolBar from "./VideoToolBar";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
+import type { RoomContent } from "@/types";
 
   
 interface VideoPlayerProps {
-  video: string;
+  video: RoomContent;
   userName: string;
 }
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
-  const extractedVideo = extractVideoUrl(video);
+  const extractedVideo = extractVideoUrl(video?.url ?? "");
  const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
-  const hasError = errorVideoId === video;  
+  const hasError = errorVideoId === video?.url;  
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const toggleFullscreen = () => {
     const el = videoContainerRef.current;
@@ -35,10 +36,9 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
     callback: toggleFullscreen
   });
 
-
   return (
       <div ref={videoContainerRef} className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
-      border border-gray-700 overflow-hidden  relative flex flex-col">
+      border border-gray-700 overflow-hidden relative flex flex-col">
 
         <div className="flex-1 min-h-0">
         { !extractedVideo || hasError ? (
@@ -51,30 +51,29 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
             </div>
           </div>
 
-        ) : ( "platform" in extractedVideo ? (
-              ( extractedVideo.platform === "youtube") ? (
+        ) : ( extractedVideo.platform === "youtube") ? (
 
-                <YouTubePlayer id={extractedVideo.id} 
-                  onError={(msg) => {
-                    setErrorMessage(msg);
-                    setErrorVideoId(video);
-                  }}
-                />)
-                :(
-                  
-                  <VimeoPlayer videoId={extractedVideo.id} 
-                  onError={(msg) => {
-                    setErrorMessage(msg);
-                    setErrorVideoId(video);
-                  }} />
-                ))
-                : (
-                  <UrlVideoPlayer 
-                    src={extractedVideo.url}
-                    setErrorMessage={setErrorMessage}
-                    setError={setError}
-                  />
-          ))}
+              <YouTubePlayer id={extractedVideo.id} 
+                onError={(msg) => {
+                  setErrorMessage(msg);
+                  setErrorVideoId(video.url);
+                }}
+              />)
+              : (extractedVideo.platform === "vimeo") ?
+                (
+                <VimeoPlayer videoId={extractedVideo.id} 
+                onError={(msg) => {
+                  setErrorMessage(msg);
+                  setErrorVideoId(video.url);
+                }} />
+              )
+              : (
+                <UrlVideoPlayer 
+                  src={extractedVideo.url}
+                  setErrorMessage={setErrorMessage}
+                  setError={setError}
+                />
+          )}
           </div>
           <VideoToolBar />
       </div>
