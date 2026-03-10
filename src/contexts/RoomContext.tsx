@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, useEffect } from "react";
+import { useContext, createContext, useState, useEffect, useRef } from "react";
 import type { ChatReaction, Room } from "../types";
 import { io, Socket } from "socket.io-client";
 import { SERVER_URL } from "../config";
@@ -6,6 +6,7 @@ import type { Message, IoChatMessage } from "../types";
 import React from "react";
 import IoEvents from "@/utils/ioEventsNames";
 import type { Users } from "../types";
+import type { RoomContent } from "@/types/room";
 
 interface RoomContextValue {
     socket: Socket | undefined;
@@ -14,6 +15,8 @@ interface RoomContextValue {
     room: Room | undefined;
     users: Users;
     chatMsgs?: Message[];
+    currentVideo: RoomContent | null;
+    setCurrentVideo: React.Dispatch<React.SetStateAction<RoomContent | null>>;
     joinRoom: (roomId: string) => boolean;
     setUserName: (name: string) => void;
     setRoomName: (name: string) => void;
@@ -28,7 +31,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [ chatMsgs, setChatMsgs ] = useState<Message[]>([]);
     const [users, setUsers] = useState<Users>({});
     const [name, setName] = useState<string>("");
-    
+    const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
     
     useEffect(() => {
         if (!roomId) return;
@@ -37,11 +40,12 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             withCredentials: true
         });
         newSocket.on(IoEvents.CONNECT, () => {
-            newSocket.emit(IoEvents.GET_ROOM_DATA);
             setSocket(newSocket);
+            newSocket.emit(IoEvents.GET_ROOM_DATA);
         });
         newSocket.on(IoEvents.ROOM_DATA, (updatedRoom: Room) => {
             setRoom(updatedRoom);
+            setCurrentVideo(updatedRoom.roomContent);
             setName(updatedRoom.roomName);
             setUsers(updatedRoom.users);
         });
@@ -84,6 +88,11 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             setName(newName);
         });
 
+        ///////////////// Video //////////////////////
+        newSocket.on(IoEvents.CONTENT_CHANGE, (updatedVideo: RoomContent) => {
+            setCurrentVideo(updatedVideo);
+        });
+
         return () => {
             newSocket.disconnect();
         };
@@ -98,7 +107,10 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         room,
         chatMsgs,
         users,
+        currentVideo,
+        setCurrentVideo,
         joinRoom: (roomId: string) => {
+            setCurrentVideo(null);
             setRoomId(roomId);
             return true;
         },
