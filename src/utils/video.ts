@@ -1,4 +1,4 @@
-import type { Video, YoutubeVideo, VimeoVideo } from "@/types";
+import type { Video, YoutubeVideo, VimeoVideo, RoomContent } from "@/types";
 
 export const extractVideoUrl = (input: string): Video | null => {
     const trimmed=input.trim();
@@ -55,7 +55,7 @@ export const extractVideoUrl = (input: string): Video | null => {
 //     `^https?:\\/\\/[^\\s]+\\.(${extensionPattern})(\\?.*)?$`,"i")
 //     .test(trimmed);
 //   if(urlRegex) {
-    return { url: trimmed };
+    return { url: trimmed, platform: "directMedia" };
 //   }
 //   return null;
 }; 
@@ -65,4 +65,20 @@ export const calculateVideoTime = (currentTime: number, lastTimePlayed: number) 
     const now = new Date().getTime();
     const elapsed = (now - lastTimePlayed) / 1000;
     return currentTime + elapsed;
-}
+};
+
+export const createVideoContent = (url: string): RoomContent => {
+  const extracted = extractVideoUrl(url);
+  if (!extracted) return null;
+  const match = url.match(/[?&](?:t|start)=(\d+)/);
+  const startTime = match ? Number(match[1]) : 0;
+
+  return {
+    ...extracted,
+    url,
+    videoTime: startTime,
+    isPlaying: false,
+    lastTimePlayed: Date.now(),
+    playbackRate: 1
+  };
+};
