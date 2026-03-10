@@ -12,5 +12,6 @@ export type {
     UserData,
     Video, 
     VideoPlaylist, 
+    RoomContent,
     CreatedRoom 
 } from "./room"
