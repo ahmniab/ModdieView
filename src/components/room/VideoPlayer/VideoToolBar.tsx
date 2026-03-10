@@ -7,11 +7,7 @@ import useRoomVideo from "@/hooks/useRoomVideo";
 import { formatDurationWithSeconds } from "@/utils";
 import { useState, useRef } from "react";
 
-interface VideoToolBarProps {
-}
-
-const VideoToolBar: React.FC<VideoToolBarProps> = ({ 
-}) => {
+const VideoToolBar: React.FC = () => {
     const { 
         playing, 
         currentTime, 
@@ -21,10 +17,11 @@ const VideoToolBar: React.FC<VideoToolBarProps> = ({
         volume,
         setIsMuted,
         setVolume,
-        brodacastVideoSeek, 
+        broadcastVideoSeek, 
         broadcastVideoPlay, 
         broadcastVideoPause 
     } = useRoomVideo();
+    const syncedTime = currentTime;
     const [nigativeTime, setNegativeTime] = useState<boolean>(false);
     const isInteractingRef = useRef<boolean>(false);
 
@@ -54,14 +51,15 @@ const VideoToolBar: React.FC<VideoToolBarProps> = ({
             <div className="flex gap-1 cursor-default select-none bg-slate-800/20 rounded-lg p-0.5 z-40" onClick={() => {setNegativeTime(!nigativeTime)}}>
                 {nigativeTime ? '-' : '\u00A0'} 
                 <span className="text-purple-300">
-                    { formatDurationWithSeconds(nigativeTime ? videoDuration - currentTime : currentTime)}
+                    { formatDurationWithSeconds(nigativeTime ? videoDuration - syncedTime : syncedTime)}
                 </span>
             </div>
             <div className="w-full mt-auto mb-auto pb-4">
                 <VideoSeekSlider
+                    key={videoDuration}
                     max={videoDuration * 1000}
-                    currentTime={currentTime * 1000}
-                    onChange={(time) => brodacastVideoSeek(time / 1000)}
+                    currentTime={syncedTime * 1000}
+                    onChange={(time) => broadcastVideoSeek(time / 1000)}
                     bufferTime={bufferedTime * 1000}
                     minutesPrefix="00:"
                     secondsPrefix="00:"
