@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { ChatReaction, IoChatMessage, Message } from "@/types";
+import type { ChatReaction, IoChatMessage, Message, RoomContent } from "@/types";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import BottomMenu from "./smallSreenMenu/BottomMenu";
 import BottomContent from "./smallSreenMenu/BottomContent";
@@ -7,9 +7,8 @@ import FloatingSidebar from "./smallSreenMenu/FloatingSidebar";
 import { FaGripLinesVertical } from "react-icons/fa";
 
 interface Props {
-  video: string;
+  video: RoomContent;
   userName: string;
-  onVideoChange: (url: string) => (void);
   userId: string;
   messages: Message[];
   addMessage: (newMessage: IoChatMessage) => void;
@@ -19,7 +18,6 @@ interface Props {
 const MobileLayout = ({
   video,
   userName,
-  onVideoChange,
   userId,
   messages,
   addMessage,
@@ -41,7 +39,6 @@ const MobileLayout = ({
 
           <div className="flex-1 min-h-0 overflow-y-auto">
             <BottomContent
-              onVideoChange={onVideoChange}
               userName={userName}
               activeTab={activeTab}
               messages={messages}

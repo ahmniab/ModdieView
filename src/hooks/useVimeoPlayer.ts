@@ -35,7 +35,7 @@ export const useVimeoPlayer = (
       const player = getPlayer();
       if (!player) return;
       isRemoteAction.current = true;
-      player.setCurrentTime(currentContent.current?.videoTime || 0).catch(() => {});
+      player.setCurrentTime(currentContent?.videoTime || 0).catch(() => {});
       player.play().catch(() => {});
     });
 
@@ -98,10 +98,10 @@ export const useVimeoPlayer = (
         await player.setMuted(isMuted);
         await player.setVolume(volume);
 
-        if (currentContent.current?.videoTime) {
-          await player.setCurrentTime(currentContent.current.videoTime);
+        if (currentContent?.videoTime) {
+          await player.setCurrentTime(currentContent.videoTime);
         }
-        if (currentContent.current?.isPlaying) {
+        if (currentContent?.isPlaying) {
           await player.play();
         }
       } catch {

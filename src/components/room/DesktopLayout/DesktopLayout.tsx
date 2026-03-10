@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import type { IoChatMessage, Message } from "@/types";
+import type { IoChatMessage, Message, RoomContent } from "@/types";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import ChatPanel from "../../chat/ChatPanel";
 import ResizeHandle from "./ResizeHandle";
@@ -8,7 +8,7 @@ import { default as UsersPanel} from "./UsersPanel"
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 
 interface Props {
-  video: string;
+  video: RoomContent;
   userName: string;
   chatMsgs?: Message[];
   userId?: string;

@@ -1,16 +1,15 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { RoomModal, RoomHeader } from "@/components/room";
 import MobileLayout from "../components/room/MobileLayout/MobileLayout";
 import DesktopLayout from "../components/room/DesktopLayout/DesktopLayout";
 import useChat from "@/hooks/useChat";
 
-const RoomPage = () => {
-  const [video, setVideo] = useState<string>("https://youtu.be/pF-qQJDoVC8?si=LQJN2c2t1-yBajFS");
-  const { 
+const RoomPage = () => {  const { 
     socket, 
     room, 
+    currentVideo,
     joinRoom, 
     setUserName 
   } = useRoom();
@@ -50,14 +49,13 @@ useEffect(() => {
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
       <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
-        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} onVideoChange={setVideo} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
+        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
 
         <div className={`relative flex flex-1 min-h-0 overflow-hidden bg-gray-900 ${isBelowMd ? "flex-col" : "flex-row"}`}>
 
           {isBelowMd? (
             <MobileLayout
-              video={video}
-              onVideoChange={setVideo}
+              video={currentVideo}
               userId={userId}
               messages={messages || []}
               addMessage={sendMessage}
@@ -66,7 +64,7 @@ useEffect(() => {
             />
            ) : (
             <DesktopLayout 
-              video={video}
+              video={currentVideo}
               userId={userId} 
               chatMsgs={messages} 
               sendMessage={sendMessage} 

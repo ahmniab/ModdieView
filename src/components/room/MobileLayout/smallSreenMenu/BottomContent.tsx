@@ -24,7 +24,6 @@ const BottomContent = ({
   userId,
   userName,
   onClose,
-  onVideoChange,
 }: Props) => {
   const { users } = useRoom();
   const usersCount = Object.keys(users ?? {}).length;
@@ -48,7 +47,7 @@ const BottomContent = ({
 
       {activeTab === "search" && (
         <div className="h-full bg-gray-800 p-3 border-3 border-gray-700 flex justify-center">
-          <SearchBar video={onVideoChange}/>
+          <SearchBar />
         </div>
       )}
 

@@ -14,13 +14,12 @@ import SettingsModal from "./SettingsModal";
 interface RoomHeaderPrpos {
     isBelowMd : boolean;
     roomLink: string;
-    onVideoChange: (url: string) => (void);
     toggleUsersPanel: () => void;
     showUsersPanel: boolean;
 }
 
 
-const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel, showUsersPanel }: RoomHeaderPrpos ) => {
+const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: RoomHeaderPrpos ) => {
   const { name, setRoomName } = useRoom();
   const [currentName, setCurrentName] = useState<string>(name);
   const navigate = useNavigate();
@@ -80,7 +79,7 @@ const RoomHeader = ({ isBelowMd, roomLink, onVideoChange, toggleUsersPanel, show
 
         {isBelowMd ? null : 
         <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
-            <SearchBar video={onVideoChange} />
+            <SearchBar/>
         </div>}
 
         <div className='absolute right-0 pr-2 sm:pr-5
