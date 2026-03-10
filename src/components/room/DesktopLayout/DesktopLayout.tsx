@@ -68,7 +68,7 @@ const DesktopLayout = ({
   return (
     <div className="flex flex-1 bg-gray-900 overflow-hidden">
       {showUsersPanel && (
-        <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto ">
+        <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto custom-scroll">
           <UsersPanel userId={userId}/>
         </div> 
       )}

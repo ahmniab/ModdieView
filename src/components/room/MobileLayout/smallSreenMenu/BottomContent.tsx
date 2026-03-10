@@ -31,7 +31,7 @@ const BottomContent = ({
   if (!activeTab) return null;
 
   return (
-    <div className="h-full overflow-y-auto w-full">
+    <div className="h-full overflow-y-auto w-full custom-scroll">
 
       {activeTab === "chat" && (
         <ChatPanel
