@@ -21,7 +21,13 @@ export const extractVideoUrl = (input: string): Video | null => {
             height: 0,
       }
     };
-    return yt;
+    return {
+      ...yt,
+      videoTime: 0,
+      isPlaying: false,
+      lastTimePlayed: Date.now(),
+      playbackRate: 1
+    };
   };
 
   const vmRegex = new RegExp(
@@ -42,7 +48,13 @@ export const extractVideoUrl = (input: string): Video | null => {
         thumbnail_height: 0,
       },
     };
-    return vimeo;
+    return {
+      ...vimeo,
+      videoTime: 0,
+      isPlaying: false,
+      lastTimePlayed: Date.now(),
+      playbackRate: 1
+    };
   }
 
 //   const videoExtensions = [
@@ -55,7 +67,14 @@ export const extractVideoUrl = (input: string): Video | null => {
 //     `^https?:\\/\\/[^\\s]+\\.(${extensionPattern})(\\?.*)?$`,"i")
 //     .test(trimmed);
 //   if(urlRegex) {
-    return { url: trimmed, platform: "directMedia" };
+    return { 
+      url: trimmed, 
+      platform: "directMedia", 
+      videoTime: 0, 
+      isPlaying: false, 
+      lastTimePlayed: Date.now(), 
+      playbackRate: 1 
+    };
 //   }
 //   return null;
 }; 
@@ -67,18 +86,3 @@ export const calculateVideoTime = (currentTime: number, lastTimePlayed: number) 
     return currentTime + elapsed;
 };
 
-export const createVideoContent = (url: string): RoomContent => {
-  const extracted = extractVideoUrl(url);
-  if (!extracted) return null;
-  const match = url.match(/[?&](?:t|start)=(\d+)/);
-  const startTime = match ? Number(match[1]) : 0;
-
-  return {
-    ...extracted,
-    url,
-    videoTime: startTime,
-    isPlaying: false,
-    lastTimePlayed: Date.now(),
-    playbackRate: 1
-  };
-};
