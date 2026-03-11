@@ -5,12 +5,11 @@ import YoutubeContext from "../../contexts/YoutubeContext";
 import SearchResults from "./SearchResults";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import type { YoutubeVideo } from "@/types";
-import { createVideoContent } from "@/utils/video";
+import { extractVideoUrl } from "@/utils/video";
 import { useRoom } from "@/contexts/RoomContext";
-import IoEvents from "@/utils/ioEventsNames";
 
 const SearchBar = () => {
-  const { socket } = useRoom();
+  const { changeRoomContent } = useRoom();
 
   const [search, setSearch] = useState("");
   const [shouldShowResults, setShouldShowResults] = useState(true);
@@ -22,7 +21,7 @@ const SearchBar = () => {
   const { useYoutubeSearch } = useContext(YoutubeContext);
   const { data, isLoading, isError } = useYoutubeSearch(debouncedSearch);
   const trimmed = search.trim();
-  const video = createVideoContent(trimmed);
+  const video = extractVideoUrl(trimmed);
   const usingKeyboard = useRef(false);
   useEffect(() => {
   const handleMouseMove = () => {
@@ -37,7 +36,7 @@ const SearchBar = () => {
     if (!trimmed) return;
 
     if (video) {
-      socket?.emit(IoEvents.CONTENT_CHANGE, video);
+      changeRoomContent(video);
     } else if (data?.length) {
       handleSelect(data[0]);
     }
@@ -46,10 +45,14 @@ const SearchBar = () => {
   };
 
   const handleSelect = (v: YoutubeVideo) => {
-    const video = createVideoContent(
-      `https://www.youtube.com/watch?v=${v.id}`
-    );
-    socket?.emit(IoEvents.CONTENT_CHANGE, video);
+    changeRoomContent({
+      ...v,
+      platform: "youtube",
+      videoTime: 0,
+      isPlaying: false,
+      lastTimePlayed: Date.now(),
+      playbackRate: 1
+    });
 
     setSearch("");
     setShouldShowResults(false);
