@@ -1,5 +1,4 @@
 import { default as YouTubePlayer } from "../VideoPlayer/YouTubePlayer";
-import { extractVideoUrl } from "@/utils";
 import { MdErrorOutline } from "react-icons/md";
 import { useState } from "react";
 import { default as VimeoPlayer} from "./VimeoPlayer";
@@ -7,20 +6,17 @@ import UrlVideoPlayer from "./UrlVideoPlayer";
 import VideoToolBar from "./VideoToolBar";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
-import type { RoomContent } from "@/types";
+import type { Video } from "@/types";
 
   
 interface VideoPlayerProps {
-  video: RoomContent;
+  video: Video;
   userName: string;
 }
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
-  const extractedVideo = extractVideoUrl(video?.url ?? "");
- const [ error, setError ] = useState(false);
+  const [ error, setError ] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [errorVideoId, setErrorVideoId] = useState<string | null>(null);
-  const hasError = errorVideoId === video?.url;  
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const toggleFullscreen = () => {
     const el = videoContainerRef.current;
@@ -41,7 +37,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
       border border-gray-700 overflow-hidden relative flex flex-col">
 
         <div className="flex-1 min-h-0">
-        { !extractedVideo || hasError ? (
+        { !video || error ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
             <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
               <MdErrorOutline className="inline size-10 sm:size-14 mr-2"/>Error
@@ -51,25 +47,25 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
             </div>
           </div>
 
-        ) : ( extractedVideo.platform === "youtube") ? (
+        ) : ( video.platform === "youtube") ? (
 
-              <YouTubePlayer id={extractedVideo.id} 
+              <YouTubePlayer id={video.id} 
                 onError={(msg) => {
                   setErrorMessage(msg);
-                  setErrorVideoId(video.url);
+                  setError(true);
                 }}
               />)
-              : (extractedVideo.platform === "vimeo") ?
+              : (video.platform === "vimeo") ?
                 (
-                <VimeoPlayer videoId={extractedVideo.id} 
+                <VimeoPlayer videoId={video.id} 
                 onError={(msg) => {
                   setErrorMessage(msg);
-                  setErrorVideoId(video.url);
+                  setError(true);
                 }} />
               )
               : (
                 <UrlVideoPlayer 
-                  src={extractedVideo.url}
+                  src={video.url}
                   setErrorMessage={setErrorMessage}
                   setError={setError}
                 />
