@@ -6,9 +6,8 @@ import MobileLayout from "../components/room/MobileLayout/MobileLayout";
 import DesktopLayout from "../components/room/DesktopLayout/DesktopLayout";
 import useChat from "@/hooks/useChat";
 
-const RoomPage = () => {  const { 
-    socket, 
-    room, 
+const RoomPage = () => {  
+  const { 
     currentVideo,
     joinRoom, 
     setUserName 
@@ -24,7 +23,7 @@ const RoomPage = () => {  const {
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState(true);
   const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
-  const roomLink = (window.location.origin || `https://moddieview.com/room`) + `/${roomId}`;
+  const roomLink = (window.location.origin || `https://moddieview.com`) + `/room/live/${roomId}`;
   const [showUsersPanel, setShowUsersPanel] = useState(true);
   const toggleUsersPanel = () => {
     setShowUsersPanel(prev => !prev);
