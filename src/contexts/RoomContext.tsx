@@ -20,6 +20,7 @@ interface RoomContextValue {
     joinRoom: (roomId: string) => boolean;
     setUserName: (name: string) => void;
     setRoomName: (name: string) => void;
+    changeRoomContent: (content: RoomContent) => void;
 }
 
 export const RoomContext = createContext<RoomContextValue | null>(null);
@@ -90,6 +91,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
 
         ///////////////// Video //////////////////////
         newSocket.on(IoEvents.CONTENT_CHANGE, (updatedVideo: RoomContent) => {
+            console.log("Content changed:", updatedVideo);
             setCurrentVideo(updatedVideo);
         });
 
@@ -128,6 +130,13 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             }
             socket.emit(IoEvents.SET_ROOM_NAME, name);
         },
+        changeRoomContent: (content: RoomContent) => {
+            if (!socket) {
+                console.warn("Socket not initialized yet");
+                return;
+            }
+            socket.emit(IoEvents.CONTENT_CHANGE, content);
+        }
     };
 
 
