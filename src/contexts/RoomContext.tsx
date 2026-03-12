@@ -10,6 +10,7 @@ import type { RoomContent } from "@/types/room";
 
 interface RoomContextValue {
     socket: Socket | undefined;
+    isConnected: boolean;
     name: string;
     roomId: string;
     room: Room | undefined;
@@ -34,6 +35,8 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [users, setUsers] = useState<Users>({});
     const [name, setName] = useState<string>("");
     const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
+    const [ isConnected, setIsConnected ] = useState<boolean>(false);
+    
     useEffect(() => {
         if (!roomId) return;
         const newSocket = io(`${SERVER_URL}/${roomId}`, {
@@ -45,6 +48,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         });
         newSocket.on(IoEvents.CONNECT, () => {
             setSocket(newSocket);
+            setIsConnected(true);
             newSocket.emit(IoEvents.GET_ROOM_DATA);
         });
         newSocket.on(IoEvents.ROOM_DATA, (updatedRoom: Room) => {
@@ -98,22 +102,24 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             setCurrentVideo(updatedVideo);
         });
 
+        newSocket.on(IoEvents.DISCONNECT, () => {
+            setIsConnected(false);
+            handleDisconnect();
+        });
+
         return () => {
             newSocket.disconnect();
+            setIsConnected(false);
             newSocket.off(IoEvents.CONNECT);
+            newSocket.off(IoEvents.DISCONNECT);
             newSocket.off(IoEvents.ROOM_DATA);
             newSocket.off(IoEvents.USERS_UPDATE);
             newSocket.off(IoEvents.RESIEVE_CHAT_MESSAGE);
             newSocket.off(IoEvents.RESIEVE_CHAT_REACT);
             newSocket.off(IoEvents.SET_ROOM_NAME);
             newSocket.off(IoEvents.CONTENT_CHANGE);
-            setChatMsgs([]);
-            setUsers({});
-            setRoom(undefined);
-            setCurrentVideo(null);
-            setName("");
-            setSocket(undefined);
-            setRoomId("");
+            newSocket.off(IoEvents.DISCONNECT);
+            newSocket.disconnect();
         };
 
     }, [roomId]);
@@ -121,6 +127,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
 
     const contextValue: RoomContextValue = {
         socket,
+        isConnected,
         name,
         roomId,
         room,
@@ -160,15 +167,20 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
                 return;
             }
             socket.disconnect();
-            setChatMsgs([]);
-            setUsers({});
-            setRoom(undefined);
-            setCurrentVideo(null);
-            setName("");
-            setSocket(undefined);
-            setRoomId("");
+            handleDisconnect();
         }
     };
+
+    const handleDisconnect = () => {
+        setIsConnected(false);
+        setRoom(undefined);
+        setCurrentVideo(null);
+        setSocket(undefined);
+        setRoomId("");
+        setChatMsgs([]);
+        setUsers({});
+        setName("");
+    }
 
 
 
