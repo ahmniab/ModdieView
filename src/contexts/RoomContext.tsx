@@ -1,4 +1,4 @@
-import { useContext, createContext, useState, useEffect, useRef } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 import type { ChatReaction, Room } from "../types";
 import { io, Socket } from "socket.io-client";
 import { SERVER_URL } from "../config";
@@ -21,6 +21,7 @@ interface RoomContextValue {
     setUserName: (name: string) => void;
     setRoomName: (name: string) => void;
     changeRoomContent: (content: RoomContent) => void;
+    quitRoom: () => void;
 }
 
 export const RoomContext = createContext<RoomContextValue | null>(null);
@@ -33,12 +34,14 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [users, setUsers] = useState<Users>({});
     const [name, setName] = useState<string>("");
     const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
-    
     useEffect(() => {
         if (!roomId) return;
         const newSocket = io(`${SERVER_URL}/${roomId}`, {
             transports: ["websocket"],
-            withCredentials: true
+            withCredentials: true,
+            auth: {
+                name: localStorage.getItem("moddieview:name") || "Anonymous Moddie"
+            }
         });
         newSocket.on(IoEvents.CONNECT, () => {
             setSocket(newSocket);
@@ -97,6 +100,20 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
 
         return () => {
             newSocket.disconnect();
+            newSocket.off(IoEvents.CONNECT);
+            newSocket.off(IoEvents.ROOM_DATA);
+            newSocket.off(IoEvents.USERS_UPDATE);
+            newSocket.off(IoEvents.RESIEVE_CHAT_MESSAGE);
+            newSocket.off(IoEvents.RESIEVE_CHAT_REACT);
+            newSocket.off(IoEvents.SET_ROOM_NAME);
+            newSocket.off(IoEvents.CONTENT_CHANGE);
+            setChatMsgs([]);
+            setUsers({});
+            setRoom(undefined);
+            setCurrentVideo(null);
+            setName("");
+            setSocket(undefined);
+            setRoomId("");
         };
 
     }, [roomId]);
@@ -136,6 +153,20 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
                 return;
             }
             socket.emit(IoEvents.CONTENT_CHANGE, content);
+        },
+        quitRoom: () => {
+            if (!socket) {
+                console.warn("Socket not initialized yet");
+                return;
+            }
+            socket.disconnect();
+            setChatMsgs([]);
+            setUsers({});
+            setRoom(undefined);
+            setCurrentVideo(null);
+            setName("");
+            setSocket(undefined);
+            setRoomId("");
         }
     };
 

@@ -20,7 +20,7 @@ interface RoomHeaderPrpos {
 
 
 const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: RoomHeaderPrpos ) => {
-  const { name, setRoomName } = useRoom();
+  const { name, setRoomName, quitRoom } = useRoom();
   const [currentName, setCurrentName] = useState<string>(name);
   const navigate = useNavigate();
   const [showSettings, setShowSettings] = useState(false);
@@ -95,11 +95,16 @@ const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: R
                 {<IoLink size={30} />}
             </button>
             
-            <Link to="/"
+            <div
                 title="Exit (shift+q)"
-                className='cursor-pointer'>
+                className='cursor-pointer'
+                onClick={() => {
+                    quitRoom();
+                    navigate("/");
+                }}
+            >
                 <ImExit className="size-6 sm:size-6"/>
-            </Link>
+            </div>
         </div>
         {showSettings && (
           <SettingsModal onClose={() => setShowSettings(false)} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>

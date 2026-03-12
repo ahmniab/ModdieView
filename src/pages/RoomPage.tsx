@@ -10,6 +10,7 @@ const RoomPage = () => {
   const { 
     currentVideo,
     joinRoom, 
+    quitRoom,
     setUserName 
   } = useRoom();
 
