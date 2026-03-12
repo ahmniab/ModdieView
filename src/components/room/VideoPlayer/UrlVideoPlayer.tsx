@@ -13,7 +13,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
     const { markRemoteAction, isRemoteActionRecent } = useRemoteAction();
 
     const {
-        currentVideoRef : currentContent,
+        currentVideo: currentContent,
         currentTime,
         videoDuration,
         isMuted,
@@ -28,7 +28,6 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         onVideoSync,
         broadcastVideoSync,
     } = useRoomVideo();
-
     // Handle remote actions -> control local video
     useEffect(() => {
         if (!playerRef.current)  return;
@@ -36,20 +35,20 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         const video = playerRef.current;
 
         const syncVideoState = () => {
-            if (!currentContent.current) return;
-            console.log("syncVideoState: currentContent:", currentContent.current);
+            if (!currentContent) return;
+            console.log("syncVideoState: currentContent:", currentContent);
             markRemoteAction();
-            const timeDifference = Math.abs(video.currentTime - currentContent.current.videoTime);
+            const timeDifference = Math.abs(video.currentTime - currentContent.videoTime);
             const needsTimeSync = timeDifference > 0.5;
-            const needsPlayStateSync = video.paused !== !currentContent.current.isPlaying;
+            const needsPlayStateSync = video.paused !== !currentContent.isPlaying;
             
             if (needsTimeSync) {
-                console.log("syncVideoState: time sync needed video.currentTime:", video.currentTime, "currentContent.current.videoTime:", currentContent.current.videoTime);
-                video.currentTime = currentContent.current.videoTime;
+                console.log("syncVideoState: time sync needed video.currentTime:", video.currentTime, "currentContent.videoTime:", currentContent.videoTime);
+                video.currentTime = currentContent.videoTime;
             }
             
             if (needsPlayStateSync) {
-                if (currentContent.current.isPlaying) {
+                if (currentContent.isPlaying) {
                     video.play().catch((e) => {
                         console.error("Autoplay blocked, trying muted:", e);
                         // Try muted autoplay as fallback
@@ -68,7 +67,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         video.ontimeupdate = () => {
             setCurrentTime(video.currentTime);
             console.log("Video time update:", video.currentTime);
-            if (!playerRef.current || currentContent.current === null || isRemoteActionRecent()) return;
+            if (!playerRef.current || currentContent === null || isRemoteActionRecent()) return;
             if(video.currentTime === videoDuration) {
                 playerRef.current.currentTime = 0;
             } 
@@ -77,8 +76,8 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         video.onloadeddata = () => {
             setVideoDuration(video.duration);
             console.log("Video loaded, duration set to:", video.duration);
-            video.currentTime = currentContent.current?.videoTime || 0;
-            console.log("Video current time set to:", currentContent.current?.videoTime);
+            video.currentTime = currentContent?.videoTime || 0;
+            console.log("Video current time set to:", currentContent?.videoTime);
         };
 
         video.onprogress = () => {
@@ -90,9 +89,9 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         onPlay(() => {
             markRemoteAction();
             console.log("Video play event received");
-            console.log("currentContent:", currentContent.current);
-            if (currentContent.current?.videoTime !== undefined) {
-                video.currentTime = currentContent.current.videoTime;
+            console.log("currentContent:", currentContent);
+            if (currentContent?.videoTime !== undefined) {
+                video.currentTime = currentContent.videoTime;
             }
             video.play().catch((e) => {
                 console.error("Error playing video:", e);
@@ -104,7 +103,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
         onPause(() => {
             markRemoteAction();
             console.log("Video pause event received");
-            console.log("currentContent:", currentContent.current);
+            console.log("currentContent:", currentContent);
             console.log("Video paused at time:", video.currentTime, "currentTime from state:", currentTime);
             video.pause();
             console.log("Video paused at time:", video.currentTime, "currentTime from state:", currentTime);
@@ -125,7 +124,6 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
 
     }, [
         playerRef, 
-        playerRef.current, 
         setCurrentTime, 
         setBufferedTime,
         setVideoDuration,
@@ -147,7 +145,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            console.log("timeout: Current time:", currentContent.current?.videoTime);
+            console.log("timeout: Current time:", currentContent?.videoTime);
             broadcastVideoSync();
         }, 1000);
 

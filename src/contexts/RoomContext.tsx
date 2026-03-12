@@ -6,6 +6,7 @@ import type { Message, IoChatMessage } from "../types";
 import React from "react";
 import IoEvents from "@/utils/ioEventsNames";
 import type { Users } from "../types";
+import type { RoomContent } from "@/types/room";
 
 interface RoomContextValue {
     socket: Socket | undefined;
@@ -14,9 +15,13 @@ interface RoomContextValue {
     room: Room | undefined;
     users: Users;
     chatMsgs?: Message[];
+    currentVideo: RoomContent | null;
+    setCurrentVideo: React.Dispatch<React.SetStateAction<RoomContent | null>>;
     joinRoom: (roomId: string) => boolean;
     setUserName: (name: string) => void;
     setRoomName: (name: string) => void;
+    changeRoomContent: (content: RoomContent) => void;
+    quitRoom: () => void;
 }
 
 export const RoomContext = createContext<RoomContextValue | null>(null);
@@ -28,20 +33,23 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [ chatMsgs, setChatMsgs ] = useState<Message[]>([]);
     const [users, setUsers] = useState<Users>({});
     const [name, setName] = useState<string>("");
-    
-    
+    const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
     useEffect(() => {
         if (!roomId) return;
         const newSocket = io(`${SERVER_URL}/${roomId}`, {
             transports: ["websocket"],
-            withCredentials: true
+            withCredentials: true,
+            auth: {
+                name: localStorage.getItem("moddieview:name") || "Anonymous Moddie"
+            }
         });
         newSocket.on(IoEvents.CONNECT, () => {
-            newSocket.emit(IoEvents.GET_ROOM_DATA);
             setSocket(newSocket);
+            newSocket.emit(IoEvents.GET_ROOM_DATA);
         });
         newSocket.on(IoEvents.ROOM_DATA, (updatedRoom: Room) => {
             setRoom(updatedRoom);
+            setCurrentVideo(updatedRoom.roomContent);
             setName(updatedRoom.roomName);
             setUsers(updatedRoom.users);
         });
@@ -84,8 +92,28 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             setName(newName);
         });
 
+        ///////////////// Video //////////////////////
+        newSocket.on(IoEvents.CONTENT_CHANGE, (updatedVideo: RoomContent) => {
+            console.log("Content changed:", updatedVideo);
+            setCurrentVideo(updatedVideo);
+        });
+
         return () => {
             newSocket.disconnect();
+            newSocket.off(IoEvents.CONNECT);
+            newSocket.off(IoEvents.ROOM_DATA);
+            newSocket.off(IoEvents.USERS_UPDATE);
+            newSocket.off(IoEvents.RESIEVE_CHAT_MESSAGE);
+            newSocket.off(IoEvents.RESIEVE_CHAT_REACT);
+            newSocket.off(IoEvents.SET_ROOM_NAME);
+            newSocket.off(IoEvents.CONTENT_CHANGE);
+            setChatMsgs([]);
+            setUsers({});
+            setRoom(undefined);
+            setCurrentVideo(null);
+            setName("");
+            setSocket(undefined);
+            setRoomId("");
         };
 
     }, [roomId]);
@@ -98,7 +126,10 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         room,
         chatMsgs,
         users,
+        currentVideo,
+        setCurrentVideo,
         joinRoom: (roomId: string) => {
+            setCurrentVideo(null);
             setRoomId(roomId);
             return true;
         },
@@ -116,6 +147,27 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             }
             socket.emit(IoEvents.SET_ROOM_NAME, name);
         },
+        changeRoomContent: (content: RoomContent) => {
+            if (!socket) {
+                console.warn("Socket not initialized yet");
+                return;
+            }
+            socket.emit(IoEvents.CONTENT_CHANGE, content);
+        },
+        quitRoom: () => {
+            if (!socket) {
+                console.warn("Socket not initialized yet");
+                return;
+            }
+            socket.disconnect();
+            setChatMsgs([]);
+            setUsers({});
+            setRoom(undefined);
+            setCurrentVideo(null);
+            setName("");
+            setSocket(undefined);
+            setRoomId("");
+        }
     };
 
 

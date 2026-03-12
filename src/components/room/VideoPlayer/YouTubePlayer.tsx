@@ -14,7 +14,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
   const { markRemoteAction, isRemoteActionRecent } = useRemoteAction();
 
   const {
-    currentVideoRef: currentContent,
+    currentVideo: currentContent,
     videoDuration,
     isMuted,
     volume,
@@ -35,9 +35,9 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     return playerRef.current?.getInternalPlayer();
   }, []);
   const syncVideoState = useCallback(() => {
-    if (currentContent.current && playerRef.current) {
+    if (currentContent && playerRef.current) {
       markRemoteAction();
-      if (currentContent.current.isPlaying)
+      if (currentContent.isPlaying)
         playerRef.current.getInternalPlayer().playVideo();
       else
         playerRef.current.getInternalPlayer().pauseVideo();
@@ -50,7 +50,7 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
       const player = playerRef.current?.getInternalPlayer();
       if (!player) return;
       markRemoteAction();
-      player.seekTo(currentContent.current?.videoTime, true);
+      player.seekTo(currentContent?.videoTime, true);
       player.playVideo();
     });
 
@@ -77,11 +77,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
 
     onRemoteVideoSync((_video) => {
       const player = playerRef.current?.getInternalPlayer();
-      if (!player || !currentContent.current) return;
+      if (!player || !currentContent) return;
 
       markRemoteAction();
-      console.log("Syncing video state:", currentContent.current);
-      player.seekTo(currentContent.current.videoTime, true);
+      console.log("Syncing video state:", currentContent);
+      player.seekTo(currentContent.videoTime, true);
       syncVideoState();
     });
   }, [markRemoteAction, syncVideoState, onRemotePlay, onRemotePause, onRemoteSeek, onRemotePlaybackRateChange, onRemoteVideoSync]);
@@ -145,11 +145,11 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
       }
       player.setVolume(volume * 100); // YouTube expects 0-100
 
-      if (currentContent.current?.videoTime) {
-        player.seekTo(currentContent.current.videoTime, true);
+      if (currentContent?.videoTime) {
+        player.seekTo(currentContent.videoTime, true);
       }
 
-      if (currentContent.current?.isPlaying) {
+      if (currentContent?.isPlaying) {
         player.playVideo();
       } else {
         player.pauseVideo();

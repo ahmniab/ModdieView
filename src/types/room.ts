@@ -3,14 +3,13 @@ import { type YoutubeVideo } from "./YoutubeVideo";
 import { type NormalVideo } from "./NormalVideo";
 
 export type PlayableVideo = {
-  url: string;
   isPlaying: boolean;
   lastTimePlayed : number;
   playbackRate: number;
   videoTime: number;
 };
 
-export type Video = (( NormalVideo | YoutubeVideo | VimeoVideo ) & PlayableVideo) | null; 
+export type Video = ( NormalVideo | YoutubeVideo | VimeoVideo ) & PlayableVideo; 
 
 export type VideoPlaylist = {
   videos: Video[];

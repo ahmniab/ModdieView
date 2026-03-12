@@ -24,7 +24,6 @@ const BottomContent = ({
   userId,
   userName,
   onClose,
-  onVideoChange,
 }: Props) => {
   const { users } = useRoom();
   const usersCount = Object.keys(users ?? {}).length;
@@ -32,7 +31,7 @@ const BottomContent = ({
   if (!activeTab) return null;
 
   return (
-    <div className="h-full overflow-y-auto w-full">
+    <div className="h-full overflow-y-auto w-full custom-scroll">
 
       {activeTab === "chat" && (
         <ChatPanel
@@ -48,7 +47,7 @@ const BottomContent = ({
 
       {activeTab === "search" && (
         <div className="h-full bg-gray-800 p-3 border-3 border-gray-700 flex justify-center">
-          <SearchBar video={onVideoChange}/>
+          <SearchBar />
         </div>
       )}
 

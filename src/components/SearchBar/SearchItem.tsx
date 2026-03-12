@@ -1,7 +1,14 @@
 import type { YoutubeVideo } from "@/types/YoutubeVideo";
 import RC, { useEffect, useRef } from "react";
 
-const SearchItem: RC.FC<{video: YoutubeVideo; onClick: (video: YoutubeVideo) => void; active: boolean}> = ({video, onClick, active}) => {
+const SearchItem: RC.FC<{
+    video: YoutubeVideo;
+    onClick: (video: YoutubeVideo) => void;
+    active: boolean;
+    index: number;
+    onActiveIndexChange: (index: number) => void;
+    usingKeyboard: React.MutableRefObject<boolean>;
+    }> = ({video, onClick, active, index, onActiveIndexChange, usingKeyboard}) => {
     const activeItemRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (active) {
@@ -11,8 +18,13 @@ const SearchItem: RC.FC<{video: YoutubeVideo; onClick: (video: YoutubeVideo) => 
             });}
     }, [active]);
     return (
-        <div ref={activeItemRef} className={`flex gap-4 mb-4 cursor-pointer p-2 zcursor-pointer ${active ? "bg-gray-800/80" : ""}`}
+        <div ref={activeItemRef} className={`flex gap-4 mb-4 cursor-pointer p-2 ${active ? "bg-gray-800/80" : ""}`}
             title={video.title}
+            onMouseEnter={() => {
+                if (!usingKeyboard.current) {
+                    onActiveIndexChange(index);
+                }
+            }}
             onClick={() => {
                 onClick(video);
             }}

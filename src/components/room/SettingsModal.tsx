@@ -22,7 +22,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   return (
     <div className="absolute left-2 top-14 bg-gray-800 flex items-center justify-center z-[50] rounded-b-xl" 
     ref={containerRef}>
-      <div className="w-[300px] h-[400px] px-6 py-4 shadow-lg overflow-y-auto">
+      <div className="w-[300px] h-[400px] px-6 py-4 shadow-lg overflow-y-auto custom-scroll">
 
         <div className="mb-4">
           <h2 className="text-lg font-semibold mb-1">General</h2>

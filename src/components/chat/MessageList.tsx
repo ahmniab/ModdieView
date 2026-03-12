@@ -30,7 +30,7 @@ const MessageList = ({ messages, onToggleReaction, onReply, chatHeaderHeight = 0
 
 
   return (
-    <div className="flex-1 pt-4 pr-4 pl-4 overflow-y-auto space-y-4" ref={containerRef}>
+    <div className="flex-1 pt-4 pr-4 pl-4 overflow-y-auto space-y-4 custom-scroll" ref={containerRef}>
       {messages.map((msg) => (
         <MessageItem key={msg.id} message={msg}
           isActive={activeMessageId === msg.id}

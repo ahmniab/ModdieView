@@ -53,7 +53,7 @@ const RoomModal = ({ onConfirm, roomLink }: Props) => {
                 <div className="flex flex-col gap-2 rounded-lg mb-4">
                     <h2 className="text-[16px]">Room Link:</h2>
                     <div className="flex w-full items-center gap-2">
-                        <span className="h-10 overflow-x-auto overflow-y-hidden whitespace-nowrap text-[16px] text-black px-3 py-2 bg-gray-300 rounded-sm flex-1 sm:px-4 sm:py-2">
+                        <span className="h-10 overflow-x-auto overflow-y-hidden whitespace-nowrap text-[16px] text-black px-3 py-2 bg-gray-300 rounded-sm flex-1 sm:px-4 sm:py-2 custom-scroll">
                             {roomLink}
                         </span>
                         <button

@@ -14,7 +14,7 @@ const useKeyboardShortcut = ({ shortcutKeys, callback }: UseKeyboardShortcutProp
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       if (
         target instanceof HTMLElement &&
-        blacklistedTargets.includes(target.tagName)
+        (blacklistedTargets.includes(target.tagName) || target.isContentEditable)
       ) return;
 
       const pressedKey = key.toLowerCase();

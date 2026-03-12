@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import type { IoChatMessage, Message } from "@/types";
+import type { IoChatMessage, Message, RoomContent } from "@/types";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import ChatPanel from "../../chat/ChatPanel";
 import ResizeHandle from "./ResizeHandle";
@@ -8,7 +8,7 @@ import { default as UsersPanel} from "./UsersPanel"
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 
 interface Props {
-  video: string;
+  video: RoomContent;
   userName: string;
   chatMsgs?: Message[];
   userId?: string;
@@ -68,7 +68,7 @@ const DesktopLayout = ({
   return (
     <div className="flex flex-1 bg-gray-900 overflow-hidden">
       {showUsersPanel && (
-        <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto ">
+        <div className="w-[130px] shrink-0 border-r border-white/40 bg-gray-500/30 overflow-y-auto custom-scroll">
           <UsersPanel userId={userId}/>
         </div> 
       )}

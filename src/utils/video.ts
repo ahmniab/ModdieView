@@ -21,7 +21,13 @@ export const extractVideoUrl = (input: string): Video | null => {
             height: 0,
       }
     };
-    return yt;
+    return {
+      ...yt,
+      videoTime: convertTimeToSeconds(trimmed),
+      isPlaying: false,
+      lastTimePlayed: Date.now(),
+      playbackRate: 1
+    };
   };
 
   const vmRegex = new RegExp(
@@ -42,7 +48,13 @@ export const extractVideoUrl = (input: string): Video | null => {
         thumbnail_height: 0,
       },
     };
-    return vimeo;
+    return {
+      ...vimeo,
+      videoTime: convertTimeToSeconds(trimmed),
+      isPlaying: false,
+      lastTimePlayed: Date.now(),
+      playbackRate: 1
+    };
   }
 
 //   const videoExtensions = [
@@ -55,7 +67,14 @@ export const extractVideoUrl = (input: string): Video | null => {
 //     `^https?:\\/\\/[^\\s]+\\.(${extensionPattern})(\\?.*)?$`,"i")
 //     .test(trimmed);
 //   if(urlRegex) {
-    return { url: trimmed };
+    return { 
+      url: trimmed, 
+      platform: "directMedia", 
+      videoTime: 0, 
+      isPlaying: false, 
+      lastTimePlayed: Date.now(), 
+      playbackRate: 1 
+    };
 //   }
 //   return null;
 }; 
@@ -65,4 +84,18 @@ export const calculateVideoTime = (currentTime: number, lastTimePlayed: number) 
     const now = new Date().getTime();
     const elapsed = (now - lastTimePlayed) / 1000;
     return currentTime + elapsed;
-}
+};
+
+export const convertTimeToSeconds = (url: string): number => {
+  const match = url.match(/[?#&]t=(\d+)(?:s)?/);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  const hms = url.match(/[?#&]t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/);
+  if (!hms) return 0;
+  const hours = hms[1] ? parseInt(hms[1], 10) : 0;
+  const minutes = hms[2] ? parseInt(hms[2], 10) : 0;
+  const seconds = hms[3] ? parseInt(hms[3], 10) : 0;
+
+  return hours * 3600 + minutes * 60 + seconds;
+};
