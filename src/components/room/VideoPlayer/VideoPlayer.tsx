@@ -15,7 +15,7 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer = ({ video }: VideoPlayerProps) => {
-  const [ error, setError ] = useState(false);
+  const [ errorId, setErrorId ] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const toggleFullscreen = () => {
@@ -32,6 +32,11 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
     callback: toggleFullscreen
   });
 
+  const shouldShowError = () => {
+    const identicalIdentefier = errorId === (video.platform === "directMedia" ? video.url : video.id);
+    return errorId && identicalIdentefier;
+  }
+  
   return (
       <div ref={videoContainerRef} className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
       border border-gray-700 overflow-hidden relative flex flex-col">
@@ -43,7 +48,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
             No video selected
           </div>
 
-        ) : error ? (
+        ) : shouldShowError() ? (
           <div className="h-full w-full flex-1 flex items-center justify-center flex-col">
             <div className="text-red-500 text-[36px] sm:text-[50px] font-semibold flex items-center justify-center">
               <MdErrorOutline className="inline size-10 sm:size-14 mr-2"/>Error
@@ -58,7 +63,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
           <YouTubePlayer id={video.id}
             onError={(msg) => {
               setErrorMessage(msg);
-              setError(true);
+              setErrorId(video.id);
             }}
           />
 
@@ -67,7 +72,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
           <VimeoPlayer videoId={video.id}
             onError={(msg) => {
               setErrorMessage(msg);
-              setError(true);
+              setErrorId(video.id.toString());
             }}
           />
 
@@ -76,13 +81,13 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
           <UrlVideoPlayer
             src={video.url}
             setErrorMessage={setErrorMessage}
-            setError={setError}
+            setError={(errorId) => setErrorId(errorId)}
           />
 
         )}
 
       </div>
-          {video && !error && <VideoToolBar />}
+          {video && !shouldShowError() && <VideoToolBar />}
       </div>
   );
 

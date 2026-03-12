@@ -6,6 +6,7 @@ import ResizeHandle from "./ResizeHandle";
 import { BsChatText } from "react-icons/bs";
 import { default as UsersPanel} from "./UsersPanel"
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
+import type { Video } from "@/types";
 
 interface Props {
   video: RoomContent;
@@ -75,7 +76,7 @@ const DesktopLayout = ({
 
       <div className="flex-1 flex items-center justify-center min-w-0">
         <VideoPlayer
-          video={video}
+          video={video as Video}
           userName={userName}
         />
       </div>

@@ -5,7 +5,7 @@ import useRemoteAction from "@/hooks/useRemoteAction";
 interface UrlVideoPlayerProps {
     src: string;
     setErrorMessage: (msg: string) => void;
-    setError: (error: boolean) => void;
+    setError: (errorId: string) => void;
 }
 
 const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps) => {
@@ -96,7 +96,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
             video.play().catch((e) => {
                 console.error("Error playing video:", e);
                 setErrorMessage("Failed to play video. Please try again.");
-                setError(true);
+                setError(src);
             });
         });
         
@@ -164,7 +164,7 @@ const UrlVideoPlayer = ({ src, setErrorMessage, setError }: UrlVideoPlayerProps)
                 onError={(e) => {
                     console.error("Video error:", e);
                     setErrorMessage("Failed to load video. Please check the URL.");
-                    setError(true);
+                    setError(src);
                 }}
                 controls={false}
             />
