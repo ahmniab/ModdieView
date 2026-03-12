@@ -1,4 +1,4 @@
-import type { Video, YoutubeVideo, VimeoVideo, RoomContent } from "@/types";
+import type { Video, YoutubeVideo, VimeoVideo } from "@/types";
 
 export const extractVideoUrl = (input: string): Video | null => {
     const trimmed=input.trim();
@@ -23,7 +23,7 @@ export const extractVideoUrl = (input: string): Video | null => {
     };
     return {
       ...yt,
-      videoTime: 0,
+      videoTime: convertTimeToSeconds(trimmed),
       isPlaying: false,
       lastTimePlayed: Date.now(),
       playbackRate: 1
@@ -50,7 +50,7 @@ export const extractVideoUrl = (input: string): Video | null => {
     };
     return {
       ...vimeo,
-      videoTime: 0,
+      videoTime: convertTimeToSeconds(trimmed),
       isPlaying: false,
       lastTimePlayed: Date.now(),
       playbackRate: 1
@@ -86,3 +86,16 @@ export const calculateVideoTime = (currentTime: number, lastTimePlayed: number) 
     return currentTime + elapsed;
 };
 
+export const convertTimeToSeconds = (url: string): number => {
+  const match = url.match(/[?#&]t=(\d+)(?:s)?/);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  const hms = url.match(/[?#&]t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/);
+  if (!hms) return 0;
+  const hours = hms[1] ? parseInt(hms[1], 10) : 0;
+  const minutes = hms[2] ? parseInt(hms[2], 10) : 0;
+  const seconds = hms[3] ? parseInt(hms[3], 10) : 0;
+
+  return hours * 3600 + minutes * 60 + seconds;
+};
