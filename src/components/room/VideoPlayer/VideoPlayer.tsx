@@ -7,6 +7,7 @@ import VideoToolBar from "./VideoToolBar";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
 import type { Video } from "@/types";
+import { toggleFullscreen } from "@/utils/fullscreen";
 
   
 interface VideoPlayerProps {
@@ -18,18 +19,13 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
   const [ errorId, setErrorId ] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  const toggleFullscreen = () => {
-    const el = videoContainerRef.current;
-    if (!document.fullscreenElement) {
-      el?.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  };
+  const handleFullscreen = () => {
+  toggleFullscreen(videoContainerRef.current);
+};
 
   useKeyboardShortcut({
     shortcutKeys: ["f"],
-    callback: toggleFullscreen
+    callback: handleFullscreen
   });
 
   const shouldShowError = () => {
@@ -38,10 +34,11 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
   }
   
   return (
-      <div ref={videoContainerRef} className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[70%] lg:w-[90%] lg:h-[80%]
+      <div ref={videoContainerRef} className="w-full h-full bg-black sm:w-full sm:h-full md:w-[95%] md:h-[50%] lg:w-[90%] lg:h-[80%]
       border border-gray-700 overflow-hidden relative flex flex-col">
 
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 flex items-center justify-center min-h-0" onDoubleClick={handleFullscreen}>
+          <div className="w-full max-h-full">
 
         {!video ? (
           <div className="h-full w-full flex items-center justify-center flex-col text-white/60 text-[36px] sm:text-[36px] font-semibold">
@@ -87,8 +84,12 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
         )}
 
       </div>
-          {video && !shouldShowError() && <VideoToolBar />}
       </div>
+       <div className="flex-shrink-0">
+
+          {video && !shouldShowError() && <VideoToolBar />}
+</div> 
+</div>
   );
 
 };
