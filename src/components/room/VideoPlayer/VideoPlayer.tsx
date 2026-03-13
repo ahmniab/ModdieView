@@ -38,7 +38,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
       border border-gray-700 overflow-hidden relative flex flex-col">
 
         <div className="flex-1 flex items-center justify-center min-h-0" onDoubleClick={handleFullscreen}>
-          <div className="w-full max-h-full">
+          <div className="w-full max-h-full aspect-video">
 
         {!video ? (
           <div className="h-full w-full flex items-center justify-center flex-col text-white/60 text-[36px] sm:text-[36px] font-semibold">
@@ -82,14 +82,11 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
           />
 
         )}
-
       </div>
-      </div>
-       <div className="flex-shrink-0">
-
-          {video && !shouldShowError() && <VideoToolBar />}
-</div> 
-</div>
+    </div>
+    <div className="flex-shrink-0">
+      {video && !shouldShowError() && <VideoToolBar />}  </div> 
+    </div>
   );
 
 };
