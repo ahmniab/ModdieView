@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { MdInsertEmoticon } from "react-icons/md";
 import ReactionPicker from "./ReactionPicker";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { HiOutlineX } from "react-icons/hi";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 
 interface MessageInputProps {
   onSend: (message: string, replyTo?: { id: string; text: string, senderName: string, isOwn: boolean }) => void;
@@ -17,6 +18,13 @@ const MessageInput = ({ onSend, replyTo, onCancelReply }: MessageInputProps) => 
   const [input, setInput] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+    const handleKeyboardShortcut = useCallback(() => {
+        inputRef.current?.focus();
+      }, []);
+    useKeyboardShortcut({
+        shortcutKeys: ["t"],
+        callback: handleKeyboardShortcut
+    });
   const containerRef = useRef<HTMLDivElement>(null);
   useClickOutside(containerRef, () => {
     if (showEmoji) {
