@@ -1,83 +1,33 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { RoomModal, RoomHeader } from "@/components/room";
-import MobileLayout from "../components/room/MobileLayout/MobileLayout";
-import DesktopLayout from "../components/room/DesktopLayout/DesktopLayout";
-import useChat from "@/hooks/useChat";
+import { useEffect, useState } from "react";
+import { InvalidRoomModal } from "@/components/room/InvalidRoomModal";
+import { LoadingRoomModal } from "@/components/room/LoadingRoom";
+import { RoomLayout } from "@/components/room/RoomLayout";
+import { RoomModal } from "@/components/room";
 
-const RoomPage = () => {  
-  const { 
-    currentVideo,
-    joinRoom, 
-    quitRoom,
-    setUserName 
-  } = useRoom();
-
-  const { 
-    chatMsgs: messages, 
-    userId, 
-    userName: Name, 
-    sendMessage, 
-    sendReaction 
-  } = useChat();
+const RoomPage = () => {
+  const { isConnected, roomExist, joinRoom, setUserName } = useRoom();
   const { roomId } = useParams<{ roomId: string }>();
-  const [showModal, setShowModal] = useState(true);
-  const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
-  const roomLink = (window.location.origin || `https://moddieview.com`) + `/room/live/${roomId}`;
-  const [showUsersPanel, setShowUsersPanel] = useState(true);
-  const toggleUsersPanel = () => {
-    setShowUsersPanel(prev => !prev);
-  };
-
-useEffect(() => {
-  const handleResize = () => {
-    setIsBelowMd(window.innerWidth < 768);
-  };
-
-  window.addEventListener("resize", handleResize);
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-
+  const [showModal, setShowModal] = useState<boolean>(true);
+  const roomLink = (window.location.origin || "https://moddieview.com") + `/room/live/${roomId}`;
 
   useEffect(() => {
-    if (roomId) {
-      joinRoom(roomId);
-    }
+    if (roomId) joinRoom(roomId);
   }, []);
 
   return (
     <div className="h-screen flex flex-col bg-black text-white overflow-hidden">
-      <div className={`flex flex-col h-full ${ showModal ? "pointer-events-none" : ""}`}>
-        <RoomHeader isBelowMd={isBelowMd} roomLink= {roomLink} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
 
-        <div className={`relative flex flex-1 min-h-0 overflow-hidden bg-gray-900 ${isBelowMd ? "flex-col" : "flex-row"}`}>
+      {isConnected ? (
+        <RoomLayout/>
+      ) : roomExist === false ? (
+        <InvalidRoomModal />
+      ) : (
+        <LoadingRoomModal />
+      )}
 
-          {isBelowMd? (
-            <MobileLayout
-              video={currentVideo}
-              userId={userId}
-              messages={messages || []}
-              addMessage={sendMessage}
-              addReaction={sendReaction}
-              userName={Name}
-            />
-           ) : (
-            <DesktopLayout 
-              video={currentVideo}
-              userId={userId} 
-              chatMsgs={messages} 
-              sendMessage={sendMessage} 
-              sendReaction={sendReaction} 
-              userName={Name}
-              showUsersPanel={showUsersPanel}
-              toggleUsersPanel={toggleUsersPanel}
-            />)}
-
-
-         </div>
-      </div>
-      {showModal && (
+      {isConnected && roomExist && showModal && (
         <RoomModal onConfirm={() => {
           setShowModal(false);
           const name = localStorage.getItem("moddieview:name") || "Anonymous Moddie";

@@ -11,9 +11,7 @@ interface Props {
   addMessage: (newMessage: IoChatMessage) => void;
   addReaction: (reaction: ChatReaction) => void;
   userId: string;
-  userName: string;
   onClose: () => void;
-  onVideoChange: (value: string) => (void);
 }
 
 const BottomContent = ({
@@ -22,7 +20,6 @@ const BottomContent = ({
   addMessage,
   addReaction,
   userId,
-  userName,
   onClose,
 }: Props) => {
   const { users } = useRoom();
@@ -36,7 +33,6 @@ const BottomContent = ({
       {activeTab === "chat" && (
         <ChatPanel
           messages={messages}
-          userName={userName}
           isBelowMd
           AddMessage={addMessage}
           onAddReaction={addReaction}

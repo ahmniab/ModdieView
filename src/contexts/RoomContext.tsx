@@ -11,6 +11,7 @@ import type { RoomContent } from "@/types/room";
 interface RoomContextValue {
     socket: Socket | undefined;
     isConnected: boolean;
+    roomExist: boolean | null;
     name: string;
     roomId: string;
     room: Room | undefined;
@@ -36,6 +37,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [name, setName] = useState<string>("");
     const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
     const [ isConnected, setIsConnected ] = useState<boolean>(false);
+    const [ roomExist, setRoomExist ] = useState<boolean | null>(null);
     
     useEffect(() => {
         if (!roomId) return;
@@ -49,6 +51,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         newSocket.on(IoEvents.CONNECT, () => {
             setSocket(newSocket);
             setIsConnected(true);
+            setRoomExist(true);
             newSocket.emit(IoEvents.GET_ROOM_DATA);
         });
         newSocket.on(IoEvents.ROOM_DATA, (updatedRoom: Room) => {
@@ -60,6 +63,12 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
 
         newSocket.on(IoEvents.USERS_UPDATE, (updatedUsers) => {
             setUsers(updatedUsers);
+        });
+
+        newSocket.on("connect_error", (err) => {
+            if (err.message === 'Room not found') {
+                setRoomExist(false);
+            }
         });
 
         ////////////// Chat ////////////////
@@ -108,8 +117,8 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         });
 
         return () => {
-            newSocket.disconnect();
             setIsConnected(false);
+            setRoomExist(null);
             newSocket.off(IoEvents.CONNECT);
             newSocket.off(IoEvents.DISCONNECT);
             newSocket.off(IoEvents.ROOM_DATA);
@@ -128,6 +137,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const contextValue: RoomContextValue = {
         socket,
         isConnected,
+        roomExist,
         name,
         roomId,
         room,

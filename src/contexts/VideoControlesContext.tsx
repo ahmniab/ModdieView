@@ -47,7 +47,7 @@ const VideoControlesContextProvider = ({ children }: { children: React.ReactNode
     const [bufferedTime, setBufferedTime] = React.useState<number>(0);
     const [videoDuration, setVideoDuration] = React.useState<number>(0);
     const [isMuted, setIsMuted] = React.useState<boolean>(false);
-    const [volume, setVolume] = React.useState<number>(1);
+    const [volume, setVolume] = React.useState<number>(Number(localStorage.getItem("video:volume")) || 0.5);
 
     const videoCallbacks =  useRef<videoCallbacksType>({
         onVideoChange: () => {},

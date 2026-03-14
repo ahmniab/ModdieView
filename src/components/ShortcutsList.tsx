@@ -28,8 +28,13 @@ const ShortcutsList = () => {
       </div>
 
       <div className="flex justify-between py-1">
-        <span>Search</span>
+        <span>Focus Search</span>
         <kbd className="bg-gray-700 px-2 rounded">S</kbd>
+      </div>
+
+      <div className="flex justify-between py-1">
+        <span>Focus Chat</span>
+        <kbd className="bg-gray-700 px-2 rounded">T</kbd>
       </div>
 
       <div className="flex justify-between py-1">

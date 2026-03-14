@@ -82,7 +82,10 @@ const VideoToolBar: React.FC = () => {
                     onMouseUp={() => { isInteractingRef.current = false; }}
                     onTouchStart={() => { isInteractingRef.current = true; }}
                     onTouchEnd={() => { isInteractingRef.current = false; }}
-                    onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                    onChange={(e) => {
+                        handleVolumeChange(parseFloat(e.target.value));
+                        localStorage.setItem("video:volume", e.target.value);
+                    }}
                     className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-500 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-500 [&::-moz-range-thumb]:border-0"
                     style={{
                         background: `linear-gradient(to right, #a855f7 0%, #a855f7 ${(isMuted ? 0 : volume) * 100}%, #4b5563 ${(isMuted ? 0 : volume) * 100}%, #4b5563 100%)`
