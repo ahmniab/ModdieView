@@ -4,3 +4,6 @@ export { default as RoomHeader } from "./RoomHeader";
 export { default as RoomModal } from "./RoomModal";
 export { default as DesktopLayout } from "./DesktopLayout/DesktopLayout";
 export { default as MobileLayout } from "./MobileLayout/MobileLayout";
+export {RoomLayout} from "./RoomLayout.tsx";
+export { LoadingRoomModal } from "./LoadingRoom.tsx"
+export { InvalidRoomModal } from "./InvalidRoomModal.tsx"

@@ -4,12 +4,16 @@ import roomLogo from "@/assets/roomLogo.png";
 import { ImExit } from "react-icons/im";
 import SearchBar from '../SearchBar';
 import { IoLink } from "react-icons/io5";
-import { copyToClipboard  } from "@/utils";
+import { copyToClipboard } from "@/utils";
 import { toast } from "react-hot-toast";
 import { useRoom } from "@/contexts/RoomContext";
 import { useEffect, useState, useCallback } from "react";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import SettingsModal from "./SettingsModal";
+import { IoNotificationsSharp } from "react-icons/io5";
+import NotificationsModal from "./NotificationsModal";
+import { shortcutKeys } from "@/types";
+
 
 interface RoomHeaderPrpos {
     isBelowMd : boolean;
@@ -24,12 +28,13 @@ const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: R
   const [currentName, setCurrentName] = useState<string>(name);
   const navigate = useNavigate();
   const [showSettings, setShowSettings] = useState(false);
+  const [showNotifications, setShowNotifications] = useState<boolean>(false);
   const handleKeyboardShortcut = useCallback(() => {
     navigate("/");
   }, [navigate]);
 
     useKeyboardShortcut({
-    shortcutKeys: ["shift+q"],
+    shortcutKeys: [shortcutKeys.EXIT_ROOM],
     callback: handleKeyboardShortcut
     });
 
@@ -83,7 +88,16 @@ const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: R
         </div>}
 
         <div className='absolute right-0 pr-2 sm:pr-5
-         flex gap-4 sm:gap-5 justify-center items-center'>
+         flex gap-4 sm:gap-4 justify-center items-center'>
+
+          <button className='cursor-pointer' title="Notifications"
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              setShowNotifications((prev) => !prev);
+            }}
+          >
+            <IoNotificationsSharp className="size-5" />
+          </button>
 
             <button className='cursor-pointer ' title='Copy URL' type="button"
                 onClick={ async () => {
@@ -108,6 +122,9 @@ const RoomHeader = ({ isBelowMd, roomLink, toggleUsersPanel, showUsersPanel }: R
         </div>
         {showSettings && (
           <SettingsModal onClose={() => setShowSettings(false)} toggleUsersPanel={toggleUsersPanel} showUsersPanel={showUsersPanel}/>
+        )}
+        {showNotifications && (
+          <NotificationsModal onClose={() => setShowNotifications(false)} />
         )}
     </div>
   )

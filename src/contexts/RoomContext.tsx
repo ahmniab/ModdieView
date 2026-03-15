@@ -1,12 +1,11 @@
 import { useContext, createContext, useState, useEffect } from "react";
-import type { ChatReaction, Room } from "../types";
+import type { ChatReaction, Room, Notification } from "../types";
 import { io, Socket } from "socket.io-client";
 import { SERVER_URL } from "../config";
 import type { Message, IoChatMessage } from "../types";
 import React from "react";
 import IoEvents from "@/utils/ioEventsNames";
-import type { Users } from "../types";
-import type { RoomContent } from "@/types/room";
+import type { Users, RoomContent } from "../types";
 
 interface RoomContextValue {
     socket: Socket | undefined;
@@ -24,6 +23,7 @@ interface RoomContextValue {
     setRoomName: (name: string) => void;
     changeRoomContent: (content: RoomContent) => void;
     quitRoom: () => void;
+    newNotification: Notification[];
 }
 
 export const RoomContext = createContext<RoomContextValue | null>(null);
@@ -38,6 +38,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
     const [ currentVideo,setCurrentVideo ] = useState<RoomContent | null>(null);
     const [ isConnected, setIsConnected ] = useState<boolean>(false);
     const [ roomExist, setRoomExist ] = useState<boolean | null>(null);
+    const [ newNotification, setNewNotification ] = useState<Notification[]>([]);
     
     useEffect(() => {
         if (!roomId) return;
@@ -111,6 +112,11 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
             setCurrentVideo(updatedVideo);
         });
 
+        ////////////////Notifications/////////////////
+        newSocket.on(IoEvents.NEW_NOTIFICATION, (notification: Notification) => {
+            setNewNotification(prev => [ notification, ...prev ].slice(0,15));
+        });
+
         newSocket.on(IoEvents.DISCONNECT, () => {
             setIsConnected(false);
             handleDisconnect();
@@ -144,6 +150,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         chatMsgs,
         users,
         currentVideo,
+        newNotification,
         setCurrentVideo,
         joinRoom: (roomId: string) => {
             setCurrentVideo(null);
@@ -190,6 +197,7 @@ export const RoomProvider: React.FC<{children: React.ReactNode}> = ({ children }
         setChatMsgs([]);
         setUsers({});
         setName("");
+        setNewNotification([]);
     }
 
 

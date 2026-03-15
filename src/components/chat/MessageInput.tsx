@@ -1,12 +1,10 @@
-import React, { useState } from "react";
 import { IoSend } from "react-icons/io5";
 import { MdInsertEmoticon } from "react-icons/md";
 import ReactionPicker from "./ReactionPicker";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { HiOutlineX } from "react-icons/hi";
-import { useClickOutside } from "@/hooks/useClickOutside";
-import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
+import { useClickOutside, useKeyboardShortcut } from "@/hooks";
 
 interface MessageInputProps {
   onSend: (message: string, replyTo?: { id: string; text: string, senderName: string, isOwn: boolean }) => void;
@@ -18,13 +16,11 @@ const MessageInput = ({ onSend, replyTo, onCancelReply }: MessageInputProps) => 
   const [input, setInput] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-    const handleKeyboardShortcut = useCallback(() => {
-        inputRef.current?.focus();
-      }, []);
-    useKeyboardShortcut({
-        shortcutKeys: ["t"],
-        callback: handleKeyboardShortcut
-    });
+  useKeyboardShortcut({
+    shortcutKeys: [],
+    callback: () => {},
+    focusRef: inputRef,
+  });
   const containerRef = useRef<HTMLDivElement>(null);
   useClickOutside(containerRef, () => {
     if (showEmoji) {
@@ -40,7 +36,7 @@ const MessageInput = ({ onSend, replyTo, onCancelReply }: MessageInputProps) => 
 
   return (
     // <div className="border-t border-gray-700">
-      <div className="relative p-3 border-t border-gray-700 flex items-end gap-2">
+      <div className="relative p-3 border-t border-gray-600 flex items-end gap-2">
         <div className="flex-1 flex flex-col bg-gray-700 rounded-xl px-3 py-2 gap-2 min-w-0">
           {replyTo && (
             <div className="relative flex flex-col bg-black/20 text-sm px-2 py-1 rounded mb-1 border-l-4 border-white">

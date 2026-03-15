@@ -5,6 +5,7 @@ import { type RoomContent } from "@/types/room";
 import { useVideoControles } from "@/contexts/VideoControlesContext";
 import { calculateVideoTime } from "@/utils/video";
 import useKeyboardShortcut from "./useKeyboardShortcut";
+import { shortcutKeys } from "@/types";
 
 const useRoomVideo = () => {
     const { room, socket, currentVideo, setCurrentVideo } = useRoom();
@@ -159,7 +160,7 @@ const useRoomVideo = () => {
     }, [socket]);
 
     useKeyboardShortcut({
-        shortcutKeys: [" "],
+        shortcutKeys: [shortcutKeys.PLAY_PAUSE],
         callback: () => {
             if (playing) broadcastVideoPause();
             else broadcastVideoPlay();
@@ -167,14 +168,14 @@ const useRoomVideo = () => {
     });
 
     useKeyboardShortcut({
-        shortcutKeys: ["arrowright"],
+        shortcutKeys: [shortcutKeys.SEEK_RIGHT],
         callback: () => {
             broadcastVideoSeek(currentTime + 5);
         },
     });
 
     useKeyboardShortcut({
-        shortcutKeys: ["arrowleft"],
+        shortcutKeys: [shortcutKeys.SEEK_LEFT],
         callback: () => {
             broadcastVideoSeek(Math.max(0, currentTime - 5));
         },

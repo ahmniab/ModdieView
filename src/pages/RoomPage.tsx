@@ -1,16 +1,17 @@
 import { useRoom } from "../contexts/RoomContext";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { InvalidRoomModal } from "@/components/room/InvalidRoomModal";
-import { LoadingRoomModal } from "@/components/room/LoadingRoom";
-import { RoomLayout } from "@/components/room/RoomLayout";
-import { RoomModal } from "@/components/room";
+import {RoomLayout, RoomModal, LoadingRoomModal, InvalidRoomModal} from "@/components/room";
 
 const RoomPage = () => {
   const { isConnected, roomExist, joinRoom, setUserName } = useRoom();
   const { roomId } = useParams<{ roomId: string }>();
   const [showModal, setShowModal] = useState<boolean>(true);
   const roomLink = (window.location.origin || "https://moddieview.com") + `/room/live/${roomId}`;
+  useEffect(() => {
+    (window as any).__shortcutsDisabled = showModal;
+  }, [showModal]);
+  
 
   useEffect(() => {
     if (roomId) joinRoom(roomId);

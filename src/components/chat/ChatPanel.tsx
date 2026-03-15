@@ -66,12 +66,12 @@ const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, i
 
   return (
     <div
-      className={`relative h-full bg-gray-800 flex flex-col border-l border-gray-700 shrink-0 ${isBelowMd ? "w-full min-w-0 border-3 border-gray-500" : ""}`}
+      className={`relative h-full bg-gray-500/30 flex flex-col border-l border-gray-700 shrink-0 ${isBelowMd ? "w-full min-w-0 border-3 border-gray-500" : ""}`}
       style={!isBelowMd ? { minWidth: 280 } : undefined}
     >
 
       {!isBelowMd && (
-      <div ref={headerRef} className="p-3 border-b border-gray-700 flex justify-between items-center">
+      <div ref={headerRef} className="p-3 border-b border-gray-600 flex justify-between items-center">
         <span className="font-semibold">Start Conversation</span>
         <button type="button" title="Chat Settings"
         className="p-2 hover:bg-gray-700 rounded cursor-pointer"
