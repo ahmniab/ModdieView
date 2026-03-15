@@ -1,21 +1,29 @@
-import { useEffect } from "react";
+import { useEffect, type RefObject } from "react";
+import { reservedShortcutKeys } from "@/types";
 
 interface UseKeyboardShortcutProps {
   shortcutKeys: string[];
   callback: () => void;
+  focusRef?: RefObject<HTMLInputElement>;
 }
 
 const blacklistedTargets = ["INPUT", "TEXTAREA"];
-const useKeyboardShortcut = ({ shortcutKeys, callback }: UseKeyboardShortcutProps) => {
+const useKeyboardShortcut = ({
+  shortcutKeys,
+  callback,
+  focusRef,
+}: UseKeyboardShortcutProps) => {
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      if ((window as any).__shortcutsDisabled) return;
       const { key, target, repeat } = event;
+
       if (repeat) return;
       if (event.ctrlKey || event.metaKey || event.altKey) return;
-      if (
-        target instanceof HTMLElement &&
-        (blacklistedTargets.includes(target.tagName) || target.isContentEditable)
-      ) return;
+
+      if ( target instanceof HTMLElement &&
+        (blacklistedTargets.includes(target.tagName) || target.isContentEditable)) return;
 
       const pressedKey = key.toLowerCase();
 
@@ -24,22 +32,26 @@ const useKeyboardShortcut = ({ shortcutKeys, callback }: UseKeyboardShortcutProp
         const hasShift = parts.includes("shift");
         const mainKey = parts[parts.length - 1];
 
-        if (
-          pressedKey === mainKey &&
-          (!!hasShift === event.shiftKey)
-        ) {
+        if (pressedKey === mainKey &&(!!hasShift === event.shiftKey)) {
           event.preventDefault();
           callback();
           return;
         }
       }
+
+      if (focusRef && key.length===1 && !reservedShortcutKeys.has(pressedKey)) {
+        focusRef.current?.focus();
+      }
+
     };
 
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [shortcutKeys, callback]);
+
+  }, [shortcutKeys, callback, focusRef]);
 };
 
 export default useKeyboardShortcut;
