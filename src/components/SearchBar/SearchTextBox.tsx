@@ -4,6 +4,7 @@ import { HiOutlineX } from "react-icons/hi";
 import { useCallback } from "react";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
+import { shortcutKeys } from "@/types";
 
 const SearchTextBox: RC.FC<{
     search: string;
@@ -15,7 +16,7 @@ const SearchTextBox: RC.FC<{
         inputRef.current?.focus();
       }, []);
     useKeyboardShortcut({
-        shortcutKeys: ["s"],
+        shortcutKeys: [shortcutKeys.FOCUS_SEARCH],
         callback: handleKeyboardShortcut
     });
     return (

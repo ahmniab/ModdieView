@@ -6,7 +6,7 @@ import UrlVideoPlayer from "./UrlVideoPlayer";
 import VideoToolBar from "./VideoToolBar";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
-import type { Video } from "@/types";
+import { shortcutKeys, type Video } from "@/types";
 import { toggleFullscreen } from "@/utils/fullscreen";
 
   
@@ -24,7 +24,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
 };
 
   useKeyboardShortcut({
-    shortcutKeys: ["f"],
+    shortcutKeys: [shortcutKeys.FULLSCREEN],
     callback: handleFullscreen
   });
 

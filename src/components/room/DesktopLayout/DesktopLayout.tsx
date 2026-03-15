@@ -6,7 +6,7 @@ import ResizeHandle from "./ResizeHandle";
 import { BsChatText } from "react-icons/bs";
 import { default as UsersPanel} from "./UsersPanel"
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
-import type { Video } from "@/types";
+import { shortcutKeys, type Video } from "@/types";
 
 interface Props {
   video: RoomContent;
@@ -37,12 +37,12 @@ const DesktopLayout = ({
   }, []);
 
   useKeyboardShortcut({
-    shortcutKeys: ["c"],
+    shortcutKeys: [shortcutKeys.TOGGLE_CHAT],
     callback: toggleChat,
   });
 
   useKeyboardShortcut({
-    shortcutKeys: ["u"],
+    shortcutKeys: [shortcutKeys.TOGGLE_USERS],
     callback: toggleUsersPanel,
   });
 
@@ -56,15 +56,19 @@ const DesktopLayout = ({
     }
   }, [isDragging]);
 
+  const stopDragging = useCallback(() => {
+  setIsDragging(false);
+  }, []);
+
   useEffect(() => {
     window.addEventListener("mousemove", onDrag);
-    window.addEventListener("mouseup", () => setIsDragging(false));
+    window.addEventListener("mouseup", stopDragging);
 
     return () => {
       window.removeEventListener("mousemove", onDrag);
-      window.removeEventListener("mouseup", () => setIsDragging(false));
+      window.removeEventListener("mouseup", stopDragging);
     };
-  }, [onDrag]);
+  }, [onDrag, stopDragging]);
 
   return (
     <div className="flex flex-1 bg-gray-900 overflow-hidden">
