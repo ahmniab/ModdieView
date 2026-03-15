@@ -1,5 +1,5 @@
 import { Toaster } from "react-hot-toast";
-import favicon from "../../../public/favicon.ico";
+import favicon from "@/assets/favicon.ico";
 
 const ChatToaster = () => {
   return (
