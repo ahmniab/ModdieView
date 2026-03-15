@@ -38,3 +38,10 @@ export type Room = { roomId: string; } & RoomData;
 export type CreatedRoom = {
   ownerWebToken: string;
 } & Room;
+
+export type Notification = {
+  id: string,
+  type: string;
+  producerName: string;
+  createdAt: number;
+};
