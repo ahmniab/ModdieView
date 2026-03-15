@@ -12,7 +12,7 @@ const IoEvents = Object.freeze({
     RESIEVE_CHAT_MESSAGE: "CHAT:newChatMessage",
     SEND_CHAT_REACT: "CHAT:reactOnMessage",
     RESIEVE_CHAT_REACT: "CHAT:newChatReaction",
-
+    
     CONTENT_CHANGE: "CONTENT:change",
     CONTENT_VIDEO_PLAY: "CONTENT:video.play",
     CONTENT_VIDEO_PAUSE: "CONTENT:video.pause",
@@ -20,5 +20,6 @@ const IoEvents = Object.freeze({
     CONTENT_VIDEO_PLAYBACK_RATE_CHANGE: "CONTENT:video.playbackRateChange",
     CONTENT_VIDEO_CHANGE_PLAYBACK_RATE: "CONTENT:video.changePlaybackRate",
     CONTENT_VIDEO_SYNC: "CONTENT:video.sync",
+    NEW_NOTIFICATION: "NOTIFICATION:new",
 });
 export default IoEvents;
