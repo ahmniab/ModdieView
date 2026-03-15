@@ -13,5 +13,7 @@ export type {
     Video, 
     VideoPlaylist, 
     RoomContent,
-    CreatedRoom 
+    CreatedRoom,
+    Notification,
 } from "./room"
+export { type Shortcut, Shortcuts, shortcutKeys, reservedShortcutKeys } from "./shortcut"
