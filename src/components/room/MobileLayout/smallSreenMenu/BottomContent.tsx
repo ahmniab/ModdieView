@@ -12,6 +12,7 @@ interface Props {
   addReaction: (reaction: ChatReaction) => void;
   userId: string;
   onClose: () => void;
+  onSeek: (seconds: number) => void;
 }
 
 const BottomContent = ({
@@ -21,6 +22,7 @@ const BottomContent = ({
   addReaction,
   userId,
   onClose,
+  onSeek
 }: Props) => {
   const { users } = useRoom();
   const usersCount = Object.keys(users ?? {}).length;
@@ -38,6 +40,7 @@ const BottomContent = ({
           onAddReaction={addReaction}
           userId={userId}
           onCloseChat={onClose}
+          onSeek={onSeek}
         />
       )}
 

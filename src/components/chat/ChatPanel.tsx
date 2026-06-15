@@ -14,9 +14,10 @@ interface ChatPanelProps {
   userId: string;
   chatMsgs?: Message[];
   isBelowMd: boolean;
+  onSeek: (seconds: number) => void;
 }
 
-const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, isBelowMd }: ChatPanelProps) => {
+const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, isBelowMd, onSeek }: ChatPanelProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [chatHeaderHeight, setChatHeaderHeight] = useState(0);  
   const [replyTo, setReplyTo] = useState<Message | null>(null);
@@ -83,7 +84,7 @@ const ChatPanel = ({ messages, AddMessage, onAddReaction, onCloseChat, userId, i
         </button>
       </div>)}
 
-      <MessageList messages={messages}
+      <MessageList messages={messages} onSeek={onSeek}
         onToggleReaction={(id: string, emoji: string) => { 
           onAddReaction({ messageId: id, reaction: emoji, senderId: userId, reactedAt: Date.now() });
         }} 
