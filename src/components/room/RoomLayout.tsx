@@ -3,6 +3,7 @@ import { RoomHeader, DesktopLayout, MobileLayout } from "./";
 import useChat from "@/hooks/useChat";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import useRoomVideo from "@/hooks/useRoomVideo";
 
 export const RoomLayout = () => {
   const {
@@ -21,6 +22,10 @@ export const RoomLayout = () => {
   const [showUsersPanel, setShowUsersPanel] = useState(true);
   const [isBelowMd, setIsBelowMd] = useState(window.innerWidth < 768);
   const roomLink = (window.location.origin || "https://moddieview.com") + `/room/live/${roomId}`;
+  const { broadcastVideoSeek } = useRoomVideo();
+  const onSeek = (seconds: number) => {
+    broadcastVideoSeek(seconds);
+    }
 
   const toggleUsersPanel = () => {
     setShowUsersPanel((prev) => !prev);
@@ -58,6 +63,7 @@ export const RoomLayout = () => {
             addMessage={sendMessage}
             addReaction={sendReaction}
             userName={Name}
+            onSeek={onSeek}
           />
         ) : (
           <DesktopLayout
@@ -69,6 +75,7 @@ export const RoomLayout = () => {
             userName={Name}
             showUsersPanel={showUsersPanel}
             toggleUsersPanel={toggleUsersPanel}
+            onSeek={onSeek}
           />
         )}
       </div>

@@ -13,6 +13,7 @@ interface Props {
   messages: Message[];
   addMessage: (newMessage: IoChatMessage) => void;
   addReaction: (reaction: ChatReaction) => void;
+  onSeek: (seconds: number) => void;
 }
 
 const MobileLayout = ({
@@ -21,7 +22,8 @@ const MobileLayout = ({
   userId,
   messages,
   addMessage,
-  addReaction
+  addReaction,
+  onSeek
 }: Props) => {
   const [activeTab, setActiveTab] =
     useState<"chat" | "search" | "home">("home");
@@ -45,6 +47,7 @@ const MobileLayout = ({
               addReaction={addReaction}
               userId={userId}
               onClose={() => setActiveTab("home")}
+              onSeek={onSeek}
             />
           </div>
 

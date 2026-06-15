@@ -3,7 +3,8 @@ import type { Message, Emoji } from "../../types";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { formatTime } from "@/utils/formatTime";
 import { useRef } from "react";
-
+import { ParsedMessage } from "./ParsedMessage";
+ 
 interface MessageItemProps {
   message: Message;
   isActive: boolean;
@@ -12,6 +13,7 @@ interface MessageItemProps {
   onToggleReaction?: (id: string, emoji: Emoji) => void;
   onReply: (message: Message) => void;
   chatHeaderHeight: number;
+  onSeek: (seconds: number) => void;
 }
 
 
@@ -22,7 +24,8 @@ const MessageItem = ({
   onClose, 
   onToggleReaction, 
   onReply, 
-  chatHeaderHeight 
+  chatHeaderHeight,
+  onSeek 
 }: MessageItemProps) => {  
   const messageRef = useRef<HTMLDivElement>(null);
   const reactionsCount = Object.keys(message.reactions).length;
@@ -70,7 +73,7 @@ const MessageItem = ({
         <div className="block overflow-hidden">
           <span className="block font-semibold whitespace-nowrap mb-1 max-w-full">{senderName}</span>
           <span className="break-words whitespace-pre-wrap mr-1 text-slate-200">
-            {message.text}
+            <ParsedMessage text={message.text} onSeek={onSeek}/>
             <span className="inline-block w-[45px]"></span>
           </span>
           <span className="absolute bottom-1 right-2 text-[10px] text-white/90 whitespace-nowrap leading-none">

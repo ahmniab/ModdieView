@@ -17,6 +17,7 @@ interface Props {
   sendReaction?: (reaction: any) => void;
   showUsersPanel: boolean;
   toggleUsersPanel: () => void;
+  onSeek: (seconds: number) => void;
 }
 
 const DesktopLayout = ({
@@ -28,6 +29,7 @@ const DesktopLayout = ({
   userId,
   showUsersPanel,
   toggleUsersPanel,
+  onSeek
 }: Props) => {
   const [chatWidth, setChatWidth] = useState(320);
   const [isDragging, setIsDragging] = useState(false);
@@ -96,6 +98,7 @@ const DesktopLayout = ({
               onAddReaction={sendReaction || (() => {})}
               userId={userId || "unknown"}
               onCloseChat={() => setShowChat(false)}
+              onSeek={onSeek}
             />
           </div>
         </>
