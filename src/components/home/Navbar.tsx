@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
         />
       </Link>
 
-     <Link
+     {/* <Link
         to="/login"
         className="
           flex items-center 
@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
       >
         <GoSignIn className="text-lg sm:text-xl md:text-2xl" />
         <span>Login</span>
-    </Link>
+    </Link> */}
 
     </div>
   );
