@@ -17,7 +17,10 @@ ReactDOM.createRoot(
         <VideoControlesContextProvider>
           <QueryClientProvider client={new QueryClient()}>
             <App />
-            { process.env.NODE_ENV === "development" && <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" /> }
+            { import.meta.env.DEV && <ReactQueryDevtools 
+                initialIsOpen={false} 
+                buttonPosition="bottom-left" 
+            /> }
           </QueryClientProvider>
         </VideoControlesContextProvider>
       </RoomProvider>
