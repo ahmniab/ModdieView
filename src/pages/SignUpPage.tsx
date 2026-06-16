@@ -82,7 +82,9 @@ const SignUpPage: React.FC = () => {
   <MdPassword className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
   <input
-    type="password"
+    type={showPassword ? "text" : "password"}
+    value={password}
+    onChange={handlePasswordChange}
     placeholder="Password"
     className="
       w-full pl-10 pr-4 py-3 rounded-lg
@@ -119,7 +121,9 @@ const SignUpPage: React.FC = () => {
   <MdPassword className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
   <input
-    type="password"
+    type={showConfirmPassword ? "text" : "password"}
+    value={confirmPassword}
+    onChange={handleConfirmPasswordChange}
     placeholder="Confirm Password"
     className="
       w-full pl-10 pr-4 py-3 rounded-lg

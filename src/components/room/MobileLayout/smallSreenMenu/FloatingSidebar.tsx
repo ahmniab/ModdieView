@@ -3,7 +3,7 @@ import menuItems from "./MenuItems";
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  setActiveTab: (tab: "chat" | "search") => void;
+  setActiveTab: (tab: "chat" | "search" | "home") => void;
 }
 
 const FloatingSidebar = ({ isOpen, onClose, setActiveTab }: SidebarProps) => {

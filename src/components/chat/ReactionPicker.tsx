@@ -1,4 +1,4 @@
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 
 interface ReactionPickerProps {
   onEmojiSelect: (emoji: string) => void;
@@ -7,13 +7,11 @@ interface ReactionPickerProps {
 
 const ReactionPicker = ({ onEmojiSelect, className }: ReactionPickerProps) => {
   return (
-    <div className={`z-50 ${className ?? ""}`}>
+    <div className={`z-50 ${className ?? ""}`} onMouseDown={(e) => e.stopPropagation()}>
       <EmojiPicker
-        onMouseDown={(e) => e.stopPropagation()}
         onEmojiClick={(emojiData) => onEmojiSelect(emojiData.emoji)}
-        theme="dark"
+        theme={Theme.DARK}
         previewConfig={{ showPreview: false }}
-        emojiSize={15}
         height={290}
         width="250px"
       />

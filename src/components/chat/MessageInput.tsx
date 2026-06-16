@@ -1,7 +1,7 @@
 import { IoSend } from "react-icons/io5";
 import { MdInsertEmoticon } from "react-icons/md";
 import ReactionPicker from "./ReactionPicker";
-import { useRef, useCallback, useState } from "react";
+import { useRef, useState } from "react";
 import { BsFillReplyAllFill } from "react-icons/bs";
 import { HiOutlineX } from "react-icons/hi";
 import { useClickOutside, useKeyboardShortcut } from "@/hooks";

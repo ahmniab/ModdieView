@@ -1,8 +1,6 @@
 import Navbar from "../components/home/Navbar";
 import{ HeroSection, FeatureSection} from "@/components/home";
-import { MdAttachEmail } from "react-icons/md";
 import { MdOutlineMailOutline } from "react-icons/md";
-import { Link } from "react-router-dom";
 
 
 const HomePage: React.FC = () => {

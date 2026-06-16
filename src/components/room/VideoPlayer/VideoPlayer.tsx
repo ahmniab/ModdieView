@@ -6,12 +6,12 @@ import UrlVideoPlayer from "./UrlVideoPlayer";
 import VideoToolBar from "./VideoToolBar";
 import useKeyboardShortcut from "@/hooks/useKeyboardShortcut";
 import { useRef } from "react";
-import { shortcutKeys, type Video } from "@/types";
+import { shortcutKeys, type RoomContent } from "@/types";
 import { toggleFullscreen } from "@/utils/fullscreen";
 
   
 interface VideoPlayerProps {
-  video: Video;
+  video: RoomContent;
   userName: string;
 }
 
@@ -29,6 +29,7 @@ const VideoPlayer = ({ video }: VideoPlayerProps) => {
   });
 
   const shouldShowError = () => {
+    if (!video) return false;
     const identicalIdentefier = errorId === (video.platform === "directMedia" ? video.url : video.id);
     return errorId && identicalIdentefier;
   }
