@@ -31,9 +31,9 @@ const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ id, onError }) => {
     onVideoPlaybackRateChange: onRemotePlaybackRateChange,
   } = useRoomVideo();
 
-  const getPlayer = useCallback(() => {
-    return playerRef.current?.getInternalPlayer();
-  }, []);
+  // const getPlayer = useCallback(() => {
+  //   return playerRef.current?.getInternalPlayer();
+  // }, []);
   const syncVideoState = useCallback(() => {
     if (currentContent && playerRef.current) {
       markRemoteAction();

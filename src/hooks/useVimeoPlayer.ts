@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import useRoomVideo from "./useRoomVideo";
 
 export const useVimeoPlayer = (
-  iframeRef: RefObject<HTMLIFrameElement>,
+  iframeRef: RefObject<HTMLIFrameElement | null>,
   videoId: number,
   onError?: (msg: string) => void,
 ) => {
@@ -12,7 +12,7 @@ export const useVimeoPlayer = (
   const isRemoteAction = useRef(false);
 
   const {
-    currentVideoRef: currentContent,
+    currentVideo: currentContent,
     isMuted,
     volume,
     setBufferedTime,

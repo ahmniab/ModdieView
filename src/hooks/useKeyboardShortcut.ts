@@ -4,7 +4,7 @@ import { reservedShortcutKeys } from "@/types";
 interface UseKeyboardShortcutProps {
   shortcutKeys: string[];
   callback: () => void;
-  focusRef?: RefObject<HTMLInputElement>;
+  focusRef?: RefObject<HTMLInputElement | null>;
 }
 
 const blacklistedTargets = ["INPUT", "TEXTAREA"];

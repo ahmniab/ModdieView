@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
-import { GoSignIn } from "react-icons/go";
 
 const Navbar: React.FC = () => {
   return (

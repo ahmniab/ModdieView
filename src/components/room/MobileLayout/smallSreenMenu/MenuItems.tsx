@@ -5,5 +5,5 @@ const menuItems = [
   { key:"home", icon: TiHomeOutline },
   { key: "chat", icon: BsChatText },
   { key: "search", icon: MdPersonSearch },
-];
+] as const;
 export default menuItems;

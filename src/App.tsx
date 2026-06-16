@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { HomePage, LoginPage, SignUpPage, RoomPage } from "./pages";
+import { HomePage, RoomPage } from "./pages";
 import GlobalToaster from "./components/GlobalToaster";
 
 const App: React.FC = () => {

@@ -1,1 +1,1 @@
-export { mapChatCommands } from "./mapChatCommands";
+export {};

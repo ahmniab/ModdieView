@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { HiOutlineX } from "react-icons/hi";
 import { useClickOutside } from "@/hooks/useClickOutside";
 

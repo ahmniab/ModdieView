@@ -1,4 +1,4 @@
-import { MdReply, MdOutlineContentCopy, MdDelete } from "react-icons/md";
+import { MdReply, MdOutlineContentCopy } from "react-icons/md";
 
 interface MessageActionsProps {
   onReply?: () => void;
