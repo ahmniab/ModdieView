@@ -1,6 +1,6 @@
 <div align="center">
   <img src="media/images/ModdieView-Room.png" alt="ModdieView Room" width="100%" />
-  <h1>ModdieView</h1>
+  <img src="media/images/animated-title.svg" alt="ModdieView" />
   <p>A real-time, synchronized media viewing application to watch videos together with friends.</p>
 </div>
 
@@ -16,6 +16,10 @@
 - **Room Management**: Create custom rooms, join via invite links, and manage room settings.
 - **Responsive UI**: Optimized layouts tailored for both Desktop and Mobile experiences.
 - **Modern Design**: A beautiful, fluid interface powered by Tailwind CSS and Framer Motion animations.
+- **YouTube Search Integration**: Search YouTube directly from within the app and instantly select videos from live search results without leaving the room.
+
+- **Keyboard Shortcuts**: Quickly control the experience with shortcuts for playback, navigation, chat, search, and room actions.
+- **Real-Time Notifications**: Get notified when users join or leave, change videos, or control playback, with each action attributed to the responsible user.
 
 ## 🛠️ Tech Stack
 
@@ -49,7 +53,10 @@
    ```
 
 3. **Configure Environment Variables:**
-   Create a `.env` file in the root directory based on your backend server configuration (e.g., API URLs, Socket.IO server URLs).
+   Create a `.env` file in the root directory just like `.env.example`
+   ```env
+   VITE_APP_SERVER_URL=moddieview.backend.com
+   ```
 
 4. **Start the development server:**
    ```bash
